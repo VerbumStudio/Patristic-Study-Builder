@@ -1,0 +1,37 @@
+name: Render Campaign Video
+
+on:
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+
+      - name: Install Python Packages
+        run: |
+          pip install numpy pillow
+
+      - name: Run Video Render Script
+        run: |
+          python render.py
+
+      - name: Upload Finished MP4 Video
+        uses: actions/upload-artifact@v4
+        with:
+          name: campaign_boundary_video
+          path: campaign_boundary_21s.mp4
+          retention-days: 7
