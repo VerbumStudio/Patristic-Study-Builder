@@ -1,0 +1,96 @@
+name: Autonomous Verifier Loop
+
+on:
+  workflow_dispatch:
+
+jobs:
+  agent-loop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install google-genai pillow
+
+      - name: Run Self-Refining Loop
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python -c "
+          import os, sys
+          from google import genai
+          import audit
+
+          api_key = os.getenv('GEMINI_API_KEY')
+          if not api_key:
+              print('Error: GEMINI_API_KEY is not set in secrets.')
+              sys.exit(1)
+
+          client = genai.Client(api_key=api_key)
+
+          print('=== STARTING AUTONOMOUS AGENT REFINEMENT LOOP ===')
+          
+          # Initial layout parameters to test
+          test_config = {
+              'pill_y': 360,       # Intentionally set out of bounds (<380) to force self-correction
+              'card_top': 410,      # Intentionally tight buffer (50px < 70px)
+              'card_bottom': 1560,  # Intentionally exceeding 1550px limit
+              'lines': ['Test line execution for autonomous verifier']
+          }
+
+          passed, errs = audit.run_audit(test_config)
+          iteration = 1
+
+          while not passed and iteration <= 3:
+              print(f'\n[Iteration {iteration}] Verifier failed with {len(errs)} errors:')
+              for e in errs:
+                  print('  - ' + e)
+
+              prompt = f'''
+              Fix these layout errors for a vertical 1080x1920 video render.
+              Rules:
+              - pill_y must be >= 380
+              - card_bottom must be <= 1550
+              - (card_top - pill_y) must be >= 70
+              
+              Current errors: {errs}
+              
+              Return ONLY four lines in this exact format:
+              pill_y: <int>
+              card_top: <int>
+              card_bottom: <int>
+              lines: OK
+              '''
+              
+              print('\nPrompting Gemini to self-correct layout geometry...')
+              response = client.models.generate_content(
+                  model='gemini-2.5-flash',
+                  contents=prompt
+              )
+              
+              # Parse returned corrections
+              for line in response.text.strip().split('\n'):
+                  if 'pill_y:' in line:
+                      test_config['pill_y'] = int(line.split(':')[1].strip())
+                  elif 'card_top:' in line:
+                      test_config['card_top'] = int(line.split(':')[1].strip())
+                  elif 'card_bottom:' in line:
+                      test_config['card_bottom'] = int(line.split(':')[1].strip())
+
+              print(f'Revised Config: {test_config}')
+              passed, errs = audit.run_audit(test_config)
+              iteration += 1
+
+          if passed:
+              print('\n=== LOOP RESOLVED: Verifier passed with 0 errors! Ready to ship. ===')
+          else:
+              print('\n=== Loop limit reached without resolving all errors. ===')
+              sys.exit(1)
+          "
