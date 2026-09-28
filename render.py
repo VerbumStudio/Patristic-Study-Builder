@@ -1,8 +1,13 @@
+import os
+import sys
+import json
 import math
 import subprocess
 import wave
+import requests
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
+import audit
 
 # ==============================================================================
 # CAMPAIGN DAY 5 - INBOX TRIAGE ENGINE
@@ -50,6 +55,83 @@ font_small = ImageFont.truetype(FONT_REG, 24)
 CARD_LEFT = 48
 CARD_RIGHT = 1032
 CARD_WIDTH = CARD_RIGHT - CARD_LEFT  # 984 px
+
+# ==============================================================================
+# AUTONOMOUS QUALITY & VERIFIER GATE
+# ==============================================================================
+def self_heal_layout(initial_config):
+    """
+    Evaluates layout against audit rules.
+    If errors exist, prompts Gemini to recalculate clean coordinates.
+    """
+    passed, errors = audit.run_layout_audit(initial_config)
+    if passed:
+        print("[VERIFIER] Initial layout clean. Proceeding directly to render.")
+        return initial_config
+
+    print(f"[VERIFIER] Layout violations detected ({len(errors)}). Initiating autonomous healing...")
+    for err in errors:
+        print(f"  - {err}")
+
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        print("[WARNING] GEMINI_API_KEY not found in environment; bypassing automated healing.")
+        return initial_config
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    headers = {"Content-Type": "application/json"}
+
+    prompt_text = f"""
+    Fix the vertical coordinate errors for a 1080x1920 short-form video layout.
+    Rules:
+    - pill_y must be >= 380
+    - card_bottom must be <= 1550
+    - (card_top - pill_y) must be >= 70
+
+    Active errors: {errors}
+
+    Respond strictly with three lines:
+    pill_y: <int>
+    card_top: <int>
+    card_bottom: <int>
+    """
+
+    payload = {"contents": [{"parts": [{"text": prompt_text}]}]}
+    
+    try:
+        resp = requests.post(url, headers=headers, json=payload, timeout=10)
+        if resp.status_code == 200:
+            result_text = resp.json()["candidates"][0]["content"]["parts"][0]["text"]
+            for line in result_text.strip().split("\n"):
+                if "pill_y:" in line:
+                    initial_config["pill_y"] = int(line.split(":")[1].strip())
+                elif "card_top:" in line:
+                    initial_config["card_top"] = int(line.split(":")[1].strip())
+                elif "card_bottom:" in line:
+                    initial_config["card_bottom"] = int(line.split(":")[1].strip())
+                    
+            print(f"[VERIFIER] Self-healed layout coordinates: {initial_config}")
+    except Exception as e:
+        print(f"[VERIFIER] Healing request failed: {e}")
+
+    passed, final_errors = audit.run_layout_audit(initial_config)
+    if not passed:
+        print(f"[VERIFIER] Critical: Layout still failing after healing: {final_errors}")
+    else:
+        print("[VERIFIER] Verification PASSED (0 errors). Beginning video render.")
+        
+    return initial_config
+
+
+# Run the pre-flight layout audit across our scene configs
+print("[PRE-FLIGHT] Verifying layout geometry with deterministic verifier...")
+end_card_config = {
+    "pill_y": 380,
+    "card_top": 460,
+    "card_bottom": 1540,
+    "lines": ['COMMENT "TRIAGE" FOR THE PROMPT']
+}
+verified_config = self_heal_layout(end_card_config)
 
 # ==============================================================================
 # 1. AUDIO SYNTHESIS ENGINE
@@ -150,7 +232,7 @@ with wave.open(audio_filename, "w") as wf:
     wf.setsampwidth(2)
     wf.setframerate(samplerate)
     wf.writeframes(audio_int16.tobytes())
-print("   -> Audio synthesized successfully.")
+print("    -> Audio synthesized successfully.")
 
 # ==============================================================================
 # 2. RENDERING PRIMITIVES
@@ -227,13 +309,11 @@ def render_scene_1(draw, progress, frame):
     card_h = 680
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=28, fill=CARD_BG, outline=ALERT_RED, width=3)
     
-    # Mailbox header banner
     draw_rounded_rect(draw, (CARD_LEFT + 36, card_y + 36, CARD_LEFT + 120, card_y + 120), radius=16, fill=(45, 15, 20))
     draw.text((CARD_LEFT + 55, card_y + 45), "✉", font=font_title_lg, fill=ALERT_RED)
     draw.text((CARD_LEFT + 140, card_y + 45), "Primary Inbox", font=font_body_bold, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 140, card_y + 85), "47 Unread Threads • High Friction", font=font_small, fill=TEXT_MUTED)
     
-    # Stacked unread message representations
     messages = [
         ("Sarah (Operations)", "Urgent: Updated quarterly headcount review needed..."),
         ("Finance Team", "Action Required: Travel expense reconciliation..."),
@@ -247,7 +327,6 @@ def render_scene_1(draw, progress, frame):
         draw.text((CARD_LEFT + 50, my + 65), snippet, font=font_small, fill=TEXT_MUTED)
         my += 150
 
-    # Warning chip
     draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + 605, CARD_LEFT + 490, card_y + 655), radius=12, fill=(65, 20, 25))
     draw.text((CARD_LEFT + 50, card_y + 616), "CRITICAL: COGNITIVE OVERLOAD", font=font_small, fill=(255, 140, 140))
 
@@ -304,13 +383,11 @@ def render_scene_3(draw, progress, frame):
     card_h = 860
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=28, fill=CARD_BG, outline=CARD_BORDER, width=2)
     
-    # Progress Bar
     bar_y = card_y + 40
     draw_rounded_rect(draw, (CARD_LEFT + 40, bar_y, CARD_RIGHT - 40, bar_y + 22), radius=11, fill=(30, 41, 59))
     fill_w = int((CARD_LEFT + 40) + (CARD_WIDTH - 80) * progress)
     draw_rounded_rect(draw, (CARD_LEFT + 40, bar_y, fill_w, bar_y + 22), radius=11, fill=CYAN_ACCENT)
     
-    # 3 Distinct Buckets
     buckets = [
         ("[RESPOND] BUCKET (CYAN)", "Critical decisions required today", CYAN_ACCENT, (15, 35, 55)),
         ("[DEFER] BUCKET (AMBER)", "Review during afternoon focus blocks", AMBER_DEFER, (45, 30, 15)),
@@ -334,7 +411,6 @@ def render_scene_4(draw, progress, frame):
     card_h = 960
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=28, fill=CARD_BG, outline=CARD_BORDER, width=2)
     
-    # Header tag
     draw_rounded_rect(draw, (CARD_LEFT + 40, card_y + 40, CARD_LEFT + 360, card_y + 90), radius=12, fill=(15, 40, 60))
     draw.text((CARD_LEFT + 60, card_y + 50), "CATEGORY: [RESPOND]", font=font_code_sm, fill=CYAN_ACCENT)
     
@@ -342,10 +418,8 @@ def render_scene_4(draw, progress, frame):
     draw.text((CARD_LEFT + 40, card_y + 165), "Subject: Re: Quarterly Headcount Review", font=font_body_bold, fill=TEXT_WHITE)
     draw.line((CARD_LEFT + 40, card_y + 220, CARD_RIGHT - 40, card_y + 220), fill=CARD_BORDER, width=2)
     
-    # Salutation
     draw.text((CARD_LEFT + 40, card_y + 250), "Hi Sarah,", font=font_body, fill=TEXT_WHITE)
     
-    # Reply box
     reply_lines = [
         "I have reviewed the headcount numbers",
         "and approved the revised schedule.",
@@ -390,30 +464,26 @@ def render_scene_5(draw, progress, frame):
     card_h = 960
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=28, fill=CARD_BG, outline=CARD_BORDER, width=2)
     
-    # Defer summary box
     draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + 50, CARD_RIGHT - 30, card_y + 300), radius=20, fill=(30, 25, 20), outline=AMBER_DEFER, width=2)
     draw.text((CARD_LEFT + 60, card_y + 80), "[DEFER] 6 ITEMS SCHEDULED", font=font_h2, fill=AMBER_DEFER)
     draw.text((CARD_LEFT + 60, card_y + 140), "Queued for 2:30 PM Focus Block", font=font_body, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 60, card_y + 200), "✔ Travel expenses  ✔ Project roadmap sync", font=font_code, fill=TEXT_MUTED)
     
-    # Archive summary box
     draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + 330, CARD_RIGHT - 30, card_y + 580), radius=20, fill=(20, 25, 35), outline=SLATE_ARCHIVE, width=2)
     draw.text((CARD_LEFT + 60, card_y + 360), "[ARCHIVE] 38 ITEMS CLEARED", font=font_h2, fill=SLATE_ARCHIVE)
     draw.text((CARD_LEFT + 60, card_y + 420), "All notifications & FYI chains muted", font=font_body, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 60, card_y + 480), "✔ Automated receipts  ✔ Company all-hands", font=font_code, fill=TEXT_MUTED)
     
-    # Validation Badge Widget
     widget_y = card_y + 620
     draw_rounded_rect(draw, (CARD_LEFT + 30, widget_y, CARD_RIGHT - 30, widget_y + 220), radius=22, fill=CARD_HEADER_BG, outline=GREEN_DONE, width=2)
     draw.text((CARD_LEFT + 60, widget_y + 40), "STATUS: 0 UNPROCESSED EMAILS", font=font_h2, fill=GREEN_DONE)
     draw.text((CARD_LEFT + 60, widget_y + 110), "RESULT: IMMEDIATE MORNING CLARITY", font=font_h1, fill=TEXT_WHITE)
 
 
-def render_scene_6(draw, progress, frame):
+def render_scene_6(draw, progress, frame, pill_y=380, card_y=460):
     """Scene 6 (0:17 - 0:21): Overhauled Clean End-Card"""
-    draw_pill(draw, 'COMMENT "TRIAGE" FOR THE PROMPT', 540, 380, border_color=CYAN_ACCENT, text_color=CYAN_ACCENT)
+    draw_pill(draw, 'COMMENT "TRIAGE" FOR THE PROMPT', 540, pill_y, border_color=CYAN_ACCENT, text_color=CYAN_ACCENT)
     
-    card_y = 460
     card_h = 1080
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=32, fill=CARD_BG, outline=CYAN_ACCENT, width=3)
     
@@ -421,7 +491,6 @@ def render_scene_6(draw, progress, frame):
     draw.text((CARD_LEFT + 120, card_y + 130), "GET THE FULL SYSTEM PROMPT", font=font_title_lg, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 210, card_y + 205), "+ FREE 7-PROMPT AI LIBRARY", font=font_h2, fill=TEXT_MUTED)
     
-    # Terminal Trigger Box
     term_top = card_y + 270
     term_h = 200
     draw_rounded_rect(draw, (CARD_LEFT + 40, term_top, CARD_RIGHT - 40, term_top + term_h), radius=20, fill=(10, 15, 29), outline=CYAN_ACCENT, width=2)
@@ -459,7 +528,7 @@ def render_scene_6(draw, progress, frame):
 # ==============================================================================
 # 4. COMPILATION PIPELINE
 # ==============================================================================
-output_mp4 = "campaign_boundary_21s.mp4"
+output_mp4 = "campaign_triage_21s.mp4"
 print(f"[2/3] Streaming {TOTAL_FRAMES} frames to FFmpeg compiler...")
 
 ffmpeg_cmd = [
@@ -502,7 +571,13 @@ for frame_idx in range(TOTAL_FRAMES):
     elif t_sec < 17.0:
         render_scene_5(draw, (t_sec - 14.0) / 3.0, frame_idx)
     else:
-        render_scene_6(draw, (t_sec - 17.0) / 4.0, frame_idx)
+        render_scene_6(
+            draw,
+            (t_sec - 17.0) / 4.0,
+            frame_idx,
+            pill_y=verified_config.get("pill_y", 380),
+            card_y=verified_config.get("card_top", 460)
+        )
         
     proc.stdin.write(img.tobytes())
 
