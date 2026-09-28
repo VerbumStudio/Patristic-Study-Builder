@@ -1,61 +1,42 @@
-import os
-import sys
-from PIL import ImageFont
+"""
+AUDIT ENGINE: DETERMINISTIC LAYOUT, SAFE-ZONE & TYPOGRAPHY VERIFIER
+"""
 
-# ==============================================================================
-# AUDIT HARNESS: DETERMINISTIC LAYOUT & SAFE-ZONE VERIFIER
-# ==============================================================================
+# Screen & Safe-Zone Geometry (1080 x 1920)
+SCREEN_WIDTH = 1080
+SCREEN_HEIGHT = 1920
+SAFE_Y_MIN = 380      # Above this collides with TikTok top navigation & search
+SAFE_Y_MAX = 1550     # Below this collides with description, audio & CTA UI
+MIN_CARD_BUFFER = 70  # Minimum vertical separation between elements
+MAX_CHARS_PER_LINE = 42
 
-SAFE_Y_MIN = 380
-SAFE_Y_MAX = 1550
-MAX_LINE_LENGTH = 45
-
-FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-
-def run_audit(data_dict):
+def run_layout_audit(layout_config):
     """
-    Checks layout parameters, text bounding boundaries, and character constraints.
-    Returns: (bool passed, list errors)
+    Evaluates vertical coordinate compliance and element separation.
+    Returns: (bool passed, list[str] errors)
     """
     errors = []
     
-    # 1. Safe Zone Margin Verification
-    pill_y = data_dict.get("pill_y", 0)
-    card_top = data_dict.get("card_top", 0)
-    card_bottom = data_dict.get("card_bottom", 0)
+    pill_y = layout_config.get("pill_y", 0)
+    card_top = layout_config.get("card_top", 0)
+    card_bottom = layout_config.get("card_bottom", 0)
     
+    # 1. Safe Zone Margin Verification
     if pill_y < SAFE_Y_MIN:
-        errors.append(f"Safe-Zone Violation: Top pill at Y={pill_y} sits above safe limit ({SAFE_Y_MIN}px).")
+        errors.append(f"Top pill at Y={pill_y} violates top safe boundary (minimum {SAFE_Y_MIN}px).")
         
     if card_bottom > SAFE_Y_MAX:
-        errors.append(f"Safe-Zone Violation: Terminal card ends at Y={card_bottom}, exceeding bottom limit ({SAFE_Y_MAX}px).")
+        errors.append(f"Card bottom at Y={card_bottom} exceeds bottom safe boundary (maximum {SAFE_Y_MAX}px).")
         
-    # 2. Collision Guardrail (Top Pill vs Card Container)
+    # 2. Collision Guardrail
     buffer = card_top - pill_y
-    if buffer < 70:
-        errors.append(f"Element Collision: Buffer between pill and card is {buffer}px (minimum safe buffer is 70px).")
+    if buffer < MIN_CARD_BUFFER:
+        errors.append(f"Element collision: separation between pill and card is {buffer}px (requires >={MIN_CARD_BUFFER}px).")
         
-    # 3. Text Overflow Verification
-    lines = data_dict.get("lines", [])
+    # 3. Line Length & Typography Overflow
+    lines = layout_config.get("lines", [])
     for idx, line in enumerate(lines):
-        if len(line) > MAX_LINE_LENGTH:
-            errors.append(f"Text Overflow: Line {idx+1} has {len(line)} chars (max recommended is {MAX_LINE_LENGTH}).")
+        if len(line) > MAX_CHARS_PER_LINE:
+            errors.append(f"Line {idx + 1} overflow: {len(line)} characters (maximum recommended is {MAX_CHARS_PER_LINE}).")
             
-    passed = len(errors) == 0
-    return passed, errors
-
-if __name__ == "__main__":
-    # Test stub verifying syntax integrity
-    sample_data = {
-        "pill_y": 380,
-        "card_top": 460,
-        "card_bottom": 1540,
-        "lines": ["Clean test line within safe limits."]
-    }
-    ok, errs = run_audit(sample_data)
-    if ok:
-        print("VERIFIER CHECK: PASSED (Geometry valid)")
-        sys.exit(0)
-    else:
-        print("VERIFIER CHECK: FAILED\n" + "\n".join(errs))
-        sys.exit(1)
+    return (len(errors) == 0, errors)
