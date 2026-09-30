@@ -28,5 +28,5 @@ jobs:
       - name: Upload Video Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: day02_meeting_matrix
-          path: day02_meeting_matrix_20s.mp4
+          name: day08_executive_boundary
+          path: day08_executive_boundary_20s.mp4
