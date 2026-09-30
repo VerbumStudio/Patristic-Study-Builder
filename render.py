@@ -254,7 +254,7 @@ def render_scene_2(draw, progress, frame):
     draw.rounded_rectangle((CARD_LEFT, card_y, CARD_RIGHT, card_y + 75), radius=28, fill=CARD_HEADER_BG)
     draw.ellipse((CARD_LEFT + 35, card_y + 28, CARD_LEFT + 55, card_y + 48), fill=ALERT_RED)
     draw.ellipse((CARD_LEFT + 70, card_y + 28, CARD_LEFT + 90, card_y + 48), fill=AMBER_DEFER)
-    draw.ellipse((CARD_LEFT + 105, card_y + 125, CARD_LEFT + 125, card_y + 48), fill=GREEN_DONE)
+    draw.ellipse((CARD_LEFT + 105, card_y + 28, CARD_LEFT + 125, card_y + 48), fill=GREEN_DONE)
     draw.text((CARD_LEFT + 155, card_y + 22), "SYSTEM PROMPT : CHIEF_OF_STAFF.MD", font=font_code, fill=CYAN_ACCENT)
     
     prompt_lines = [
