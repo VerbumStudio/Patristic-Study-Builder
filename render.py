@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 import audit
 
 # ==============================================================================
-# CAMPAIGN: PROMPT 1 (V2 HIGH-CONVERSION) - MEETING TO ACTION MATRIX
+# CAMPAIGN: DAY 02 - MEETING TO ACTION MATRIX
 # Resolution: 1080x1920 (9:16 Vertical) | Frame Rate: 30 FPS | Runtime: 20.0s
 # Trigger: "MEETING" | Brand: @workflowsuperai
 # ==============================================================================
@@ -148,7 +148,7 @@ while curr_t < end_beat:
 fade_len = int(1.2 * samplerate)
 audio[-fade_len:] *= np.linspace(1.0, 0.0, fade_len)
 audio_int16 = ((audio / np.max(np.abs(audio))) * 0.95 * 32767).astype(np.int16)
-audio_filename = "campaign_meeting_audio.wav"
+audio_filename = "day02_meeting_audio.wav"
 with wave.open(audio_filename, "w") as wf:
     wf.setnchannels(1)
     wf.setsampwidth(2)
@@ -209,11 +209,10 @@ def draw_typewriter_lines(draw, lines, x, start_y, line_height, progress, frame,
             break
 
 # ==============================================================================
-# 3. SCENE IMPLEMENTATIONS (REFINED & STANDARDIZED)
+# 3. SCENE IMPLEMENTATIONS
 # ==============================================================================
 
 def render_scene_1(draw, progress, frame):
-    """Scene 1 (0.0s - 1.2s): Ultra-fast kinetic friction hook"""
     offset_y = int(progress * 40)
     draw_pill(draw, "STOP WRITING MEETING RECAPS", 540, 390, border_color=ALERT_RED, text_color=TEXT_WHITE)
     
@@ -244,7 +243,6 @@ def render_scene_1(draw, progress, frame):
 
 
 def render_scene_2(draw, progress, frame):
-    """Scene 2 (1.2s - 4.5s): System Prompt Execution"""
     draw_pill(draw, "1 PROMPT TURNS IT INTO A MATRIX", 540, 390, border_color=CYAN_ACCENT, text_color=TEXT_WHITE)
     
     card_y = 470
@@ -275,7 +273,6 @@ def render_scene_2(draw, progress, frame):
 
 
 def render_scene_3(draw, progress, frame):
-    """Scene 3 (4.5s - 8.5s): Executive Consensus & Decisions"""
     draw_pill(draw, "STEP 1: EXECUTIVE CONSENSUS", 540, 390, border_color=CYAN_ACCENT, text_color=CYAN_ACCENT)
     
     card_y = 470
@@ -309,7 +306,6 @@ def render_scene_3(draw, progress, frame):
 
 
 def render_scene_4(draw, progress, frame):
-    """Scene 4 (8.5s - 13.0s): TRUE 4-Column Markdown Grid Table"""
     draw_pill(draw, "STEP 2: DELEGATION MATRIX (GRID)", 540, 390, border_color=CYAN_ACCENT, text_color=TEXT_WHITE)
     
     card_y = 470
@@ -323,17 +319,14 @@ def render_scene_4(draw, progress, frame):
     tbl_w = CARD_WIDTH - 60
     tbl_h = 620
     
-    # Table Border Outer
     draw_rounded_rect(draw, (tbl_x, tbl_y, tbl_x + tbl_w, tbl_y + tbl_h), radius=14, fill=CARD_HEADER_BG, outline=CYAN_ACCENT, width=2)
     
-    # Column X coordinates
     c0 = tbl_x
-    c1 = tbl_x + 420   # Task
-    c2 = tbl_x + 580   # Owner
-    c3 = tbl_x + 750   # Priority
-    c4 = tbl_x + tbl_w # Deadline
+    c1 = tbl_x + 420
+    c2 = tbl_x + 580
+    c3 = tbl_x + 750
+    c4 = tbl_x + tbl_w
     
-    # Header Row
     draw.rectangle((c0, tbl_y, c4, tbl_y + 75), fill=(24, 45, 78))
     draw.line((c0, tbl_y + 75, c4, tbl_y + 75), fill=CYAN_ACCENT, width=2)
     draw.text((c0 + 20, tbl_y + 24), "TASK DESCRIPTION", font=font_table_hdr, fill=CYAN_ACCENT)
@@ -341,7 +334,6 @@ def render_scene_4(draw, progress, frame):
     draw.text((c2 + 20, tbl_y + 24), "PRIORITY", font=font_table_hdr, fill=CYAN_ACCENT)
     draw.text((c3 + 20, tbl_y + 24), "DEADLINE", font=font_table_hdr, fill=CYAN_ACCENT)
     
-    # Grid Vertical Dividers
     for div_x in [c1, c2, c3]:
         draw.line((div_x, tbl_y, div_x, tbl_y + tbl_h), fill=CARD_BORDER, width=1)
         
@@ -369,37 +361,32 @@ def render_scene_4(draw, progress, frame):
 
 
 def render_scene_5(draw, progress, frame):
-    """Scene 5 (13.0s - 16.5s): Radical Transformation Contrast"""
     draw_pill(draw, "45 MINS -> 10 SECONDS", 540, 390, border_color=CYAN_ACCENT, text_color=TEXT_WHITE)
     
     card_y = 470
     card_h = 920
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=28, fill=CARD_BG, outline=CARD_BORDER, width=2)
     
-    # Red Friction Card
     draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + 45, CARD_RIGHT - 30, card_y + 355), radius=20, fill=(35, 15, 20), outline=ALERT_RED, width=2)
     draw.text((CARD_LEFT + 60, card_y + 75), "BEFORE: 45 MINUTES LOST", font=font_h2, fill=ALERT_RED)
     draw.text((CARD_LEFT + 60, card_y + 140), "• Sifting through transcripts and messy scratch notes", font=font_body, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 60, card_y + 200), "• Ambiguous verbal commitments slip through cracks", font=font_body, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 60, card_y + 260), "• High mental fatigue after back-to-back calls", font=font_body, fill=TEXT_WHITE)
     
-    # Green Solution Card
     draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + 395, CARD_RIGHT - 30, card_y + 705), radius=20, fill=(15, 35, 55), outline=GREEN_DONE, width=2)
     draw.text((CARD_LEFT + 60, card_y + 425), "AFTER: 10 SECONDS WITH AI", font=font_h2, fill=GREEN_DONE)
     draw.text((CARD_LEFT + 60, card_y + 490), "✔ Exact 2-sentence executive consensus ready for Slack", font=font_body, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 60, card_y + 550), "✔ 4-column delegation grid with dates and owners", font=font_body, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 60, card_y + 610), "✔ Missing roles automatically flagged for review", font=font_body, fill=TEXT_WHITE)
     
-    # Callout
     draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + 745, CARD_RIGHT - 30, card_y + 865), radius=18, fill=CARD_HEADER_BG, outline=CYAN_ACCENT, width=2)
     draw.text((CARD_LEFT + 155, card_y + 790), "RECLAIM 5+ HOURS EVERY SINGLE WEEK", font=font_h2, fill=CYAN_ACCENT)
 
 
 def render_scene_6(draw, progress, frame):
-    """Scene 6 (16.5s - 20.0s): Mobile Safe-Zone Optimized End-Card"""
     pill_y = 380
     card_y = 460
-    card_h = 950  # Ends at 1410 (Completely clear of TikTok/Reels UI safe zone)
+    card_h = 950
     
     draw_pill(draw, 'COMMENT "MEETING" FOR PROMPT', 540, pill_y, border_color=CYAN_ACCENT, text_color=CYAN_ACCENT)
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=32, fill=CARD_BG, outline=CYAN_ACCENT, width=3)
@@ -408,7 +395,6 @@ def render_scene_6(draw, progress, frame):
     draw.text((CARD_LEFT + 95, card_y + 105), "GET THE CHIEF OF STAFF PROMPT", font=font_title_lg, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 220, card_y + 175), "+ FREE 7-PROMPT AI LIBRARY", font=font_h2, fill=TEXT_MUTED)
     
-    # Terminal command simulation
     term_top = card_y + 240
     term_h = 175
     draw_rounded_rect(draw, (CARD_LEFT + 40, term_top, CARD_RIGHT - 40, term_top + term_h), radius=20, fill=(10, 15, 29), outline=CYAN_ACCENT, width=2)
@@ -433,7 +419,6 @@ def render_scene_6(draw, progress, frame):
         draw.text((CARD_LEFT + 120, fy), feat, font=font_body, fill=TEXT_WHITE)
         fy += 56
         
-    # High-elevation safe-zone link block
     link_box_y = card_y + 650
     link_box_h = 240
     draw_rounded_rect(draw, (CARD_LEFT + 40, link_box_y, CARD_RIGHT - 40, link_box_y + link_box_h), radius=22, fill=(15, 23, 42), outline=CARD_BORDER, width=2)
@@ -446,7 +431,7 @@ def render_scene_6(draw, progress, frame):
 # ==============================================================================
 # 4. COMPILATION PIPELINE
 # ==============================================================================
-output_mp4 = "campaign_meeting_21s.mp4"
+output_mp4 = "day02_meeting_matrix_20s.mp4"
 print(f"[2/3] Streaming {TOTAL_FRAMES} frames to FFmpeg compiler...")
 
 ffmpeg_cmd = [
