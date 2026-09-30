@@ -10,25 +10,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          sudo apt-get install -y ffmpeg fonts-dejavu-core python3-pip
 
       - name: Install Python Dependencies
         run: |
-          pip install numpy pillow requests
+          pip3 install --break-system-packages numpy pillow requests
 
       - name: Render Video
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          python render.py
+          python3 render.py
 
       - name: Upload Video Artifact
         uses: actions/upload-artifact@v4
