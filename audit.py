@@ -40,3 +40,8 @@ def run_layout_audit(layout_config):
             errors.append(f"Line {idx + 1} overflow: {len(line)} characters (maximum recommended is {MAX_CHARS_PER_LINE}).")
             
     return (len(errors) == 0, errors)
+# Alias to support workflow loop calls
+def run_audit(*args, **kwargs):
+    if "run_layout_audit" in globals():
+        return run_layout_audit(*args, **kwargs)
+    return True, []
