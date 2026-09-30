@@ -9,9 +9,9 @@ from PIL import Image, ImageDraw, ImageFont
 import audit
 
 # ==============================================================================
-# CAMPAIGN: DAY 02 - MEETING TO ACTION MATRIX
+# CAMPAIGN: DAY 08 - EXECUTIVE BOUNDARY & SCOPE DE-ESCALATION
 # Resolution: 1080x1920 (9:16 Vertical) | Frame Rate: 30 FPS | Runtime: 20.0s
-# Trigger: "MEETING" | Brand: @workflowsuperai
+# Trigger: "BOUNDARY" | Brand: @workflowsuperai
 # ==============================================================================
 
 WIDTH = 1080
@@ -20,20 +20,19 @@ FPS = 30
 DURATION = 20.0
 TOTAL_FRAMES = int(FPS * DURATION)  # 600 frames
 
-# --- BRAND COLOR SYSTEM ---
+# --- BRAND DESIGN SYSTEM ---
 BG_COLOR = (10, 15, 29)          # Deep Slate/Navy #0A0F1D
-CARD_BG = (18, 25, 46)           # Mobile Card Surface #12192E
-CARD_HEADER_BG = (13, 19, 36)    # Header Surface #0D1324
-CARD_BORDER = (45, 60, 95)       # Outer Card Stroke #2D3C5F
+CARD_BG = (18, 25, 46)           # Card Surface #12192E
+CARD_HEADER_BG = (13, 19, 36)    # Dark Container Fill #0D1324
+CARD_BORDER = (45, 60, 95)       # Stroke Outline #2D3C5F
 CYAN_ACCENT = (0, 229, 255)      # Terminal Neon Cyan #00E5FF
-CYAN_DIM = (0, 130, 150)         # Secondary Cyan
+CYAN_DIM = (0, 130, 150)         # Accent Dim Cyan
 TEXT_WHITE = (248, 250, 252)     # High Contrast White #F8FAFC
-TEXT_MUTED = (148, 163, 184)     # Secondary Label Muted #94A3B8
-ALERT_RED = (239, 68, 68)        # Notification Red
-AMBER_DEFER = (245, 158, 11)     # Defer Amber
-SLATE_ARCHIVE = (100, 116, 139)  # Archive Slate
-GREEN_DONE = (16, 185, 129)      # Emerald Check
-PILL_BG = (0, 0, 0)              # Black Contrast Pill
+TEXT_MUTED = (148, 163, 184)     # Secondary Muted Slate #94A3B8
+ALERT_RED = (239, 68, 68)        # Stress Alert Red #EF4444
+AMBER_WARN = (245, 158, 11)      # Tradeoff Amber #F59E0B
+GREEN_SAFE = (16, 185, 129)      # Emerald Guardrail #10B981
+PILL_BG = (0, 0, 0)              # Pure Black Pill BG
 
 # --- TYPOGRAPHY HIERARCHY ---
 FONT_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
@@ -41,15 +40,15 @@ FONT_REG = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 FONT_MONO = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf"
 
 font_pill = ImageFont.truetype(FONT_BOLD, 36)
-font_title_lg = ImageFont.truetype(FONT_BOLD, 42)
-font_h1 = ImageFont.truetype(FONT_BOLD, 36)
-font_h2 = ImageFont.truetype(FONT_BOLD, 30)
-font_body = ImageFont.truetype(FONT_REG, 26)
-font_body_bold = ImageFont.truetype(FONT_BOLD, 26)
-font_code = ImageFont.truetype(FONT_MONO, 24)
-font_code_sm = ImageFont.truetype(FONT_MONO, 19)
+font_title_lg = ImageFont.truetype(FONT_BOLD, 40)
+font_h1 = ImageFont.truetype(FONT_BOLD, 34)
+font_h2 = ImageFont.truetype(FONT_BOLD, 28)
+font_body = ImageFont.truetype(FONT_REG, 25)
+font_body_bold = ImageFont.truetype(FONT_BOLD, 25)
+font_code = ImageFont.truetype(FONT_MONO, 23)
+font_code_sm = ImageFont.truetype(FONT_MONO, 18)
 font_table_hdr = ImageFont.truetype(FONT_BOLD, 22)
-font_table_cell = ImageFont.truetype(FONT_REG, 21)
+font_table_cell = ImageFont.truetype(FONT_REG, 20)
 font_small = ImageFont.truetype(FONT_REG, 22)
 
 # --- VIEWPORT GEOMETRY ---
@@ -62,32 +61,32 @@ initial_config = {
     "pill_y": 380,
     "card_top": 460,
     "card_bottom": 1420,
-    "lines": ['COMMENT "MEETING" FOR PROMPT']
+    "lines": ['COMMENT "BOUNDARY" FOR PROMPT']
 }
 audit.run_audit(initial_config)
 
 # ==============================================================================
 # 1. AUDIO SYNTHESIS ENGINE
 # ==============================================================================
-print("[1/3] Synthesizing synchronized high-retention audio track...")
+print("[1/3] Synthesizing synchronized audio environment...")
 samplerate = 44100
 total_samples = int(samplerate * DURATION)
 audio = np.zeros(total_samples, dtype=np.float32)
 
-# Sharp kinetic opener chime at 0.0s
-for offset, freq in [(0.0, 880.0), (0.09, 1318.5)]:
+# Urgent notification chime at 0.0s (Slack Alert emulation: 800Hz & 1000Hz)
+for offset, freq in [(0.0, 784.0), (0.08, 1046.5)]:
     idx_start = int(offset * samplerate)
-    dur = 0.8
+    dur = 0.6
     t_chime = np.linspace(0, dur, int(dur * samplerate), endpoint=False)
-    wave_c = 0.38 * np.sin(2 * np.pi * freq * t_chime) * np.exp(-t_chime * 6.0)
+    wave_c = 0.35 * np.sin(2 * np.pi * freq * t_chime) * np.exp(-t_chime * 7.0)
     idx_end = min(total_samples, idx_start + len(wave_c))
     audio[idx_start:idx_end] += wave_c[:idx_end - idx_start]
 
-# Rapid mechanical keystrokes (1.2s - 2.8s)
-for click_time in [1.2, 1.35, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5, 2.7]:
+# Rapid mechanical keyboard keystrokes (1.2s - 2.8s)
+for click_time in [1.2, 1.35, 1.5, 1.68, 1.85, 2.05, 2.25, 2.45, 2.65]:
     idx_c = int(click_time * samplerate)
     t_click = np.linspace(0, 0.035, int(0.035 * samplerate), endpoint=False)
-    noise = np.random.uniform(-1, 1, len(t_click)) * np.exp(-t_click * 140.0) * 0.18
+    noise = np.random.uniform(-1, 1, len(t_click)) * np.exp(-t_click * 140.0) * 0.16
     idx_end = min(total_samples, idx_c + len(noise))
     audio[idx_c:idx_end] += noise[:idx_end - idx_c]
 
@@ -148,7 +147,7 @@ while curr_t < end_beat:
 fade_len = int(1.2 * samplerate)
 audio[-fade_len:] *= np.linspace(1.0, 0.0, fade_len)
 audio_int16 = ((audio / np.max(np.abs(audio))) * 0.95 * 32767).astype(np.int16)
-audio_filename = "day02_meeting_audio.wav"
+audio_filename = "day08_boundary_audio.wav"
 with wave.open(audio_filename, "w") as wf:
     wf.setnchannels(1)
     wf.setsampwidth(2)
@@ -175,7 +174,7 @@ def draw_header(draw):
     draw.text((CARD_RIGHT - 160, 72), "5G  100%", font=font_small, fill=TEXT_MUTED)
     draw.rounded_rectangle((CARD_LEFT, 130, CARD_RIGHT, 215), radius=16, fill=CARD_HEADER_BG, outline=CARD_BORDER, width=2)
     draw.ellipse((CARD_LEFT + 30, 155, CARD_LEFT + 65, 190), fill=CYAN_ACCENT)
-    draw.text((CARD_LEFT + 85, 152), "WORKFLOWSUPERAI // CHIEF OF STAFF", font=font_h2, fill=TEXT_WHITE)
+    draw.text((CARD_LEFT + 85, 152), "WORKFLOWSUPERAI // STRATEGIC COMMS", font=font_h2, fill=TEXT_WHITE)
 
 def draw_watermark(draw):
     draw.text((CARD_LEFT + 20, 1840), "@workflowsuperai", font=font_h2, fill=CYAN_DIM)
@@ -213,37 +212,38 @@ def draw_typewriter_lines(draw, lines, x, start_y, line_height, progress, frame,
 # ==============================================================================
 
 def render_scene_1(draw, progress, frame):
+    """Scene 1 (0.0s - 1.2s): Immediate Acute Pain Hook"""
     offset_y = int(progress * 40)
-    draw_pill(draw, "STOP WRITING MEETING RECAPS", 540, 390, border_color=ALERT_RED, text_color=TEXT_WHITE)
+    draw_pill(draw, "4:45 PM 'URGENT' SLACK?", 540, 390, border_color=ALERT_RED, text_color=TEXT_WHITE)
     
     card_y = 470
     card_h = 760
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=28, fill=CARD_BG, outline=ALERT_RED, width=3)
     
-    draw.rounded_rectangle((CARD_LEFT + 30, card_y + 35, CARD_LEFT + 320, card_y + 85), radius=12, fill=(45, 15, 20))
-    draw.text((CARD_LEFT + 45, card_y + 46), "45-MIN RAW TRANSCRIPT", font=font_code_sm, fill=ALERT_RED)
+    draw.rounded_rectangle((CARD_LEFT + 30, card_y + 35, CARD_LEFT + 340, card_y + 85), radius=12, fill=(45, 15, 20))
+    draw.text((CARD_LEFT + 45, card_y + 46), "UNPLANNED SCOPE INTRUSION", font=font_code_sm, fill=ALERT_RED)
     
-    lines = [
-        "Dave: 'Did we cap Q4 cloud spend at $12k?'",
-        "Sarah: 'I will audit EC2 instances next Thurs.'",
-        "Mark: 'SOC2 signoff blocks the enterprise deal.'",
-        "Dave: 'I will escalate to legal tomorrow morning.'",
-        "Sarah: 'Who owns the Notion sprint updates?'",
-        "Mark: 'Unassigned. We need to decide today.'"
+    incoming_slacks = [
+        "VP Product: 'Need updated enterprise decks tonight.'",
+        "Lead Client: 'Can we squeeze in SSO before morning?'",
+        "Dave: 'Launch blocks unless this is verified ASAP.'",
+        "Sarah: 'Our sprint is completely booked though...'",
+        "Executive: 'Just work late and push it through.'"
     ]
     sy = card_y + 115 - offset_y
-    for l in lines:
+    for s in incoming_slacks:
         if card_y + 100 <= sy <= card_y + card_h - 100:
             draw_rounded_rect(draw, (CARD_LEFT + 30, sy, CARD_RIGHT - 30, sy + 75), radius=12, fill=CARD_HEADER_BG, outline=CARD_BORDER, width=1)
-            draw.text((CARD_LEFT + 50, sy + 22), l, font=font_code_sm, fill=TEXT_MUTED)
+            draw.text((CARD_LEFT + 50, sy + 22), s, font=font_code_sm, fill=TEXT_MUTED)
         sy += 90
 
     draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + card_h - 85, CARD_RIGHT - 30, card_y + card_h - 25), radius=12, fill=(65, 20, 25))
-    draw.text((CARD_LEFT + 220, card_y + card_h - 65), "COGNITIVE OVERLOAD: 45 MINS WASTED", font=font_body_bold, fill=(255, 140, 140))
+    draw.text((CARD_LEFT + 220, card_y + card_h - 65), "BURNOUT FRICTION: REACTIVE SUBMISSION", font=font_body_bold, fill=(255, 140, 140))
 
 
 def render_scene_2(draw, progress, frame):
-    draw_pill(draw, "1 PROMPT TURNS IT INTO A MATRIX", 540, 390, border_color=CYAN_ACCENT, text_color=TEXT_WHITE)
+    """Scene 2 (1.2s - 4.5s): PAUSE-WORTHY COMPLETE SYSTEM PROMPT ON-SCREEN"""
+    draw_pill(draw, "PAUSE & COPY THIS SYSTEM PROMPT", 540, 390, border_color=CYAN_ACCENT, text_color=TEXT_WHITE)
     
     card_y = 470
     card_h = 920
@@ -251,68 +251,71 @@ def render_scene_2(draw, progress, frame):
     
     draw.rounded_rectangle((CARD_LEFT, card_y, CARD_RIGHT, card_y + 75), radius=28, fill=CARD_HEADER_BG)
     draw.ellipse((CARD_LEFT + 35, card_y + 28, CARD_LEFT + 55, card_y + 48), fill=ALERT_RED)
-    draw.ellipse((CARD_LEFT + 70, card_y + 28, CARD_LEFT + 90, card_y + 48), fill=AMBER_DEFER)
-    draw.ellipse((CARD_LEFT + 105, card_y + 28, CARD_LEFT + 125, card_y + 48), fill=GREEN_DONE)
-    draw.text((CARD_LEFT + 155, card_y + 22), "SYSTEM PROMPT : CHIEF_OF_STAFF.MD", font=font_code, fill=CYAN_ACCENT)
+    draw.ellipse((CARD_LEFT + 70, card_y + 28, CARD_LEFT + 90, card_y + 48), fill=AMBER_WARN)
+    draw.ellipse((CARD_LEFT + 105, card_y + 28, CARD_LEFT + 125, card_y + 48), fill=GREEN_SAFE)
+    draw.text((CARD_LEFT + 155, card_y + 22), "SYSTEM PROMPT : DE_ESCALATION_ENGINE.MD", font=font_code, fill=CYAN_ACCENT)
     
     prompt_lines = [
-        "ACT AS: Executive Chief of Staff",
-        "INPUT: Raw chaotic meeting transcript",
+        "ACT AS: Executive Negotiation Strategist",
+        "GOAL: De-escalate reactive scope creep without friction.",
         "",
+        "INPUT: Demanding / urgent message sent after hours.",
         "OPERATIONAL DIRECTIVE:",
-        "1. Synthesize exactly 2 sentences of Consensus.",
-        "2. Extract non-negotiable Decisions Made.",
-        "3. Output a strict 4-Column Markdown Table:",
-        "   | TASK | OWNER | PRIORITY | DEADLINE |",
-        "",
-        "RULES:",
-        "- Eliminate all filler and conversational tangents.",
-        "- Mark missing roles as [UNASSIGNED]."
+        "1. Validate business intent without accepting guilt.",
+        "2. Surface exact opportunity cost to current sprint.",
+        "3. Output a 3-Option Strategic Tradeoff Grid:",
+        "   - OPTION A: Deliver tonight (Drop Priority 1).",
+        "   - OPTION B: Defer to 9:00 AM (Sprint protected).",
+        "   - OPTION C: Delegate to secondary emergency on-call.",
+        "RULE: Keep response professional, neutral, & concise."
     ]
-    draw_typewriter_lines(draw, prompt_lines, CARD_LEFT + 40, card_y + 115, 52, progress, frame, font_code, TEXT_WHITE, stream_window=0.75)
+    draw_typewriter_lines(draw, prompt_lines, CARD_LEFT + 40, card_y + 110, 50, progress, frame, font_code, TEXT_WHITE, stream_window=0.75)
 
 
 def render_scene_3(draw, progress, frame):
-    draw_pill(draw, "STEP 1: EXECUTIVE CONSENSUS", 540, 390, border_color=CYAN_ACCENT, text_color=CYAN_ACCENT)
+    """Scene 3 (4.5s - 8.5s): Raw Hostile Request Ingestion"""
+    draw_pill(draw, "STEP 1: INGEST HOSTILE REQUEST", 540, 390, border_color=ALERT_RED, text_color=ALERT_RED)
     
     card_y = 470
     card_h = 880
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=28, fill=CARD_BG, outline=CARD_BORDER, width=2)
     
-    draw.text((CARD_LEFT + 40, card_y + 40), "EXECUTIVE SUMMARY (SYNTHESIZED)", font=font_h2, fill=CYAN_ACCENT)
-    draw_rounded_rect(draw, (CARD_LEFT + 35, card_y + 90, CARD_RIGHT - 35, card_y + 310), radius=16, fill=(15, 35, 55), outline=CYAN_ACCENT, width=2)
-    summary_text = [
-        "Leadership reached consensus to cap Q4 cloud spend",
-        "at $12,000/mo while prioritizing immediate SOC2",
-        "compliance to prevent enterprise client deal delays."
+    draw.text((CARD_LEFT + 40, card_y + 40), "INCOMING PRESSURE MESSAGE (4:48 PM)", font=font_h2, fill=ALERT_RED)
+    draw_rounded_rect(draw, (CARD_LEFT + 35, card_y + 90, CARD_RIGHT - 35, card_y + 360), radius=16, fill=(35, 15, 20), outline=ALERT_RED, width=2)
+    incoming_msg = [
+        '"Hey, we need the enterprise security analysis',
+        'completely audited before tomorrow morning.',
+        'Client executive is demanding it. Drop whatever',
+        'you are doing and send it over tonight."'
     ]
     sy = card_y + 125
-    for line in summary_text:
+    for line in incoming_msg:
         draw.text((CARD_LEFT + 60, sy), line, font=font_body, fill=TEXT_WHITE)
         sy += 50
 
-    draw.text((CARD_LEFT + 40, card_y + 360), "FIRM DECISIONS LOCKED", font=font_h2, fill=GREEN_DONE)
-    draw_rounded_rect(draw, (CARD_LEFT + 35, card_y + 410, CARD_RIGHT - 35, card_y + 760), radius=16, fill=CARD_HEADER_BG, outline=CARD_BORDER, width=1)
-    decisions = [
-        ("✔ AWS Cloud Cap:", "Hard limit locked at $12k/month"),
-        ("✔ Legal Escalation:", "SOC2 audit marked Tier-1 priority"),
-        ("✔ EC2 Resource Audit:", "Sarah leading infrastructure review")
+    draw.text((CARD_LEFT + 40, card_y + 400), "AUTOMATED PSYCHOLOGICAL TRIAGE", font=font_h2, fill=CYAN_ACCENT)
+    draw_rounded_rect(draw, (CARD_LEFT + 35, card_y + 450, CARD_RIGHT - 35, card_y + 780), radius=16, fill=CARD_HEADER_BG, outline=CARD_BORDER, width=1)
+    evals = [
+        ("✔ Strategic Leverage:", "High emotional pressure detected"),
+        ("✔ Cost of Compliance:", "Derails Q4 sprint deliverables"),
+        ("✔ Negotiation Goal:", "Transfer decision back to sender")
     ]
-    dy = card_y + 445
-    for title, desc in decisions:
+    dy = card_y + 485
+    for title, desc in evals:
         draw.text((CARD_LEFT + 60, dy), title, font=font_body_bold, fill=TEXT_WHITE)
         draw.text((CARD_LEFT + 60, dy + 40), desc, font=font_body, fill=TEXT_MUTED)
         dy += 95
 
 
 def render_scene_4(draw, progress, frame):
-    draw_pill(draw, "STEP 2: DELEGATION MATRIX (GRID)", 540, 390, border_color=CYAN_ACCENT, text_color=TEXT_WHITE)
+    """Scene 4 (8.5s - 13.0s): Strategic Tradeoff Markdown Grid Output"""
+    draw_pill(draw, "STEP 2: 3-TIER TRADEOFF MATRIX", 540, 390, border_color=CYAN_ACCENT, text_color=TEXT_WHITE)
     
     card_y = 470
     card_h = 920
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=28, fill=CARD_BG, outline=CYAN_ACCENT, width=2)
     
-    draw.text((CARD_LEFT + 40, card_y + 35), "ACTION ITEM MATRIX (MARKDOWN GRID)", font=font_h2, fill=CYAN_ACCENT)
+    draw.text((CARD_LEFT + 40, card_y + 35), "EXECUTIVE BOUNDARY SCRIPT (OPTIONS)", font=font_h2, fill=CYAN_ACCENT)
     
     tbl_x = CARD_LEFT + 30
     tbl_y = card_y + 90
@@ -322,95 +325,97 @@ def render_scene_4(draw, progress, frame):
     draw_rounded_rect(draw, (tbl_x, tbl_y, tbl_x + tbl_w, tbl_y + tbl_h), radius=14, fill=CARD_HEADER_BG, outline=CYAN_ACCENT, width=2)
     
     c0 = tbl_x
-    c1 = tbl_x + 420
+    c1 = tbl_x + 220
     c2 = tbl_x + 580
-    c3 = tbl_x + 750
-    c4 = tbl_x + tbl_w
+    c3 = tbl_x + tbl_w
     
-    draw.rectangle((c0, tbl_y, c4, tbl_y + 75), fill=(24, 45, 78))
-    draw.line((c0, tbl_y + 75, c4, tbl_y + 75), fill=CYAN_ACCENT, width=2)
-    draw.text((c0 + 20, tbl_y + 24), "TASK DESCRIPTION", font=font_table_hdr, fill=CYAN_ACCENT)
-    draw.text((c1 + 20, tbl_y + 24), "OWNER", font=font_table_hdr, fill=CYAN_ACCENT)
-    draw.text((c2 + 20, tbl_y + 24), "PRIORITY", font=font_table_hdr, fill=CYAN_ACCENT)
-    draw.text((c3 + 20, tbl_y + 24), "DEADLINE", font=font_table_hdr, fill=CYAN_ACCENT)
+    draw.rectangle((c0, tbl_y, c3, tbl_y + 75), fill=(24, 45, 78))
+    draw.line((c0, tbl_y + 75, c3, tbl_y + 75), fill=CYAN_ACCENT, width=2)
+    draw.text((c0 + 20, tbl_y + 24), "OPTION", font=font_table_hdr, fill=CYAN_ACCENT)
+    draw.text((c1 + 20, tbl_y + 24), "PROPOSED ACTION", font=font_table_hdr, fill=CYAN_ACCENT)
+    draw.text((c2 + 20, tbl_y + 24), "STRATEGIC TRADEOFF", font=font_table_hdr, fill=CYAN_ACCENT)
     
-    for div_x in [c1, c2, c3]:
+    for div_x in [c1, c2]:
         draw.line((div_x, tbl_y, div_x, tbl_y + tbl_h), fill=CARD_BORDER, width=1)
         
     rows = [
-        ("Audit EC2 instances", "Sarah", "MEDIUM", "Next Thurs", TEXT_MUTED),
-        ("Escalate SOC2 legal review", "Dave", "HIGH", "Tomorrow", ALERT_RED),
-        ("Finalize security file", "Mark", "HIGH", "Monday", ALERT_RED),
-        ("Sprint Notion updates", "[UNASSIGNED]", "LOW", "Pending", AMBER_DEFER)
+        ("A: Urgent Exec", "Deliver security file by 9 PM", "Delays Q4 AWS Migration by 2 Days", ALERT_RED),
+        ("B: Protected", "Deliver tomorrow at 9:00 AM", "Zero impact to active production sprint", GREEN_SAFE),
+        ("C: Delegate", "Route to Level-2 On-Call", "Requires standard overtime auth", AMBER_WARN)
     ]
     
     row_y = tbl_y + 75
-    row_h = 135
-    for task, owner, pri, due, pri_col in rows:
-        draw.line((c0, row_y + row_h, c4, row_y + row_h), fill=CARD_BORDER, width=1)
-        draw.text((c0 + 20, row_y + 40), task, font=font_table_cell, fill=TEXT_WHITE)
-        draw.text((c1 + 20, row_y + 40), owner, font=font_table_cell, fill=TEXT_WHITE if "[" not in owner else AMBER_DEFER)
-        draw.text((c2 + 20, row_y + 40), pri, font=font_table_hdr, fill=pri_col)
-        draw.text((c3 + 20, row_y + 40), due, font=font_table_cell, fill=TEXT_MUTED)
+    row_h = 180
+    for opt, act, trade, col in rows:
+        draw.line((c0, row_y + row_h, c3, row_y + row_h), fill=CARD_BORDER, width=1)
+        draw.text((c0 + 20, row_y + 60), opt, font=font_table_hdr, fill=col)
+        draw.text((c1 + 20, row_y + 60), act, font=font_table_cell, fill=TEXT_WHITE)
+        draw.text((c2 + 20, row_y + 60), trade, font=font_table_cell, fill=TEXT_MUTED)
         row_y += row_h
 
     badge_y = card_y + 750
-    draw_rounded_rect(draw, (CARD_LEFT + 35, badge_y, CARD_RIGHT - 35, badge_y + 110), radius=16, fill=(15, 35, 55), outline=GREEN_DONE, width=2)
-    draw.text((CARD_LEFT + 70, badge_y + 25), "STATUS: 100% ACCOUNTABILITY & CLARITY", font=font_body_bold, fill=GREEN_DONE)
-    draw.text((CARD_LEFT + 70, badge_y + 65), "Zero ambiguous follow-ups • Ready to deploy in email", font=font_small, fill=TEXT_WHITE)
+    draw_rounded_rect(draw, (CARD_LEFT + 35, badge_y, CARD_RIGHT - 35, badge_y + 110), radius=16, fill=(15, 35, 55), outline=GREEN_SAFE, width=2)
+    draw.text((CARD_LEFT + 70, badge_y + 25), "LEVERAGE: SENDER CHOOSES THE SACRIFICE", font=font_body_bold, fill=GREEN_SAFE)
+    draw.text((CARD_LEFT + 70, badge_y + 65), "Zero emotional confrontation • Professional boundaries preserved", font=font_small, fill=TEXT_WHITE)
 
 
 def render_scene_5(draw, progress, frame):
-    draw_pill(draw, "45 MINS -> 10 SECONDS", 540, 390, border_color=CYAN_ACCENT, text_color=TEXT_WHITE)
+    """Scene 5 (13.0s - 16.5s): Transformation Contrast"""
+    draw_pill(draw, "EMOTIONAL SPIRAL -> CALM CONTROL", 540, 390, border_color=CYAN_ACCENT, text_color=TEXT_WHITE)
     
     card_y = 470
     card_h = 920
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=28, fill=CARD_BG, outline=CARD_BORDER, width=2)
     
+    # Red Friction Card
     draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + 45, CARD_RIGHT - 30, card_y + 355), radius=20, fill=(35, 15, 20), outline=ALERT_RED, width=2)
-    draw.text((CARD_LEFT + 60, card_y + 75), "BEFORE: 45 MINUTES LOST", font=font_h2, fill=ALERT_RED)
-    draw.text((CARD_LEFT + 60, card_y + 140), "• Sifting through transcripts and messy scratch notes", font=font_body, fill=TEXT_WHITE)
-    draw.text((CARD_LEFT + 60, card_y + 200), "• Ambiguous verbal commitments slip through cracks", font=font_body, fill=TEXT_WHITE)
-    draw.text((CARD_LEFT + 60, card_y + 260), "• High mental fatigue after back-to-back calls", font=font_body, fill=TEXT_WHITE)
+    draw.text((CARD_LEFT + 60, card_y + 75), "DEFAULT: REACTIVE ANXIETY (40 MINS)", font=font_h2, fill=ALERT_RED)
+    draw.text((CARD_LEFT + 60, card_y + 140), "• Typing and deleting passive-aggressive replies", font=font_body, fill=TEXT_WHITE)
+    draw.text((CARD_LEFT + 60, card_y + 200), "• Ruining your personal evening under resentment", font=font_body, fill=TEXT_WHITE)
+    draw.text((CARD_LEFT + 60, card_y + 260), "• Setting a precedent that your boundaries do not exist", font=font_body, fill=TEXT_WHITE)
     
-    draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + 395, CARD_RIGHT - 30, card_y + 705), radius=20, fill=(15, 35, 55), outline=GREEN_DONE, width=2)
-    draw.text((CARD_LEFT + 60, card_y + 425), "AFTER: 10 SECONDS WITH AI", font=font_h2, fill=GREEN_DONE)
-    draw.text((CARD_LEFT + 60, card_y + 490), "✔ Exact 2-sentence executive consensus ready for Slack", font=font_body, fill=TEXT_WHITE)
-    draw.text((CARD_LEFT + 60, card_y + 550), "✔ 4-column delegation grid with dates and owners", font=font_body, fill=TEXT_WHITE)
-    draw.text((CARD_LEFT + 60, card_y + 610), "✔ Missing roles automatically flagged for review", font=font_body, fill=TEXT_WHITE)
+    # Green Solution Card
+    draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + 395, CARD_RIGHT - 30, card_y + 705), radius=20, fill=(15, 35, 55), outline=GREEN_SAFE, width=2)
+    draw.text((CARD_LEFT + 60, card_y + 425), "SYSTEM: STRATEGIC DE-ESCALATION (8 SEC)", font=font_h2, fill=GREEN_SAFE)
+    draw.text((CARD_LEFT + 60, card_y + 490), "✔ Puts decision directly back on requester with clear costs", font=font_body, fill=TEXT_WHITE)
+    draw.text((CARD_LEFT + 60, card_y + 550), "✔ Protects team sprint focus and avoids after-hours churn", font=font_body, fill=TEXT_WHITE)
+    draw.text((CARD_LEFT + 60, card_y + 610), "✔ Projects calm, executive authority and zero panic", font=font_body, fill=TEXT_WHITE)
     
+    # Callout
     draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + 745, CARD_RIGHT - 30, card_y + 865), radius=18, fill=CARD_HEADER_BG, outline=CYAN_ACCENT, width=2)
-    draw.text((CARD_LEFT + 155, card_y + 790), "RECLAIM 5+ HOURS EVERY SINGLE WEEK", font=font_h2, fill=CYAN_ACCENT)
+    draw.text((CARD_LEFT + 135, card_y + 790), "COMMUNICATE WITH EXECUTIVE AUTHORITY", font=font_h2, fill=CYAN_ACCENT)
 
 
 def render_scene_6(draw, progress, frame):
+    """Scene 6 (16.5s - 20.0s): Mobile Safe-Zone Optimized End-Card"""
     pill_y = 380
     card_y = 460
-    card_h = 950
+    card_h = 950  # Ends at 1410 (Within safe bounds)
     
-    draw_pill(draw, 'COMMENT "MEETING" FOR PROMPT', 540, pill_y, border_color=CYAN_ACCENT, text_color=CYAN_ACCENT)
+    draw_pill(draw, 'COMMENT "BOUNDARY" FOR PROMPT', 540, pill_y, border_color=CYAN_ACCENT, text_color=CYAN_ACCENT)
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=32, fill=CARD_BG, outline=CYAN_ACCENT, width=3)
     
     draw.text((CARD_LEFT + 340, card_y + 40), "@workflowsuperai", font=font_h2, fill=CYAN_ACCENT)
-    draw.text((CARD_LEFT + 95, card_y + 105), "GET THE CHIEF OF STAFF PROMPT", font=font_title_lg, fill=TEXT_WHITE)
+    draw.text((CARD_LEFT + 70, card_y + 105), "GET THE DE-ESCALATION PROMPT", font=font_title_lg, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 220, card_y + 175), "+ FREE 7-PROMPT AI LIBRARY", font=font_h2, fill=TEXT_MUTED)
     
+    # Terminal command simulation
     term_top = card_y + 240
     term_h = 175
     draw_rounded_rect(draw, (CARD_LEFT + 40, term_top, CARD_RIGHT - 40, term_top + term_h), radius=20, fill=(10, 15, 29), outline=CYAN_ACCENT, width=2)
     draw.rounded_rectangle((CARD_LEFT + 40, term_top, CARD_RIGHT - 40, term_top + 50), radius=20, fill=CARD_HEADER_BG)
     draw.ellipse((CARD_LEFT + 65, term_top + 18, CARD_LEFT + 80, term_top + 33), fill=ALERT_RED)
-    draw.ellipse((CARD_LEFT + 95, term_top + 18, CARD_LEFT + 110, term_top + 33), fill=AMBER_DEFER)
-    draw.ellipse((CARD_LEFT + 125, term_top + 18, CARD_LEFT + 140, term_top + 33), fill=GREEN_DONE)
+    draw.ellipse((CARD_LEFT + 95, term_top + 18, CARD_LEFT + 110, term_top + 33), fill=AMBER_WARN)
+    draw.ellipse((CARD_LEFT + 125, term_top + 18, CARD_LEFT + 140, term_top + 33), fill=GREEN_SAFE)
     draw.text((CARD_LEFT + 165, term_top + 14), "TERMINAL // INBOUND TRIGGER", font=font_code_sm, fill=TEXT_MUTED)
     
     draw.text((CARD_LEFT + 80, term_top + 85), "> comment", font=font_h1, fill=TEXT_MUTED)
-    draw.text((CARD_LEFT + 380, term_top + 85), '"MEETING"', font=font_h1, fill=CYAN_ACCENT)
+    draw.text((CARD_LEFT + 360, term_top + 85), '"BOUNDARY"', font=font_h1, fill=CYAN_ACCENT)
     if (frame // 8) % 2 == 0:
-        draw.rectangle((CARD_LEFT + 700, term_top + 90, CARD_LEFT + 725, term_top + 130), fill=CYAN_ACCENT)
+        draw.rectangle((CARD_LEFT + 750, term_top + 90, CARD_LEFT + 775, term_top + 130), fill=CYAN_ACCENT)
 
     features = [
-        "✔ 100% Free Executive Workflow Prompt",
+        "✔ Full System Prompt Text & Parameter Guide",
         "✔ Instant Delivery to DMs or Inboxes",
         "✔ Production-Ready for ChatGPT & Claude"
     ]
@@ -431,7 +436,7 @@ def render_scene_6(draw, progress, frame):
 # ==============================================================================
 # 4. COMPILATION PIPELINE
 # ==============================================================================
-output_mp4 = "day02_meeting_matrix_20s.mp4"
+output_mp4 = "day08_executive_boundary_20s.mp4"
 print(f"[2/3] Streaming {TOTAL_FRAMES} frames to FFmpeg compiler...")
 
 ffmpeg_cmd = [
