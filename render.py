@@ -9,9 +9,9 @@ from PIL import Image, ImageDraw, ImageFont
 import audit
 
 # ==============================================================================
-# CAMPAIGN: DAY 08 - EXECUTIVE BOUNDARY & SCOPE DE-ESCALATION (V2 PRODUCTION)
+# CAMPAIGN: DAY 08 - EXECUTIVE BOUNDARY (PLATFORM AUDIO READY)
 # Resolution: 1080x1920 (9:16 Vertical) | Frame Rate: 30 FPS | Runtime: 20.0s
-# Trigger: "BOUNDARY" | Brand: @workflowsuperai
+# Audio: Isolated Kinetic UI FX (Ping + Keystrokes) | Brand: @workflowsuperai
 # ==============================================================================
 
 WIDTH = 1080
@@ -66,19 +66,19 @@ initial_config = {
 audit.run_audit(initial_config)
 
 # ==============================================================================
-# 1. AUDIO SYNTHESIS ENGINE
+# 1. AUDIO SYNTHESIS ENGINE (TACTILE UI FX ONLY)
 # ==============================================================================
-print("[1/3] Synthesizing synchronized audio environment...")
+print("[1/3] Synthesizing isolated tactile UI sound effects...")
 samplerate = 44100
 total_samples = int(samplerate * DURATION)
 audio = np.zeros(total_samples, dtype=np.float32)
 
-# Slack-style notification ping at 0.0s
+# Crisp double-tone Slack/inbox alert ping at 0.0s (784Hz & 1046.5Hz)
 for offset, freq in [(0.0, 784.0), (0.08, 1046.5)]:
     idx_start = int(offset * samplerate)
-    dur = 0.6
+    dur = 0.65
     t_chime = np.linspace(0, dur, int(dur * samplerate), endpoint=False)
-    wave_c = 0.35 * np.sin(2 * np.pi * freq * t_chime) * np.exp(-t_chime * 7.0)
+    wave_c = 0.45 * np.sin(2 * np.pi * freq * t_chime) * np.exp(-t_chime * 6.5)
     idx_end = min(total_samples, idx_start + len(wave_c))
     audio[idx_start:idx_end] += wave_c[:idx_end - idx_start]
 
@@ -86,67 +86,17 @@ for offset, freq in [(0.0, 784.0), (0.08, 1046.5)]:
 for click_time in [1.2, 1.32, 1.45, 1.6, 1.75, 1.9, 2.05, 2.2, 2.35]:
     idx_c = int(click_time * samplerate)
     t_click = np.linspace(0, 0.035, int(0.035 * samplerate), endpoint=False)
-    noise = np.random.uniform(-1, 1, len(t_click)) * np.exp(-t_click * 140.0) * 0.16
+    noise = np.random.uniform(-1, 1, len(t_click)) * np.exp(-t_click * 130.0) * 0.28
     idx_end = min(total_samples, idx_c + len(noise))
     audio[idx_c:idx_end] += noise[:idx_end - idx_c]
 
-# Lo-Fi Progression (4.0s - 19.5s)
-beat_interval = 0.70
-start_beat = 4.0
-end_beat = 19.5
-chords = [
-    [349.23, 440.00, 523.25, 659.25],
-    [329.63, 392.00, 493.88, 587.33],
-    [293.66, 349.23, 440.00, 523.25],
-    [261.63, 329.63, 392.00, 493.88]
-]
-chord_len = beat_interval * 4
-for c_idx in range(6):
-    c_start = start_beat + c_idx * chord_len
-    if c_start >= end_beat:
-        break
-    for n in chords[c_idx % len(chords)]:
-        idx_s = int(c_start * samplerate)
-        c_dur = min(chord_len, DURATION - c_start)
-        if c_dur <= 0:
-            break
-        t_note = np.linspace(0, c_dur, int(c_dur * samplerate), endpoint=False)
-        envelope = np.minimum(t_note * 4.0, 1.0) * np.exp(-t_note * 0.45)
-        chord_wave = 0.045 * (np.sin(2 * np.pi * n * t_note) + 0.3 * np.sin(2 * np.pi * (n * 2) * t_note)) * envelope
-        idx_e = min(total_samples, idx_s + len(chord_wave))
-        audio[idx_s:idx_e] += chord_wave[:idx_e - idx_s]
+# Normalize tactile audio peaks cleanly
+max_val = np.max(np.abs(audio))
+if max_val > 0:
+    audio_int16 = ((audio / max_val) * 0.95 * 32767).astype(np.int16)
+else:
+    audio_int16 = (audio * 32767).astype(np.int16)
 
-curr_t = start_beat
-b_count = 0
-while curr_t < end_beat:
-    idx_b = int(curr_t * samplerate)
-    if b_count % 2 == 0:
-        t_k = np.linspace(0, 0.22, int(0.22 * samplerate), endpoint=False)
-        freq_k = 130.0 * np.exp(-t_k * 28.0) + 42.0
-        kick = 0.45 * np.sin(2 * np.pi * np.cumsum(freq_k) / samplerate) * np.exp(-t_k * 15.0)
-        idx_e = min(total_samples, idx_b + len(kick))
-        audio[idx_b:idx_e] += kick[:idx_e - idx_b]
-    else:
-        t_s = np.linspace(0, 0.18, int(0.18 * samplerate), endpoint=False)
-        snare = (0.2 * np.sin(2 * np.pi * 190.0 * t_s) * np.exp(-t_s * 26.0) +
-                 0.25 * np.random.uniform(-1, 1, len(t_s)) * np.exp(-t_s * 19.0))
-        idx_e = min(total_samples, idx_b + len(snare))
-        audio[idx_b:idx_e] += snare[:idx_e - idx_b]
-
-    for hh_off in [0.0, beat_interval / 2.0]:
-        hh_idx = int((curr_t + hh_off) * samplerate)
-        t_hh = np.linspace(0, 0.04, int(0.04 * samplerate), endpoint=False)
-        hh = 0.07 * np.random.uniform(-1, 1, len(t_hh)) * np.exp(-t_hh * 95.0)
-        idx_e = min(total_samples, hh_idx + len(hh))
-        if hh_idx < total_samples:
-            audio[hh_idx:idx_e] += hh[:idx_e - hh_idx]
-
-    curr_t += beat_interval
-    b_count += 1
-
-fade_len = int(1.2 * samplerate)
-audio[-fade_len:] *= np.linspace(1.0, 0.0, fade_len)
-audio_int16 = ((audio / np.max(np.abs(audio))) * 0.95 * 32767).astype(np.int16)
 audio_filename = "day08_boundary_audio.wav"
 with wave.open(audio_filename, "w") as wf:
     wf.setnchannels(1)
@@ -271,7 +221,6 @@ def render_scene_2(draw, progress, frame):
         "",
         "CONSTRAINTS: Professional, neutral, zero apologies."
     ]
-    # Fast typing finish at progress = 0.55 so the full prompt stays static for pausing
     draw_typewriter_lines(draw, prompt_lines, CARD_LEFT + 40, card_y + 100, 48, progress, frame, font_code, TEXT_WHITE, stream_window=0.55)
 
 
@@ -309,7 +258,6 @@ def render_scene_3(draw, progress, frame):
         draw.text((CARD_LEFT + 60, dy + 38), desc, font=font_body, fill=TEXT_MUTED)
         dy += 85
 
-    # Space Fill: Friction & Burnout Status Badge
     badge_y = card_y + 720
     draw_rounded_rect(draw, (CARD_LEFT + 35, badge_y, CARD_RIGHT - 35, badge_y + 155), radius=16, fill=(20, 28, 48), outline=CYAN_ACCENT, width=2)
     draw.text((CARD_LEFT + 60, badge_y + 25), "COGNITIVE IMPACT & BURNOUT INDEX", font=font_h2, fill=CYAN_ACCENT)
@@ -378,21 +326,18 @@ def render_scene_5(draw, progress, frame):
     card_h = 920
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=28, fill=CARD_BG, outline=CARD_BORDER, width=2)
     
-    # Red Friction Card
     draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + 45, CARD_RIGHT - 30, card_y + 355), radius=20, fill=(35, 15, 20), outline=ALERT_RED, width=2)
     draw.text((CARD_LEFT + 60, card_y + 75), "DEFAULT: REACTIVE ANXIETY (40 MINS)", font=font_h2, fill=ALERT_RED)
     draw.text((CARD_LEFT + 60, card_y + 140), "• Typing and deleting passive-aggressive replies", font=font_body, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 60, card_y + 200), "• Ruining your personal evening under resentment", font=font_body, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 60, card_y + 260), "• Setting a precedent that your boundaries do not exist", font=font_body, fill=TEXT_WHITE)
     
-    # Green Solution Card
     draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + 395, CARD_RIGHT - 30, card_y + 705), radius=20, fill=(15, 35, 55), outline=GREEN_SAFE, width=2)
     draw.text((CARD_LEFT + 60, card_y + 425), "SYSTEM: STRATEGIC DE-ESCALATION (8 SEC)", font=font_h2, fill=GREEN_SAFE)
     draw.text((CARD_LEFT + 60, card_y + 490), "✔ Puts decision directly back on requester with clear costs", font=font_body, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 60, card_y + 550), "✔ Protects team sprint focus and avoids after-hours churn", font=font_body, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 60, card_y + 610), "✔ Projects calm, executive authority and zero panic", font=font_body, fill=TEXT_WHITE)
     
-    # Callout
     draw_rounded_rect(draw, (CARD_LEFT + 30, card_y + 745, CARD_RIGHT - 30, card_y + 865), radius=18, fill=CARD_HEADER_BG, outline=CYAN_ACCENT, width=2)
     draw.text((CARD_LEFT + 135, card_y + 790), "COMMUNICATE WITH EXECUTIVE AUTHORITY", font=font_h2, fill=CYAN_ACCENT)
 
@@ -401,7 +346,7 @@ def render_scene_6(draw, progress, frame):
     """Scene 6 (16.5s - 20.0s): Mobile Safe-Zone Optimized End-Card"""
     pill_y = 380
     card_y = 460
-    card_h = 950  # Ends at 1410 (Within safe bounds)
+    card_h = 950
     
     draw_pill(draw, 'COMMENT "BOUNDARY" FOR PROMPT', 540, pill_y, border_color=CYAN_ACCENT, text_color=CYAN_ACCENT)
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=32, fill=CARD_BG, outline=CYAN_ACCENT, width=3)
@@ -410,7 +355,6 @@ def render_scene_6(draw, progress, frame):
     draw.text((CARD_LEFT + 70, card_y + 105), "GET THE DE-ESCALATION PROMPT", font=font_title_lg, fill=TEXT_WHITE)
     draw.text((CARD_LEFT + 220, card_y + 175), "+ FREE 7-PROMPT AI LIBRARY", font=font_h2, fill=TEXT_MUTED)
     
-    # Terminal command simulation
     term_top = card_y + 240
     term_h = 175
     draw_rounded_rect(draw, (CARD_LEFT + 40, term_top, CARD_RIGHT - 40, term_top + term_h), radius=20, fill=(10, 15, 29), outline=CYAN_ACCENT, width=2)
