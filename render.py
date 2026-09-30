@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 import audit
 
 # ==============================================================================
-# CAMPAIGN: DAY 08 - EXECUTIVE BOUNDARY & SCOPE DE-ESCALATION
+# CAMPAIGN: DAY 08 - EXECUTIVE BOUNDARY & SCOPE DE-ESCALATION (V2 PRODUCTION)
 # Resolution: 1080x1920 (9:16 Vertical) | Frame Rate: 30 FPS | Runtime: 20.0s
 # Trigger: "BOUNDARY" | Brand: @workflowsuperai
 # ==============================================================================
@@ -45,7 +45,7 @@ font_h1 = ImageFont.truetype(FONT_BOLD, 34)
 font_h2 = ImageFont.truetype(FONT_BOLD, 28)
 font_body = ImageFont.truetype(FONT_REG, 25)
 font_body_bold = ImageFont.truetype(FONT_BOLD, 25)
-font_code = ImageFont.truetype(FONT_MONO, 23)
+font_code = ImageFont.truetype(FONT_MONO, 22)
 font_code_sm = ImageFont.truetype(FONT_MONO, 18)
 font_table_hdr = ImageFont.truetype(FONT_BOLD, 22)
 font_table_cell = ImageFont.truetype(FONT_REG, 20)
@@ -73,7 +73,7 @@ samplerate = 44100
 total_samples = int(samplerate * DURATION)
 audio = np.zeros(total_samples, dtype=np.float32)
 
-# Urgent notification chime at 0.0s (Slack Alert emulation: 800Hz & 1000Hz)
+# Slack-style notification ping at 0.0s
 for offset, freq in [(0.0, 784.0), (0.08, 1046.5)]:
     idx_start = int(offset * samplerate)
     dur = 0.6
@@ -82,8 +82,8 @@ for offset, freq in [(0.0, 784.0), (0.08, 1046.5)]:
     idx_end = min(total_samples, idx_start + len(wave_c))
     audio[idx_start:idx_end] += wave_c[:idx_end - idx_start]
 
-# Rapid mechanical keyboard keystrokes (1.2s - 2.8s)
-for click_time in [1.2, 1.35, 1.5, 1.68, 1.85, 2.05, 2.25, 2.45, 2.65]:
+# Rapid mechanical keyboard keystrokes (1.2s - 2.5s)
+for click_time in [1.2, 1.32, 1.45, 1.6, 1.75, 1.9, 2.05, 2.2, 2.35]:
     idx_c = int(click_time * samplerate)
     t_click = np.linspace(0, 0.035, int(0.035 * samplerate), endpoint=False)
     noise = np.random.uniform(-1, 1, len(t_click)) * np.exp(-t_click * 140.0) * 0.16
@@ -181,7 +181,7 @@ def draw_watermark(draw):
     draw.text((CARD_RIGHT - 280, 1845), "AI EXECUTIVE PIPELINE", font=font_small, fill=TEXT_MUTED)
 
 def draw_typewriter_lines(draw, lines, x, start_y, line_height, progress, frame, font, color,
-                          cursor_color=CYAN_ACCENT, stream_window=0.75):
+                          cursor_color=CYAN_ACCENT, stream_window=0.55):
     total_chars = sum(len(line) for line in lines)
     if total_chars == 0:
         return
@@ -194,7 +194,7 @@ def draw_typewriter_lines(draw, lines, x, start_y, line_height, progress, frame,
             draw.text((x, current_y), line, font=font, fill=color)
             remaining -= len(line)
             current_y += line_height
-            if i == len(lines) - 1 and blinking:
+            if i == len(lines) - 1 and progress < 0.95 and blinking:
                 bbox = font.getbbox(line)
                 draw.text((x + (bbox[2] - bbox[0]) + 6, current_y - line_height), "█", font=font, fill=cursor_color)
         elif remaining > 0:
@@ -242,12 +242,12 @@ def render_scene_1(draw, progress, frame):
 
 
 def render_scene_2(draw, progress, frame):
-    """Scene 2 (1.2s - 4.5s): PAUSE-WORTHY COMPLETE SYSTEM PROMPT ON-SCREEN"""
+    """Scene 2 (1.2s - 4.5s): FULLY RENDERED SYSTEM PROMPT (100% PAUSE BAIT)"""
     draw_pill(draw, "PAUSE & COPY THIS SYSTEM PROMPT", 540, 390, border_color=CYAN_ACCENT, text_color=TEXT_WHITE)
     
     card_y = 470
     card_h = 920
-    draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=28, fill=CARD_BG, outline=CARD_BORDER, width=2)
+    draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=28, fill=CARD_BG, outline=CYAN_ACCENT, width=2)
     
     draw.rounded_rectangle((CARD_LEFT, card_y, CARD_RIGHT, card_y + 75), radius=28, fill=CARD_HEADER_BG)
     draw.ellipse((CARD_LEFT + 35, card_y + 28, CARD_LEFT + 55, card_y + 48), fill=ALERT_RED)
@@ -260,51 +260,62 @@ def render_scene_2(draw, progress, frame):
         "GOAL: De-escalate reactive scope creep without friction.",
         "",
         "INPUT: Demanding / urgent message sent after hours.",
+        "",
         "OPERATIONAL DIRECTIVE:",
         "1. Validate business intent without accepting guilt.",
         "2. Surface exact opportunity cost to current sprint.",
         "3. Output a 3-Option Strategic Tradeoff Grid:",
-        "   - OPTION A: Deliver tonight (Drop Priority 1).",
-        "   - OPTION B: Defer to 9:00 AM (Sprint protected).",
-        "   - OPTION C: Delegate to secondary emergency on-call.",
-        "RULE: Keep response professional, neutral, & concise."
+        "   - OPTION A: Deliver tonight (Drop sprint item).",
+        "   - OPTION B: Defer to 9 AM (Sprint protected).",
+        "   - OPTION C: Route to emergency on-call team.",
+        "",
+        "CONSTRAINTS: Professional, neutral, zero apologies."
     ]
-    draw_typewriter_lines(draw, prompt_lines, CARD_LEFT + 40, card_y + 110, 50, progress, frame, font_code, TEXT_WHITE, stream_window=0.75)
+    # Fast typing finish at progress = 0.55 so the full prompt stays static for pausing
+    draw_typewriter_lines(draw, prompt_lines, CARD_LEFT + 40, card_y + 100, 48, progress, frame, font_code, TEXT_WHITE, stream_window=0.55)
 
 
 def render_scene_3(draw, progress, frame):
-    """Scene 3 (4.5s - 8.5s): Raw Hostile Request Ingestion"""
+    """Scene 3 (4.5s - 8.5s): Raw Hostile Request + Balanced Friction Dashboard"""
     draw_pill(draw, "STEP 1: INGEST HOSTILE REQUEST", 540, 390, border_color=ALERT_RED, text_color=ALERT_RED)
     
     card_y = 470
-    card_h = 880
+    card_h = 920
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=28, fill=CARD_BG, outline=CARD_BORDER, width=2)
     
-    draw.text((CARD_LEFT + 40, card_y + 40), "INCOMING PRESSURE MESSAGE (4:48 PM)", font=font_h2, fill=ALERT_RED)
-    draw_rounded_rect(draw, (CARD_LEFT + 35, card_y + 90, CARD_RIGHT - 35, card_y + 360), radius=16, fill=(35, 15, 20), outline=ALERT_RED, width=2)
+    draw.text((CARD_LEFT + 40, card_y + 35), "INCOMING PRESSURE MESSAGE (4:48 PM)", font=font_h2, fill=ALERT_RED)
+    draw_rounded_rect(draw, (CARD_LEFT + 35, card_y + 80, CARD_RIGHT - 35, card_y + 320), radius=16, fill=(35, 15, 20), outline=ALERT_RED, width=2)
     incoming_msg = [
         '"Hey, we need the enterprise security analysis',
         'completely audited before tomorrow morning.',
         'Client executive is demanding it. Drop whatever',
         'you are doing and send it over tonight."'
     ]
-    sy = card_y + 125
+    sy = card_y + 115
     for line in incoming_msg:
         draw.text((CARD_LEFT + 60, sy), line, font=font_body, fill=TEXT_WHITE)
-        sy += 50
+        sy += 48
 
-    draw.text((CARD_LEFT + 40, card_y + 400), "AUTOMATED PSYCHOLOGICAL TRIAGE", font=font_h2, fill=CYAN_ACCENT)
-    draw_rounded_rect(draw, (CARD_LEFT + 35, card_y + 450, CARD_RIGHT - 35, card_y + 780), radius=16, fill=CARD_HEADER_BG, outline=CARD_BORDER, width=1)
+    draw.text((CARD_LEFT + 40, card_y + 350), "AUTOMATED PSYCHOLOGICAL TRIAGE", font=font_h2, fill=CYAN_ACCENT)
+    draw_rounded_rect(draw, (CARD_LEFT + 35, card_y + 395, CARD_RIGHT - 35, card_y + 685), radius=16, fill=CARD_HEADER_BG, outline=CARD_BORDER, width=1)
     evals = [
-        ("✔ Strategic Leverage:", "High emotional pressure detected"),
+        ("✔ Strategic Leverage:", "High emotional urgency detected"),
         ("✔ Cost of Compliance:", "Derails Q4 sprint deliverables"),
         ("✔ Negotiation Goal:", "Transfer decision back to sender")
     ]
-    dy = card_y + 485
+    dy = card_y + 425
     for title, desc in evals:
         draw.text((CARD_LEFT + 60, dy), title, font=font_body_bold, fill=TEXT_WHITE)
-        draw.text((CARD_LEFT + 60, dy + 40), desc, font=font_body, fill=TEXT_MUTED)
-        dy += 95
+        draw.text((CARD_LEFT + 60, dy + 38), desc, font=font_body, fill=TEXT_MUTED)
+        dy += 85
+
+    # Space Fill: Friction & Burnout Status Badge
+    badge_y = card_y + 720
+    draw_rounded_rect(draw, (CARD_LEFT + 35, badge_y, CARD_RIGHT - 35, badge_y + 155), radius=16, fill=(20, 28, 48), outline=CYAN_ACCENT, width=2)
+    draw.text((CARD_LEFT + 60, badge_y + 25), "COGNITIVE IMPACT & BURNOUT INDEX", font=font_h2, fill=CYAN_ACCENT)
+    draw.text((CARD_LEFT + 60, badge_y + 70), "• Reactive Anxiety: HIGH", font=font_body_bold, fill=ALERT_RED)
+    draw.text((CARD_LEFT + 450, badge_y + 70), "• Sprint Delay: +48 HRS", font=font_body_bold, fill=AMBER_WARN)
+    draw.text((CARD_LEFT + 60, badge_y + 112), "• Strategy: Enforce explicit tradeoff before accepting", font=font_small, fill=TEXT_WHITE)
 
 
 def render_scene_4(draw, progress, frame):
