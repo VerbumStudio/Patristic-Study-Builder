@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 import audit
 
 # ==============================================================================
-# CAMPAIGN: DAY 08 - EXECUTIVE BOUNDARY (PLATFORM AUDIO READY)
+# CAMPAIGN: DAY 09 - EXECUTIVE BOUNDARY (SAVE & RETENTION OPTIMIZED)
 # Resolution: 1080x1920 (9:16 Vertical) | Frame Rate: 30 FPS | Runtime: 20.0s
 # Audio: Isolated Kinetic UI FX (Ping + Keystrokes) | Brand: @workflowsuperai
 # ==============================================================================
@@ -61,7 +61,7 @@ initial_config = {
     "pill_y": 380,
     "card_top": 460,
     "card_bottom": 1420,
-    "lines": ['COMMENT "BOUNDARY" FOR PROMPT']
+    "lines": ['SAVE THIS SCRIPT + COMMENT "PROMPT"']
 }
 audit.run_audit(initial_config)
 
@@ -97,7 +97,7 @@ if max_val > 0:
 else:
     audio_int16 = (audio * 32767).astype(np.int16)
 
-audio_filename = "day08_boundary_audio.wav"
+audio_filename = "day09_boundary_audio.wav"
 with wave.open(audio_filename, "w") as wf:
     wf.setnchannels(1)
     wf.setsampwidth(2)
@@ -192,8 +192,8 @@ def render_scene_1(draw, progress, frame):
 
 
 def render_scene_2(draw, progress, frame):
-    """Scene 2 (1.2s - 4.5s): FULLY RENDERED SYSTEM PROMPT (100% PAUSE BAIT)"""
-    draw_pill(draw, "PAUSE & COPY THIS SYSTEM PROMPT", 540, 390, border_color=CYAN_ACCENT, text_color=TEXT_WHITE)
+    """Scene 2 (1.2s - 4.5s): FULLY RENDERED SYSTEM PROMPT (EXPLICIT BOOKMARK BAIT)"""
+    draw_pill(draw, "BOOKMARK & COPY THIS PROMPT", 540, 390, border_color=CYAN_ACCENT, text_color=TEXT_WHITE)
     
     card_y = 470
     card_h = 920
@@ -343,12 +343,12 @@ def render_scene_5(draw, progress, frame):
 
 
 def render_scene_6(draw, progress, frame):
-    """Scene 6 (16.5s - 20.0s): Mobile Safe-Zone Optimized End-Card"""
+    """Scene 6 (16.5s - 20.0s): Mobile Safe-Zone Optimized End-Card with Dual Save/Comment CTA"""
     pill_y = 380
     card_y = 460
     card_h = 950
     
-    draw_pill(draw, 'COMMENT "BOUNDARY" FOR PROMPT', 540, pill_y, border_color=CYAN_ACCENT, text_color=CYAN_ACCENT)
+    draw_pill(draw, 'SAVE THIS POST + COMMENT "PROMPT"', 540, pill_y, border_color=CYAN_ACCENT, text_color=CYAN_ACCENT)
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=32, fill=CARD_BG, outline=CYAN_ACCENT, width=3)
     
     draw.text((CARD_LEFT + 340, card_y + 40), "@workflowsuperai", font=font_h2, fill=CYAN_ACCENT)
@@ -365,18 +365,18 @@ def render_scene_6(draw, progress, frame):
     draw.text((CARD_LEFT + 165, term_top + 14), "TERMINAL // INBOUND TRIGGER", font=font_code_sm, fill=TEXT_MUTED)
     
     draw.text((CARD_LEFT + 80, term_top + 85), "> comment", font=font_h1, fill=TEXT_MUTED)
-    draw.text((CARD_LEFT + 360, term_top + 85), '"BOUNDARY"', font=font_h1, fill=CYAN_ACCENT)
+    draw.text((CARD_LEFT + 360, term_top + 85), '"PROMPT"', font=font_h1, fill=CYAN_ACCENT)
     if (frame // 8) % 2 == 0:
-        draw.rectangle((CARD_LEFT + 750, term_top + 90, CARD_LEFT + 775, term_top + 130), fill=CYAN_ACCENT)
+        draw.rectangle((CARD_LEFT + 670, term_top + 90, CARD_LEFT + 695, term_top + 130), fill=CYAN_ACCENT)
 
     features = [
-        "✔ Full System Prompt Text & Parameter Guide",
-        "✔ Instant Delivery to DMs or Inboxes",
-        "✔ Production-Ready for ChatGPT & Claude"
+        "✔ Bookmark this post to save the markdown matrix",
+        "✔ Comment 'PROMPT' for the complete raw template",
+        "✔ Production-ready for Claude 3.5 & ChatGPT"
     ]
     fy = card_y + 450
     for feat in features:
-        draw.text((CARD_LEFT + 120, fy), feat, font=font_body, fill=TEXT_WHITE)
+        draw.text((CARD_LEFT + 80, fy), feat, font=font_body, fill=TEXT_WHITE)
         fy += 56
         
     link_box_y = card_y + 650
@@ -391,7 +391,7 @@ def render_scene_6(draw, progress, frame):
 # ==============================================================================
 # 4. COMPILATION PIPELINE
 # ==============================================================================
-output_mp4 = "day08_executive_boundary_20s.mp4"
+output_mp4 = "day09_executive_boundary_20s.mp4"
 print(f"[2/3] Streaming {TOTAL_FRAMES} frames to FFmpeg compiler...")
 
 ffmpeg_cmd = [
