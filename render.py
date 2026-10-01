@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 import audit
 
 # ==============================================================================
-# CAMPAIGN: DAY 09 - EXECUTIVE BOUNDARY (SAVE & RETENTION OPTIMIZED)
+# CAMPAIGN: DAY 08 - EXECUTIVE BOUNDARY (SAVE & RETENTION OPTIMIZED)
 # Resolution: 1080x1920 (9:16 Vertical) | Frame Rate: 30 FPS | Runtime: 20.0s
 # Audio: Isolated Kinetic UI FX (Ping + Keystrokes) | Brand: @workflowsuperai
 # ==============================================================================
@@ -61,12 +61,12 @@ initial_config = {
     "pill_y": 380,
     "card_top": 460,
     "card_bottom": 1420,
-    "lines": ['SAVE THIS SCRIPT + COMMENT "PROMPT"']
+    "lines": ['SAVE THIS TO PRESERVE YOUR SPRINT']
 }
 audit.run_audit(initial_config)
 
 # ==============================================================================
-# 1. AUDIO SYNTHESIS ENGINE (TACTILE UI FX ONLY)
+# 1. AUDIO SYNTHESIS ENGINE (TACTILE UI FX ONLY - DESIGNED FOR BACKGROUND AUDIO)
 # ==============================================================================
 print("[1/3] Synthesizing isolated tactile UI sound effects...")
 samplerate = 44100
@@ -97,7 +97,7 @@ if max_val > 0:
 else:
     audio_int16 = (audio * 32767).astype(np.int16)
 
-audio_filename = "day09_boundary_audio.wav"
+audio_filename = "day08_boundary_audio.wav"
 with wave.open(audio_filename, "w") as wf:
     wf.setnchannels(1)
     wf.setsampwidth(2)
@@ -343,12 +343,12 @@ def render_scene_5(draw, progress, frame):
 
 
 def render_scene_6(draw, progress, frame):
-    """Scene 6 (16.5s - 20.0s): Mobile Safe-Zone Optimized End-Card with Dual Save/Comment CTA"""
+    """Scene 6 (16.5s - 20.0s): Mobile Safe-Zone Optimized End-Card with Pure Save/Bookmark Action"""
     pill_y = 380
     card_y = 460
     card_h = 950
     
-    draw_pill(draw, 'SAVE THIS POST + COMMENT "PROMPT"', 540, pill_y, border_color=CYAN_ACCENT, text_color=CYAN_ACCENT)
+    draw_pill(draw, "SAVE THIS TO PRESERVE YOUR SPRINT", 540, pill_y, border_color=CYAN_ACCENT, text_color=CYAN_ACCENT)
     draw_rounded_rect(draw, (CARD_LEFT, card_y, CARD_RIGHT, card_y + card_h), radius=32, fill=CARD_BG, outline=CYAN_ACCENT, width=3)
     
     draw.text((CARD_LEFT + 340, card_y + 40), "@workflowsuperai", font=font_h2, fill=CYAN_ACCENT)
@@ -362,17 +362,17 @@ def render_scene_6(draw, progress, frame):
     draw.ellipse((CARD_LEFT + 65, term_top + 18, CARD_LEFT + 80, term_top + 33), fill=ALERT_RED)
     draw.ellipse((CARD_LEFT + 95, term_top + 18, CARD_LEFT + 110, term_top + 33), fill=AMBER_WARN)
     draw.ellipse((CARD_LEFT + 125, term_top + 18, CARD_LEFT + 140, term_top + 33), fill=GREEN_SAFE)
-    draw.text((CARD_LEFT + 165, term_top + 14), "TERMINAL // INBOUND TRIGGER", font=font_code_sm, fill=TEXT_MUTED)
+    draw.text((CARD_LEFT + 165, term_top + 14), "TERMINAL // WORKFLOW SAVE STATE", font=font_code_sm, fill=TEXT_MUTED)
     
-    draw.text((CARD_LEFT + 80, term_top + 85), "> comment", font=font_h1, fill=TEXT_MUTED)
-    draw.text((CARD_LEFT + 360, term_top + 85), '"PROMPT"', font=font_h1, fill=CYAN_ACCENT)
+    draw.text((CARD_LEFT + 80, term_top + 85), "> bookmark:", font=font_h1, fill=TEXT_MUTED)
+    draw.text((CARD_LEFT + 320, term_top + 85), 'SCRIPT SAVED TO LIST', font=font_h1, fill=CYAN_ACCENT)
     if (frame // 8) % 2 == 0:
-        draw.rectangle((CARD_LEFT + 670, term_top + 90, CARD_LEFT + 695, term_top + 130), fill=CYAN_ACCENT)
+        draw.rectangle((CARD_LEFT + 805, term_top + 90, CARD_LEFT + 830, term_top + 130), fill=CYAN_ACCENT)
 
     features = [
-        "✔ Bookmark this post to save the markdown matrix",
-        "✔ Comment 'PROMPT' for the complete raw template",
-        "✔ Production-ready for Claude 3.5 & ChatGPT"
+        "✔ Bookmark this video to preserve the negotiation matrix",
+        "✔ Copy prompt directly into Claude 3.5 or ChatGPT",
+        "✔ Free raw markdown template available in bio"
     ]
     fy = card_y + 450
     for feat in features:
@@ -391,7 +391,7 @@ def render_scene_6(draw, progress, frame):
 # ==============================================================================
 # 4. COMPILATION PIPELINE
 # ==============================================================================
-output_mp4 = "day09_executive_boundary_20s.mp4"
+output_mp4 = "day08_executive_boundary_20s.mp4"
 print(f"[2/3] Streaming {TOTAL_FRAMES} frames to FFmpeg compiler...")
 
 ffmpeg_cmd = [
