@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@700;800&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      width: 1080px;
+      height: 1920px;
+      background-color: #07090E;
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(56, 189, 248, 0.12) 0%, transparent 60%),
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 60px 60px, 60px 60px;
+      font-family: 'Inter', sans-serif;
+      color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 120px 80px 140px 80px;
+      overflow: hidden;
+    }
+
+    /* Top Identity Pill */
+    .brand-pill {
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 14px 28px;
+      border-radius: 999px;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+    }
+    .brand-pill .dot {
+      width: 12px;
+      height: 12px;
+      background: #38BDF8;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #38BDF8;
+    }
+    .brand-pill span {
+      font-family: 'Fira Code', monospace;
+      font-size: 26px;
+      font-weight: 600;
+      color: #38BDF8;
+      letter-spacing: 1px;
+    }
+
+    /* Hook Box */
+    .hook-card {
+      margin-top: 40px;
+      background: rgba(17, 24, 39, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 28px;
+      padding: 48px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+    .hook-card h1 {
+      font-size: 54px;
+      line-height: 1.25;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .highlight-amber { color: #FACC15; }
+    .highlight-cyan { color: #38BDF8; }
+
+    /* Terminal Console */
+    .terminal-window {
+      background: #0D1117;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 24px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.1);
+      overflow: hidden;
+      flex-grow: 1;
+      margin: 40px 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .terminal-header {
+      background: #161B22;
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .mac-dot { width: 16px; height: 16px; border-radius: 50%; }
+    .dot-red { background: #EF4444; }
+    .dot-yellow { background: #EAB308; }
+    .dot-green { background: #22C55E; }
+    .terminal-title {
+      font-family: 'Fira Code', monospace;
+      font-size: 24px;
+      color: #8B949E;
+      margin-left: 12px;
+    }
+
+    .terminal-content {
+      padding: 40px;
+      font-family: 'Fira Code', monospace;
+      font-size: 28px;
+      line-height: 1.6;
+      color: #E6EDF3;
+      white-space: pre-wrap;
+    }
+    .tag-p1 { color: #F87171; font-weight: 600; }
+    .tag-p2 { color: #38BDF8; font-weight: 600; }
+    .tag-p3 { color: #4ADE80; font-weight: 600; }
+    .dim { color: #8B949E; }
+
+    /* Bottom CTA Card */
+    .cta-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+      border: 2px solid #FACC15;
+      box-shadow: 0 0 30px rgba(250, 204, 21, 0.2);
+      border-radius: 24px;
+      padding: 36px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cta-text { font-size: 32px; font-weight: 700; color: #F1F5F9; }
+    .cta-badge {
+      font-family: 'Fira Code', monospace;
+      background: #FACC15;
+      color: #0F172A;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 26px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Brand Pill -->
+  <div class="brand-pill">
+    <div class="dot"></div>
+    <span>WORKFLOW SUPER AI // ENGINE</span>
+  </div>
+
+  <!-- Hook Headline -->
+  <div class="hook-card">
+    <h1>Stop sifting through 40 morning emails. <br>Deploy this <span class="highlight-cyan">1-Shot Triage</span> system.</h1>
+  </div>
+
+  <!-- Terminal Display -->
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <div class="mac-dot dot-red"></div>
+      <div class="mac-dot dot-yellow"></div>
+      <div class="mac-dot dot-green"></div>
+      <span class="terminal-title">triage_workflow.engine — bash</span>
+    </div>
+    <div class="terminal-content">
+<span class="dim">> INITIALIZING MORNING TRIAGE PROTOCOL...</span>
+<span class="dim">> 42 UNREAD EMAILS DETECTED</span>
+
+<span class="tag-p1">[P1] IMMEDIATE BLOCKERS (&lt; 9:00 AM)</span>
+• API Latency spike -&gt; Paged SRE team
+• Staging CI/CD break -&gt; Assigned PR lead
+
+<span class="tag-p2">[P2] DELEGATE &amp; SCHEDULE</span>
+• Enterprise pilot SLA sync -&gt; Sent to Ops
+• Renewal invoice -&gt; Route to Accounting
+
+<span class="tag-p3">[P3] SWEEPER</span>
+• 38 newsletters and automated pings cleaned.
+    </div>
+  </div>
+
+  <!-- CTA Bar -->
+  <div class="cta-card">
+    <div class="cta-text">Steal this workflow prompt:</div>
+    <div class="cta-badge">COMMENT "TRIAGE"</div>
+  </div>
+
+</body>
+</html>
