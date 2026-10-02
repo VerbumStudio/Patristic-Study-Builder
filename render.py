@@ -15,7 +15,7 @@ if os.path.exists(output_dir):
     shutil.rmtree(output_dir)
 os.makedirs(output_dir, exist_ok=True)
 
-# Scan repository for target images (prioritizing executive_ai_os.png)
+# Scan for hero visual assets
 print("[*] Scanning repository for image assets...")
 found_path = None
 target_names = ["executive_ai_os.png", "ai_prompt_library.png"]
@@ -37,7 +37,7 @@ if found_path and os.path.exists(found_path):
     with open(found_path, "rb") as f:
         b64 = base64.b64encode(f.read()).decode("utf-8")
         ext = os.path.splitext(found_path)[1].lower().replace(".", "")
-        if ext == "jpg": 
+        if ext == "jpg":
             ext = "jpeg"
         img_src = f"data:image/{ext};base64,{b64}"
 else:
@@ -51,11 +51,11 @@ temp_html = os.path.abspath("temp_rendered.html")
 with open(temp_html, "w", encoding="utf-8") as f:
     f.write(rendered_html)
 
-print("[*] Recording fast-paced 15-second marketing reel...")
+print("[*] Recording high-velocity 15-second visual reel...")
 with sync_playwright() as p:
     browser = p.chromium.launch(
         args=[
-            "--no-sandbox", 
+            "--no-sandbox",
             "--disable-setuid-sandbox",
             "--background-color=#000000"
         ]
@@ -68,7 +68,7 @@ with sync_playwright() as p:
     page = context.new_page()
     page.goto(f"file://{temp_html}", wait_until="networkidle")
 
-    # Tight 15-second total timeline
+    # 15.0-second timeline
     page.wait_for_timeout(15000)
 
     context.close()
@@ -82,38 +82,42 @@ if not recorded_files:
     raise RuntimeError("No recording produced.")
 
 raw_video = recorded_files[0]
-print("[*] Synthesizing elevated UI SFX and mastering audio...")
+print("[*] Synthesizing high-impact psychological SFX audio track...")
 
-# High-volume procedural sound effects (Clicks, alerts, bass impact, whooshes)
-audio_cmd = (
-    "ffmpeg -y "
-    "-f lavfi -i anullsrc=r=44100:cl=stereo:d=15 "
-    # Louder, snappier mechanical clicks (2.8s-5.2s)
-    "-f lavfi -i \"anoisesrc=d=2.4:c=white:r=44100,volume=2.2,bandpass=f=2800:w=1400\" "
-    # Distinct tech alert chime (5.4s)
-    "-f lavfi -i \"sine=f=1046:d=0.35,volume=1.8\" "
-    # Punchy tech hit for Option A (5.8s)
-    "-f lavfi -i \"sine=f=440:d=0.25,volume=1.6\" "
-    # Sharp tech hit for Option B (7.0s)
-    "-f lavfi -i \"sine=f=587:d=0.25,volume=1.6\" "
-    # Deep bass drop for Final Payoff (10.5s)
-    "-f lavfi -i \"sine=f=130:d=0.8,volume=2.4\" "
-    "-filter_complex \""
-    "[1]adelay=2800|2800[clicks];"
-    "[2]adelay=5400|5400[alert];"
-    "[3]adelay=5800|5800[hit_a];"
-    "[4]adelay=7000|7000[hit_b];"
-    "[5]adelay=10500|10500[bass_drop];"
-    "[0][clicks][alert][hit_a][hit_b][bass_drop]amix=inputs=6:duration=first:dropout_transition=0[aout]\" "
-    "-map \"[aout]\" -c:a aac -b:a 192k sfx_track.aac"
-)
-subprocess.check_call(audio_cmd, shell=True)
+# Procedural psychological sound design:
+# 1. Opening notification chime (Alert trigger at 0.1s)
+# 2. Fast mechanical typing clicks (Active execution at 2.8s)
+# 3. Confirmation UI beep (System lock at 5.5s)
+# 4. Deep resonant sub-bass drops for high-value reveals (5.8s, 7.0s, 10.5s)
+sfx_command = [
+    "ffmpeg", "-y",
+    "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo:d=15",
+    "-f", "lavfi", "-i", "sine=f=1174:d=0.22,volume=3.5",               # Alert chime
+    "-f", "lavfi", "-i", "anoisesrc=d=2.4:c=white:r=44100,volume=3.2,bandpass=f=3200:w=1200", # Mechanical keys
+    "-f", "lavfi", "-i", "sine=f=880:d=0.18,volume=3.0",                # Lock chime
+    "-f", "lavfi", "-i", "sine=f=75:d=0.55,volume=4.5",                 # Sub-bass hit 1
+    "-f", "lavfi", "-i", "sine=f=85:d=0.55,volume=4.5",                 # Sub-bass hit 2
+    "-f", "lavfi", "-i", "sine=f=60:d=0.9,volume=5.5",                  # Heavy payoff sub-drop
+    "-filter_complex",
+    "[1]adelay=100|100[s0];"
+    "[2]adelay=2800|2800[s1];"
+    "[3]adelay=5500|5500[s2];"
+    "[4]adelay=5800|5800[s3];"
+    "[5]adelay=7000|7000[s4];"
+    "[6]adelay=10500|10500[s5];"
+    "[0][s0][s1][s2][s3][s4][s5]amix=inputs=7:duration=first:dropout_transition=0[aout]",
+    "-map", "[aout]",
+    "-c:a", "aac",
+    "-b:a", "256k",
+    "master_sfx.aac"
+]
+subprocess.check_call(sfx_command)
 
-print("[*] Multiplexing audio and rendering final MP4...")
+print("[*] Multiplexing video and audio tracks...")
 subprocess.check_call([
     "ffmpeg", "-y",
     "-i", raw_video,
-    "-i", "sfx_track.aac",
+    "-i", "master_sfx.aac",
     "-c:v", "libx264",
     "-preset", "fast",
     "-crf", "18",
@@ -123,7 +127,7 @@ subprocess.check_call([
     "friday_triage_100226.mp4"
 ])
 
-if os.path.exists("sfx_track.aac"):
-    os.remove("sfx_track.aac")
+if os.path.exists("master_sfx.aac"):
+    os.remove("master_sfx.aac")
 
-print("[✓] Reel successfully compiled: friday_triage_100226.mp4")
+print("[✓] Video with psychological audio compiled: friday_triage_100226.mp4")
