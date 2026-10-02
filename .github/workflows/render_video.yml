@@ -1,37 +1,37 @@
-name: Render Campaign Video
+name: Generate Campaign Video
 
 on:
   workflow_dispatch:
 
 jobs:
-  render:
+  render-video:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          sudo apt-get install -y ffmpeg imagemagick
+          sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml || true
+          sudo sed -i 's/none/read,write/g' /etc/ImageMagick-7/policy.xml || true
 
-      - name: Install Python Packages
+      - name: Install Python Dependencies
         run: |
-          pip install numpy pillow
+          pip install moviepy imageio-ffmpeg
 
-      - name: Run Video Render Script
-        run: |
-          python render.py
+      - name: Render Video
+        run: python3 render.py
 
-      - name: Upload Finished MP4 Video
+      - name: Upload Video Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: campaign_boundary_video
-          path: campaign_boundary_21s.mp4
-          retention-days: 7
+          name: morning_triage_video
+          path: output_reel.mp4
