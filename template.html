@@ -21,14 +21,11 @@
       position: relative;
     }
 
-    /* Ambient Neural Lighting & Grid Mesh */
     .circuit-glow {
       position: absolute;
-      top: 45%;
-      left: 50%;
+      top: 45%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 1000px;
-      height: 1000px;
+      width: 1050px; height: 1050px;
       background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(37, 99, 235, 0.08) 50%, transparent 75%);
       filter: blur(110px);
       pointer-events: none;
@@ -43,7 +40,7 @@
       pointer-events: none;
     }
 
-    /* Top Sticky Action Bar */
+    /* Top Action Bar */
     .top-bar {
       position: relative;
       z-index: 40;
@@ -88,25 +85,22 @@
       to { transform: scale(1.05); box-shadow: 0 0 40px rgba(56, 189, 248, 0.7); }
     }
 
-    /* Stage Container (Full Height Utilization) */
+    /* Main Stage */
     .stage {
       position: relative;
       z-index: 30;
       flex-grow: 1;
-      margin: 30px 0;
+      margin: 20px 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    /* ================= ACT 1: Aggressive Emergency Hook (0s - 3.2s) ================= */
+    /* ACT 1: Immediate Hook (0s - 3s) */
     #act-hook {
       position: absolute;
       width: 100%;
-      animation: snapExit1 0.25s 3.2s forwards;
-    }
-    @keyframes snapExit1 {
-      to { transform: scale(0.92); opacity: 0; pointer-events: none; }
+      animation: snapExit 0.2s 3s forwards;
     }
 
     .hero-alert {
@@ -116,22 +110,11 @@
       padding: 50px 40px;
       box-shadow: 0 0 60px rgba(239, 68, 68, 0.35);
     }
-    .alert-header {
-      color: #EF4444;
-      font-size: 26px;
-      font-weight: 900;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
     .hero-title {
       font-size: 64px;
       font-weight: 900;
       line-height: 1.1;
-      margin-bottom: 30px;
+      margin-bottom: 24px;
       letter-spacing: -1.5px;
     }
     .chat-bubble {
@@ -139,14 +122,12 @@
       border-left: 6px solid #EF4444;
       border-radius: 18px;
       padding: 24px 28px;
-      margin: 18px 0;
+      margin: 16px 0;
       font-size: 28px;
       color: #E2E8F0;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     }
-    .chat-bubble strong { color: #FFFFFF; }
     .hook-save-trigger {
-      margin-top: 36px;
+      margin-top: 32px;
       background: #38BDF8;
       color: #030712;
       font-weight: 900;
@@ -154,29 +135,60 @@
       padding: 24px;
       border-radius: 18px;
       text-align: center;
-      letter-spacing: 0.5px;
       box-shadow: 0 0 40px rgba(56, 189, 248, 0.6);
-      animation: pulseTrigger 1.2s infinite alternate ease-in-out;
-    }
-    @keyframes pulseTrigger {
-      from { transform: scale(1); }
-      to { transform: scale(1.03); }
     }
 
-    /* ================= ACT 2: Full-Canvas Active Typing Terminal (3.2s - 11.5s) ================= */
-    #act-prompt {
+    /* FAST-CYCLING 3-BOX SEQUENCE (3s - 12s) */
+    .middle-box {
       position: absolute;
       width: 100%;
       opacity: 0;
-      animation: snapEnter2 0.25s 3.2s forwards, snapExit2 0.25s 11.5s forwards;
+      pointer-events: none;
     }
-    @keyframes snapEnter2 {
-      from { transform: scale(1.08); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+
+    /* Box 1 (3s - 6s) */
+    #box-a {
+      animation: stageA 3s 3s forwards;
     }
-    @keyframes snapExit2 {
-      to { transform: scale(0.92); opacity: 0; pointer-events: none; }
+    @keyframes stageA {
+      0% { opacity: 0; transform: scale(1.04); }
+      8% { opacity: 1; transform: scale(1); pointer-events: auto; }
+      92% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.96); pointer-events: none; }
     }
+
+    /* Box 2 (6s - 9s) */
+    #box-b {
+      animation: stageB 3s 6s forwards;
+    }
+    @keyframes stageB {
+      0% { opacity: 0; transform: scale(1.04); }
+      8% { opacity: 1; transform: scale(1); pointer-events: auto; }
+      92% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.96); pointer-events: none; }
+    }
+
+    /* Box 3 (9s - 12s) */
+    #box-c {
+      animation: stageC 3s 9s forwards;
+    }
+    @keyframes stageC {
+      0% { opacity: 0; transform: scale(1.04); }
+      8% { opacity: 1; transform: scale(1); pointer-events: auto; }
+      92% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.96); pointer-events: none; }
+    }
+
+    /* ACT 3: Conversion Payoff (12s - 18s) */
+    #act-payoff {
+      position: absolute;
+      width: 100%;
+      opacity: 0;
+      animation: snapEnter 0.25s 12s forwards;
+    }
+
+    @keyframes snapExit { to { opacity: 0; transform: scale(0.92); pointer-events: none; } }
+    @keyframes snapEnter { to { opacity: 1; transform: scale(1); pointer-events: auto; } }
 
     .terminal-container {
       background: #030712;
@@ -188,151 +200,76 @@
     .terminal-topbar {
       background: rgba(15, 23, 42, 0.98);
       border-bottom: 1px solid rgba(56, 189, 248, 0.25);
-      padding: 22px 32px;
+      padding: 20px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     .window-dots { display: flex; gap: 10px; }
     .window-dot { width: 15px; height: 15px; border-radius: 50%; }
-    .terminal-filename {
-      font-family: 'Fira Code', monospace;
-      color: #38BDF8;
-      font-size: 21px;
-      font-weight: 700;
-    }
-    .active-badge {
-      background: rgba(52, 211, 153, 0.15);
-      border: 1px solid #34D399;
-      color: #34D399;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-family: 'Fira Code', monospace;
-      font-size: 16px;
-      font-weight: 700;
-    }
 
     .terminal-content {
       font-family: 'Fira Code', monospace;
-      padding: 44px 38px;
-      font-size: 23px;
+      padding: 40px 36px;
+      font-size: 24px;
       line-height: 1.6;
       color: #F8FAFC;
-      min-height: 820px;
-    }
-    .line-dim { color: #64748B; }
-    .line-blue { color: #38BDF8; font-weight: 700; }
-    .line-green { color: #34D399; font-weight: 700; }
-    .line-red { color: #EF4444; font-weight: 700; }
-    .line-yellow { color: #FBBF24; font-weight: 700; }
-
-    /* Streaming Cursor */
-    .stream-cursor {
-      display: inline-block;
-      width: 12px;
-      height: 24px;
-      background: #38BDF8;
-      vertical-align: middle;
-      animation: blink 0.7s infinite;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
+      min-height: 720px;
     }
 
-    /* Terminal Context Metric Footer (Fills Dead Space) */
-    .terminal-footer-metrics {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 24px;
-      padding: 0 4px;
-    }
-    .metric-pill {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 18px;
-      padding: 20px 24px;
+    .trade-row {
       display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .metric-pill span { font-size: 16px; color: #94A3B8; text-transform: uppercase; font-weight: 700; }
-    .metric-pill strong { font-size: 26px; color: #F8FAFC; }
-
-    /* ================= ACT 3: Hero Conversion & 3D Mockup Payoff (11.5s - 17s) ================= */
-    #act-payoff {
-      position: absolute;
-      width: 100%;
-      opacity: 0;
-      animation: snapEnter3 0.3s 11.5s forwards;
-    }
-    @keyframes snapEnter3 {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 16px;
+      padding: 22px 24px;
+      margin: 16px 0;
+      font-size: 23px;
     }
 
     .payoff-card {
-      background: rgba(15, 23, 42, 0.94);
+      background: rgba(15, 23, 42, 0.95);
       border: 2px solid rgba(56, 189, 248, 0.45);
       border-radius: 36px;
-      padding: 50px 40px;
+      padding: 44px 36px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 26px;
-      box-shadow: 0 0 60px rgba(56, 189, 248, 0.25);
+      gap: 22px;
+      box-shadow: 0 0 60px rgba(56, 189, 248, 0.3);
     }
-    .payoff-badge {
-      color: #38BDF8;
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: 3px;
-    }
-    .payoff-heading {
-      font-size: 46px;
-      font-weight: 900;
-      line-height: 1.2;
-    }
-
-    /* Hologram Product Card with Real Image Frame */
     .product-stage {
       width: 100%;
       height: 480px;
       display: flex;
       justify-content: center;
       align-items: center;
-      position: relative;
     }
     .product-img {
       max-height: 480px;
       max-width: 85%;
       border-radius: 24px;
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 40px rgba(56, 189, 248, 0.25);
-      object-fit: cover;
-      animation: floatProduct 3.5s ease-in-out infinite alternate;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 45px rgba(56, 189, 248, 0.3);
+      animation: floatProduct 3s ease-in-out infinite alternate;
     }
     @keyframes floatProduct {
       from { transform: translateY(0px) rotate(-1deg); }
-      to { transform: translateY(-16px) rotate(1deg); }
+      to { transform: translateY(-12px) rotate(1deg); }
     }
 
     .cta-button {
       background: #38BDF8;
       color: #030712;
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 900;
-      padding: 24px 44px;
+      padding: 22px 42px;
       border-radius: 18px;
       box-shadow: 0 0 40px rgba(56, 189, 248, 0.6);
       letter-spacing: 0.5px;
-      animation: pulseBtn 1.5s infinite alternate ease-in-out;
-    }
-    @keyframes pulseBtn {
-      from { transform: scale(1); }
-      to { transform: scale(1.04); }
     }
 
     /* Bottom Identity Bar */
@@ -345,12 +282,6 @@
       color: #94A3B8;
       font-size: 21px;
       font-weight: 700;
-    }
-    .save-confirm {
-      color: #38BDF8;
-      display: flex;
-      align-items: center;
-      gap: 12px;
     }
   </style>
 </head>
@@ -371,74 +302,110 @@
     </div>
   </div>
 
-  <!-- Stage Container -->
   <div class="stage">
 
-    <!-- ACT 1: Aggressive Emergency Hook (0 - 3.2s) -->
+    <!-- ACT 1: Hook (0s - 3s) -->
     <div id="act-hook">
       <div class="hero-alert">
-        <div class="alert-header">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="#EF4444"><circle cx="12" cy="12" r="10"/></svg>
-          CRITICAL FRIDAY PROTOCOL
-        </div>
+        <div style="color: #EF4444; font-size: 24px; font-weight: 900; letter-spacing: 2px; margin-bottom: 12px;">CRITICAL PROTOCOL</div>
         <h1 class="hero-title">STOP WORKING LATE ON FRIDAY.</h1>
-        <div class="chat-bubble"><strong>VP Product:</strong> "Can we drop everything and ship this tonight?"</div>
-        <div class="chat-bubble"><strong>Lead Client:</strong> "Must go live before Saturday morning."</div>
+        <div class="chat-bubble"><strong>VP Product:</strong> "Can we drop everything and ship tonight?"</div>
+        <div class="chat-bubble"><strong>Lead Client:</strong> "Must be live by morning."</div>
         <div class="hook-save-trigger">
-          🔖 BOOKMARK THIS: USE THE DE-ESCALATION PROMPT
+          🔖 SAVE THIS: 3-TIER DE-ESCALATION PROMPT
         </div>
       </div>
     </div>
 
-    <!-- ACT 2: Typing / High-Velocity Terminal (3.2 - 11.5s) -->
-    <div id="act-prompt">
+    <!-- BOX 1 (3s - 6s): Prompt Directive -->
+    <div class="middle-box" id="box-a">
       <div class="terminal-container">
         <div class="terminal-topbar">
           <div class="window-dots">
-            <div class="window-dot" style="background: #EF4444;"></div>
-            <div class="window-dot" style="background: #F59E0B;"></div>
-            <div class="window-dot" style="background: #10B981;"></div>
+            <div class="window-dot" style="background:#EF4444;"></div>
+            <div class="window-dot" style="background:#F59E0B;"></div>
+            <div class="window-dot" style="background:#10B981;"></div>
           </div>
-          <span class="terminal-filename">DE_ESCALATION_ENGINE.MD</span>
-          <span class="active-badge">&bull; COMPILING PROMPT</span>
+          <span style="color:#38BDF8; font-family:'Fira Code'; font-size:20px; font-weight:700;">PHASE 1: THE SYSTEM PROMPT</span>
+          <span style="color:#34D399; font-weight:700; font-size:16px;">[READY TO COPY]</span>
         </div>
-        
         <div class="terminal-content">
-          <span class="line-blue">ACT AS:</span> Executive Negotiation Strategist.<br><br>
-          <span class="line-yellow">OPERATIONAL DIRECTIVE:</span><br>
-          De-escalate reactive requests without apology.<br>
+          <span style="color:#38BDF8; font-weight:700;">ACT AS:</span> Executive Negotiation Strategist.<br><br>
+          <span style="color:#FBBF24; font-weight:700;">OPERATIONAL DIRECTIVE:</span><br>
+          De-escalate reactive requests without apology.<br><br>
           1. Validate business intent in 1 sentence.<br>
           2. Surface sprint opportunity costs.<br>
-          3. Generate a 3-Option Strategic Tradeoff Grid:<br><br>
-          &nbsp;&nbsp;&bull; <span class="line-red">Option A:</span> Ship tonight <span class="line-dim">(Sprint delayed 48h)</span><br>
-          &nbsp;&nbsp;&bull; <span class="line-blue">Option B:</span> Ship Mon 9 AM <span class="line-dim">(Zero impact)</span><br>
-          &nbsp;&nbsp;&bull; <span class="line-green">Option C:</span> Escalate on-call <span class="line-dim">(Overtime billing)</span><br><br>
-          <span class="line-green">&gt; OUTPUT: Requester chooses the sacrifice, not you.</span>
-          <span class="stream-cursor"></span>
-        </div>
-      </div>
-
-      <!-- Filled Screen Real Estate: System Metric Gauges -->
-      <div class="terminal-footer-metrics">
-        <div class="metric-pill">
-          <span>Boundary Defense</span>
-          <strong style="color: #38BDF8;">100% NON-REACTIVE</strong>
-        </div>
-        <div class="metric-pill">
-          <span>Execution Time</span>
-          <strong style="color: #34D399;">8 SECONDS</strong>
+          3. Generate a 3-Option Strategic Tradeoff Grid.<br><br>
+          <span style="color:#34D399;">&gt; STATUS: COMPILING TRADE-OFF MATRIX...</span>
         </div>
       </div>
     </div>
 
-    <!-- ACT 3: Hero Conversion Payoff (11.5 - 17s) -->
+    <!-- BOX 2 (6s - 9s): The Tradeoff Matrix -->
+    <div class="middle-box" id="box-b">
+      <div class="terminal-container">
+        <div class="terminal-topbar">
+          <div class="window-dots">
+            <div class="window-dot" style="background:#EF4444;"></div>
+            <div class="window-dot" style="background:#F59E0B;"></div>
+            <div class="window-dot" style="background:#10B981;"></div>
+          </div>
+          <span style="color:#38BDF8; font-family:'Fira Code'; font-size:20px; font-weight:700;">PHASE 2: CHOICE ARCHITECTURE</span>
+          <span style="color:#38BDF8; font-weight:700; font-size:16px;">[THE 3 OPTIONS]</span>
+        </div>
+        <div class="terminal-content">
+          <div class="trade-row">
+            <strong style="color:#EF4444;">Option A: Urgent</strong>
+            <span>Ship Tonight &bull; Delays Sprint 48h</span>
+          </div>
+          <div class="trade-row">
+            <strong style="color:#38BDF8;">Option B: Protect</strong>
+            <span>Ship Mon 9 AM &bull; Zero Impact</span>
+          </div>
+          <div class="trade-row">
+            <strong style="color:#34D399;">Option C: Route</strong>
+            <span>On-Call Team &bull; Overtime Bill</span>
+          </div>
+          <div style="margin-top: 30px; text-align: center; color: #34D399; font-weight: 700; font-size: 24px;">
+            Sender chooses the sacrifice, not you.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOX 3 (9s - 12s): Friction & Outcome Comparison -->
+    <div class="middle-box" id="box-c">
+      <div class="terminal-container">
+        <div class="terminal-topbar">
+          <div class="window-dots">
+            <div class="window-dot" style="background:#EF4444;"></div>
+            <div class="window-dot" style="background:#F59E0B;"></div>
+            <div class="window-dot" style="background:#10B981;"></div>
+          </div>
+          <span style="color:#38BDF8; font-family:'Fira Code'; font-size:20px; font-weight:700;">PHASE 3: STRATEGIC LEVERAGE</span>
+          <span style="color:#FBBF24; font-weight:700; font-size:16px;">[RESULT]</span>
+        </div>
+        <div class="terminal-content" style="display:flex; flex-direction:column; justify-content:center; gap:24px;">
+          <div style="background:rgba(239,68,68,0.15); border-left:6px solid #EF4444; border-radius:14px; padding:24px;">
+            <div style="color:#EF4444; font-weight:800; font-size:24px; margin-bottom:8px;">WITHOUT SYSTEM (40 MINS)</div>
+            <div style="font-size:22px; color:#E2E8F0;">Typing & deleting drafts &bull; Ruining weekend plans &bull; Reactive submission.</div>
+          </div>
+          <div style="background:rgba(56,189,248,0.15); border-left:6px solid #38BDF8; border-radius:14px; padding:24px;">
+            <div style="color:#38BDF8; font-weight:800; font-size:24px; margin-bottom:8px;">WITH SYSTEM (8 SECONDS)</div>
+            <div style="font-size:22px; color:#E2E8F0;">Automated tradeoff response &bull; Boundaries protected &bull; Executive authority.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACT 3: Hero Conversion Payoff (12s - 18s) -->
     <div id="act-payoff">
       <div class="payoff-card">
-        <div class="payoff-badge">SAVED TO YOUR WORKSPACE</div>
-        <h2 class="payoff-heading">Get The 7-Prompt AI Executive Operating System</h2>
+        <div style="color:#38BDF8; font-size:22px; font-weight:800; letter-spacing:3px;">SAVED TO YOUR WORKSPACE</div>
+        <h2 style="font-size:44px; font-weight:900; line-height:1.2;">Get The Complete 7-Prompt Executive AI Operating System</h2>
         
         <div class="product-stage">
-          <img src="__HERO_ASSET__" class="product-img" alt="" onerror="this.style.display='none'" />
+          <img src="__HERO_ASSET__" class="product-img" alt="Executive System" />
         </div>
 
         <div class="cta-button">
@@ -451,7 +418,7 @@
 
   <!-- Bottom Identity Bar -->
   <div class="bottom-bar">
-    <div class="save-confirm">
+    <div style="color:#38BDF8; display:flex; align-items:center; gap:12px;">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="#38BDF8"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
       SAVE THIS REEL
     </div>
