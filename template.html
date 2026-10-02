@@ -3,182 +3,256 @@
 <head>
   <meta charset="UTF-8">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap');
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    
+
     body {
       width: 1080px;
       height: 1920px;
-      background-color: #07090E;
-      background-image: 
-        radial-gradient(circle at 50% 10%, rgba(56, 189, 248, 0.12) 0%, transparent 60%),
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 60px 60px, 60px 60px;
-      font-family: 'Inter', sans-serif;
-      color: #FFFFFF;
+      background: radial-gradient(circle at 50% 15%, #0B132B 0%, #030712 65%, #000000 100%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #F8FAFC;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 120px 80px 140px 80px;
+      padding: 100px 70px 110px 70px;
       overflow: hidden;
+      position: relative;
+    }
+
+    /* Ambient Neural Lighting */
+    .circuit-glow {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 750px;
+      height: 750px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(37, 99, 235, 0.08) 50%, transparent 75%);
+      filter: blur(80px);
+      pointer-events: none;
+      animation: pulseGlow 4s ease-in-out infinite alternate;
+    }
+    @keyframes pulseGlow {
+      from { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
+      to { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+    }
+
+    /* Grid Overlay */
+    .grid-mesh {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: 
+        linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+      background-size: 70px 70px;
+      pointer-events: none;
     }
 
     /* Top Identity Pill */
-    .brand-pill {
-      align-self: flex-start;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      padding: 14px 28px;
-      border-radius: 999px;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
-    }
-    .brand-pill .dot {
-      width: 12px;
-      height: 12px;
-      background: #38BDF8;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #38BDF8;
-    }
-    .brand-pill span {
-      font-family: 'Fira Code', monospace;
-      font-size: 26px;
-      font-weight: 600;
-      color: #38BDF8;
-      letter-spacing: 1px;
-    }
-
-    /* Hook Box */
-    .hook-card {
-      margin-top: 40px;
-      background: rgba(17, 24, 39, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 28px;
-      padding: 48px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-    }
-    .hook-card h1 {
-      font-size: 54px;
-      line-height: 1.25;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-    .highlight-amber { color: #FACC15; }
-    .highlight-cyan { color: #38BDF8; }
-
-    /* Terminal Console */
-    .terminal-window {
-      background: #0D1117;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 24px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.1);
-      overflow: hidden;
-      flex-grow: 1;
-      margin: 40px 0;
-      display: flex;
-      flex-direction: column;
-    }
-    .terminal-header {
-      background: #161B22;
-      padding: 24px 32px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .mac-dot { width: 16px; height: 16px; border-radius: 50%; }
-    .dot-red { background: #EF4444; }
-    .dot-yellow { background: #EAB308; }
-    .dot-green { background: #22C55E; }
-    .terminal-title {
-      font-family: 'Fira Code', monospace;
-      font-size: 24px;
-      color: #8B949E;
-      margin-left: 12px;
-    }
-
-    .terminal-content {
-      padding: 40px;
-      font-family: 'Fira Code', monospace;
-      font-size: 28px;
-      line-height: 1.6;
-      color: #E6EDF3;
-      white-space: pre-wrap;
-    }
-    .tag-p1 { color: #F87171; font-weight: 600; }
-    .tag-p2 { color: #38BDF8; font-weight: 600; }
-    .tag-p3 { color: #4ADE80; font-weight: 600; }
-    .dim { color: #8B949E; }
-
-    /* Bottom CTA Card */
-    .cta-card {
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
-      border: 2px solid #FACC15;
-      box-shadow: 0 0 30px rgba(250, 204, 21, 0.2);
-      border-radius: 24px;
-      padding: 36px 48px;
+    .top-nav {
+      position: relative;
+      z-index: 10;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .cta-text { font-size: 32px; font-weight: 700; color: #F1F5F9; }
-    .cta-badge {
-      font-family: 'Fira Code', monospace;
-      background: #FACC15;
-      color: #0F172A;
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-size: 26px;
+    .brand-pill {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 14px 28px;
+      border-radius: 999px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+    }
+    .brand-icon {
+      width: 14px; height: 14px;
+      background: #38BDF8;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #38BDF8;
+    }
+    .brand-name {
+      font-size: 24px;
       font-weight: 700;
+      letter-spacing: 1px;
+      color: #F8FAFC;
+    }
+    .badge-executive {
+      font-size: 18px;
+      font-weight: 700;
+      color: #38BDF8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    /* Hook Section */
+    .hook-section {
+      position: relative;
+      z-index: 10;
+      margin-top: 30px;
+    }
+    .hook-category {
+      font-size: 22px;
+      color: #38BDF8;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .hook-title {
+      font-size: 60px;
+      line-height: 1.18;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+    .highlight-cyan {
+      color: #38BDF8;
+      text-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+    }
+
+    /* 3D Product Showcase Window */
+    .showcase-stage {
+      position: relative;
+      z-index: 10;
+      height: 780px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1000px;
+    }
+    .product-asset {
+      max-width: 85%;
+      max-height: 680px;
+      object-fit: contain;
+      filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 45px rgba(56, 189, 248, 0.25));
+      animation: floatDrift 5s ease-in-out infinite alternate;
+    }
+    @keyframes floatDrift {
+      from { transform: translateY(0px) rotate(-1deg); }
+      to { transform: translateY(-16px) rotate(1deg); }
+    }
+
+    /* Live Metric Overlays */
+    .metric-card {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 18px;
+      padding: 20px 28px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      animation: cardPop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .metric-1 {
+      top: 60px;
+      left: 10px;
+    }
+    .metric-2 {
+      bottom: 80px;
+      right: 10px;
+    }
+    .metric-label {
+      font-size: 16px;
+      color: #94A3B8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .metric-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: #F8FAFC;
+    }
+    .metric-accent { color: #38BDF8; }
+
+    /* Bottom High-Converting CTA */
+    .cta-card {
+      position: relative;
+      z-index: 10;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 24px;
+      padding: 34px 44px;
+      box-shadow: 0 0 35px rgba(56, 189, 248, 0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cta-text h3 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+    }
+    .cta-text p {
+      font-size: 20px;
+      color: #94A3B8;
+    }
+    .cta-action {
+      background: #38BDF8;
+      color: #030712;
+      font-weight: 800;
+      font-size: 24px;
+      padding: 16px 28px;
+      border-radius: 14px;
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+      letter-spacing: 0.5px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Brand Pill -->
-  <div class="brand-pill">
-    <div class="dot"></div>
-    <span>WORKFLOW SUPER AI // ENGINE</span>
-  </div>
+  <div class="grid-mesh"></div>
+  <div class="circuit-glow"></div>
 
-  <!-- Hook Headline -->
-  <div class="hook-card">
-    <h1>Stop sifting through 40 morning emails. <br>Deploy this <span class="highlight-cyan">1-Shot Triage</span> system.</h1>
-  </div>
-
-  <!-- Terminal Display -->
-  <div class="terminal-window">
-    <div class="terminal-header">
-      <div class="mac-dot dot-red"></div>
-      <div class="mac-dot dot-yellow"></div>
-      <div class="mac-dot dot-green"></div>
-      <span class="terminal-title">triage_workflow.engine — bash</span>
+  <!-- Header -->
+  <div class="top-nav">
+    <div class="brand-pill">
+      <div class="brand-icon"></div>
+      <span class="brand-name">WORKFLOW SUPER AI</span>
     </div>
-    <div class="terminal-content">
-<span class="dim">> INITIALIZING MORNING TRIAGE PROTOCOL...</span>
-<span class="dim">> 42 UNREAD EMAILS DETECTED</span>
+    <div class="badge-executive">EXECUTIVE OS</div>
+  </div>
 
-<span class="tag-p1">[P1] IMMEDIATE BLOCKERS (&lt; 9:00 AM)</span>
-• API Latency spike -&gt; Paged SRE team
-• Staging CI/CD break -&gt; Assigned PR lead
+  <!-- Hook -->
+  <div class="hook-section">
+    <div class="hook-category">System Architecture</div>
+    <h1 class="hook-title">Automate 10+ Hours of <br>Work Every Week With <br><span class="highlight-cyan">Neural AI Systems</span></h1>
+  </div>
 
-<span class="tag-p2">[P2] DELEGATE &amp; SCHEDULE</span>
-• Enterprise pilot SLA sync -&gt; Sent to Ops
-• Renewal invoice -&gt; Route to Accounting
+  <!-- 3D Showcase Stage -->
+  <div class="showcase-stage">
+    <img src="assets/executive_ai_os.png" class="product-asset" alt="The Executive AI Operating System" />
 
-<span class="tag-p3">[P3] SWEEPER</span>
-• 38 newsletters and automated pings cleaned.
+    <div class="metric-card metric-1">
+      <span class="metric-label">Triage Efficiency</span>
+      <span class="metric-value metric-accent">+84% <span style="font-size: 20px; color: #94A3B8;">SPEED</span></span>
+    </div>
+
+    <div class="metric-card metric-2">
+      <span class="metric-label">Executive Time Saved</span>
+      <span class="metric-value">12.5 <span style="font-size: 20px; color: #38BDF8;">HRS/WK</span></span>
     </div>
   </div>
 
-  <!-- CTA Bar -->
+  <!-- CTA -->
   <div class="cta-card">
-    <div class="cta-text">Steal this workflow prompt:</div>
-    <div class="cta-badge">COMMENT "TRIAGE"</div>
+    <div class="cta-text">
+      <h3>Steal the Complete Engine</h3>
+      <p>Free Prompt Library & Guidebook</p>
+    </div>
+    <div class="cta-action">COMMENT "SYSTEM"</div>
   </div>
 
 </body>
