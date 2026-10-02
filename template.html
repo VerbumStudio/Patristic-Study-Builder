@@ -25,9 +25,9 @@
       position: absolute;
       top: 45%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 1050px; height: 1050px;
+      width: 1100px; height: 1100px;
       background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(37, 99, 235, 0.08) 50%, transparent 75%);
-      filter: blur(110px);
+      filter: blur(120px);
       pointer-events: none;
     }
     .grid-mesh {
@@ -40,7 +40,7 @@
       pointer-events: none;
     }
 
-    /* Top Action Bar */
+    /* Top Sticky Action Bar */
     .top-bar {
       position: relative;
       z-index: 40;
@@ -102,7 +102,6 @@
       width: 100%;
       animation: snapExit 0.2s 3s forwards;
     }
-
     .hero-alert {
       background: linear-gradient(180deg, rgba(239, 68, 68, 0.25) 0%, rgba(15, 23, 42, 0.95) 100%);
       border: 2px solid #EF4444;
@@ -138,7 +137,7 @@
       box-shadow: 0 0 40px rgba(56, 189, 248, 0.6);
     }
 
-    /* FAST-CYCLING 3-BOX SEQUENCE (3s - 12s) */
+    /* FAST-CYCLING 3-PHASE SEQUENCER (3s - 12s) */
     .middle-box {
       position: absolute;
       width: 100%;
@@ -146,10 +145,7 @@
       pointer-events: none;
     }
 
-    /* Box 1 (3s - 6s) */
-    #box-a {
-      animation: stageA 3s 3s forwards;
-    }
+    #box-a { animation: stageA 3s 3s forwards; }
     @keyframes stageA {
       0% { opacity: 0; transform: scale(1.04); }
       8% { opacity: 1; transform: scale(1); pointer-events: auto; }
@@ -157,10 +153,7 @@
       100% { opacity: 0; transform: scale(0.96); pointer-events: none; }
     }
 
-    /* Box 2 (6s - 9s) */
-    #box-b {
-      animation: stageB 3s 6s forwards;
-    }
+    #box-b { animation: stageB 3s 6s forwards; }
     @keyframes stageB {
       0% { opacity: 0; transform: scale(1.04); }
       8% { opacity: 1; transform: scale(1); pointer-events: auto; }
@@ -168,10 +161,7 @@
       100% { opacity: 0; transform: scale(0.96); pointer-events: none; }
     }
 
-    /* Box 3 (9s - 12s) */
-    #box-c {
-      animation: stageC 3s 9s forwards;
-    }
+    #box-c { animation: stageC 3s 9s forwards; }
     @keyframes stageC {
       0% { opacity: 0; transform: scale(1.04); }
       8% { opacity: 1; transform: scale(1); pointer-events: auto; }
@@ -190,6 +180,7 @@
     @keyframes snapExit { to { opacity: 0; transform: scale(0.92); pointer-events: none; } }
     @keyframes snapEnter { to { opacity: 1; transform: scale(1); pointer-events: auto; } }
 
+    /* Tall Cyber Panels */
     .terminal-container {
       background: #030712;
       border: 2px solid rgba(56, 189, 248, 0.45);
@@ -200,7 +191,7 @@
     .terminal-topbar {
       background: rgba(15, 23, 42, 0.98);
       border-bottom: 1px solid rgba(56, 189, 248, 0.25);
-      padding: 20px 32px;
+      padding: 22px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -214,7 +205,37 @@
       font-size: 24px;
       line-height: 1.6;
       color: #F8FAFC;
-      min-height: 720px;
+      min-height: 820px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
+    /* Streaming Line Animations */
+    .stream-line {
+      opacity: 0;
+      transform: translateY(8px);
+      animation: lineIn 0.35s forwards ease-out;
+    }
+    @keyframes lineIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* The Exact Output Card */
+    .script-box {
+      background: rgba(15, 23, 42, 0.95);
+      border: 2px solid #38BDF8;
+      border-radius: 20px;
+      padding: 30px 28px;
+      margin: 18px 0;
+      font-size: 27px;
+      line-height: 1.5;
+      color: #F8FAFC;
+      box-shadow: 0 0 40px rgba(56, 189, 248, 0.3);
+    }
+    .script-highlight {
+      color: #38BDF8;
+      font-weight: 700;
     }
 
     .trade-row {
@@ -225,7 +246,7 @@
       border: 1px solid rgba(56, 189, 248, 0.2);
       border-radius: 16px;
       padding: 22px 24px;
-      margin: 16px 0;
+      margin: 12px 0;
       font-size: 23px;
     }
 
@@ -310,14 +331,14 @@
         <div style="color: #EF4444; font-size: 24px; font-weight: 900; letter-spacing: 2px; margin-bottom: 12px;">CRITICAL PROTOCOL</div>
         <h1 class="hero-title">STOP WORKING LATE ON FRIDAY.</h1>
         <div class="chat-bubble"><strong>VP Product:</strong> "Can we drop everything and ship tonight?"</div>
-        <div class="chat-bubble"><strong>Lead Client:</strong> "Must be live by morning."</div>
+        <div class="chat-bubble"><strong>Lead Client:</strong> "Must be live before tomorrow morning."</div>
         <div class="hook-save-trigger">
           🔖 SAVE THIS: 3-TIER DE-ESCALATION PROMPT
         </div>
       </div>
     </div>
 
-    <!-- BOX 1 (3s - 6s): Prompt Directive -->
+    <!-- BOX 1 (3s - 6s): Live Ingestion & Processing -->
     <div class="middle-box" id="box-a">
       <div class="terminal-container">
         <div class="terminal-topbar">
@@ -326,22 +347,30 @@
             <div class="window-dot" style="background:#F59E0B;"></div>
             <div class="window-dot" style="background:#10B981;"></div>
           </div>
-          <span style="color:#38BDF8; font-family:'Fira Code'; font-size:20px; font-weight:700;">PHASE 1: THE SYSTEM PROMPT</span>
-          <span style="color:#34D399; font-weight:700; font-size:16px;">[READY TO COPY]</span>
+          <span style="color:#38BDF8; font-family:'Fira Code'; font-size:20px; font-weight:700;">TRIAGE_ENGINE.PY</span>
+          <span style="color:#34D399; font-weight:700; font-size:16px;">&bull; PROCESSING (8 SEC)</span>
         </div>
         <div class="terminal-content">
-          <span style="color:#38BDF8; font-weight:700;">ACT AS:</span> Executive Negotiation Strategist.<br><br>
-          <span style="color:#FBBF24; font-weight:700;">OPERATIONAL DIRECTIVE:</span><br>
-          De-escalate reactive requests without apology.<br><br>
-          1. Validate business intent in 1 sentence.<br>
-          2. Surface sprint opportunity costs.<br>
-          3. Generate a 3-Option Strategic Tradeoff Grid.<br><br>
-          <span style="color:#34D399;">&gt; STATUS: COMPILING TRADE-OFF MATRIX...</span>
+          <div class="stream-line" style="animation-delay: 0.1s;">
+            <span style="color:#94A3B8;">&gt; INCOMING REQUEST:</span><br>
+            <span style="color:#EF4444; font-weight:700;">"Emergency: Can you finish the deck tonight?"</span>
+          </div>
+
+          <div class="stream-line" style="animation-delay: 0.8s;">
+            <span style="color:#FBBF24; font-weight:700;">[STATUS: EVALUATING LEVERAGE MATRIX]</span><br>
+            <span style="color:#64748B;">&bull; Guilt response: DISABLED</span><br>
+            <span style="color:#64748B;">&bull; Apology count: 0</span><br>
+            <span style="color:#38BDF8; font-weight:700;">&bull; Tradeoff choices generated: 3</span>
+          </div>
+
+          <div class="stream-line" style="animation-delay: 1.6s;">
+            <span style="color:#34D399; font-weight:700;">&gt; EXECUTIVE SCRIPT COMPILED.</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- BOX 2 (6s - 9s): The Tradeoff Matrix -->
+    <!-- BOX 2 (6s - 9s): The Exact High-Value Copy-Paste Script -->
     <div class="middle-box" id="box-b">
       <div class="terminal-container">
         <div class="terminal-topbar">
@@ -350,24 +379,21 @@
             <div class="window-dot" style="background:#F59E0B;"></div>
             <div class="window-dot" style="background:#10B981;"></div>
           </div>
-          <span style="color:#38BDF8; font-family:'Fira Code'; font-size:20px; font-weight:700;">PHASE 2: CHOICE ARCHITECTURE</span>
-          <span style="color:#38BDF8; font-weight:700; font-size:16px;">[THE 3 OPTIONS]</span>
+          <span style="color:#38BDF8; font-family:'Fira Code'; font-size:20px; font-weight:700;">EXECUTIVE_REPLY.MD</span>
+          <span style="color:#38BDF8; font-weight:700; font-size:16px;">[COPY THIS SCRIPT]</span>
         </div>
         <div class="terminal-content">
-          <div class="trade-row">
-            <strong style="color:#EF4444;">Option A: Urgent</strong>
-            <span>Ship Tonight &bull; Delays Sprint 48h</span>
+          <div style="color: #94A3B8; font-size: 19px; text-transform: uppercase; letter-spacing: 1px;">
+            PASTE THIS EXACT RESPONSE:
           </div>
-          <div class="trade-row">
-            <strong style="color:#38BDF8;">Option B: Protect</strong>
-            <span>Ship Mon 9 AM &bull; Zero Impact</span>
+
+          <div class="script-box">
+            "Happy to help. <span class="script-highlight">I can deliver this by 9 PM tonight</span> (which delays Monday's sprint), or deliver <span class="script-highlight">Monday at 9 AM with zero project delay</span>.<br><br>
+            Which tradeoff would you like to take?"
           </div>
-          <div class="trade-row">
-            <strong style="color:#34D399;">Option C: Route</strong>
-            <span>On-Call Team &bull; Overtime Bill</span>
-          </div>
-          <div style="margin-top: 30px; text-align: center; color: #34D399; font-weight: 700; font-size: 24px;">
-            Sender chooses the sacrifice, not you.
+
+          <div style="color:#34D399; font-weight:700; font-size:21px; text-align:center;">
+            &gt; SENDER CHOOSES THE SACRIFICE, NOT YOU.
           </div>
         </div>
       </div>
@@ -382,17 +408,17 @@
             <div class="window-dot" style="background:#F59E0B;"></div>
             <div class="window-dot" style="background:#10B981;"></div>
           </div>
-          <span style="color:#38BDF8; font-family:'Fira Code'; font-size:20px; font-weight:700;">PHASE 3: STRATEGIC LEVERAGE</span>
-          <span style="color:#FBBF24; font-weight:700; font-size:16px;">[RESULT]</span>
+          <span style="color:#38BDF8; font-family:'Fira Code'; font-size:20px; font-weight:700;">STRATEGIC_IMPACT.LOG</span>
+          <span style="color:#FBBF24; font-weight:700; font-size:16px;">[THE SHIFT]</span>
         </div>
-        <div class="terminal-content" style="display:flex; flex-direction:column; justify-content:center; gap:24px;">
-          <div style="background:rgba(239,68,68,0.15); border-left:6px solid #EF4444; border-radius:14px; padding:24px;">
-            <div style="color:#EF4444; font-weight:800; font-size:24px; margin-bottom:8px;">WITHOUT SYSTEM (40 MINS)</div>
-            <div style="font-size:22px; color:#E2E8F0;">Typing & deleting drafts &bull; Ruining weekend plans &bull; Reactive submission.</div>
+        <div class="terminal-content">
+          <div style="background:rgba(239,68,68,0.15); border-left:6px solid #EF4444; border-radius:16px; padding:24px;">
+            <div style="color:#EF4444; font-weight:800; font-size:24px; margin-bottom:8px;">WITHOUT THIS SYSTEM (40 MINS)</div>
+            <div style="font-size:22px; color:#E2E8F0;">Typing & deleting drafts &bull; Ruining weekend plans &bull; Setting zero boundaries.</div>
           </div>
-          <div style="background:rgba(56,189,248,0.15); border-left:6px solid #38BDF8; border-radius:14px; padding:24px;">
-            <div style="color:#38BDF8; font-weight:800; font-size:24px; margin-bottom:8px;">WITH SYSTEM (8 SECONDS)</div>
-            <div style="font-size:22px; color:#E2E8F0;">Automated tradeoff response &bull; Boundaries protected &bull; Executive authority.</div>
+          <div style="background:rgba(56,189,248,0.15); border-left:6px solid #38BDF8; border-radius:16px; padding:24px;">
+            <div style="color:#38BDF8; font-weight:800; font-size:24px; margin-bottom:8px;">WITH THIS SYSTEM (8 SECONDS)</div>
+            <div style="font-size:22px; color:#E2E8F0;">Automated tradeoff response &bull; Boundaries protected &bull; Authority maintained.</div>
           </div>
         </div>
       </div>
