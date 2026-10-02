@@ -15,6 +15,7 @@ if os.path.exists(output_dir):
     shutil.rmtree(output_dir)
 os.makedirs(output_dir, exist_ok=True)
 
+# Scan repository for target images
 print("[*] Scanning repository for image assets...")
 found_path = None
 target_names = ["ai_prompt_library.png", "executive_ai_os.png"]
@@ -29,7 +30,7 @@ for root, _, files in os.walk("."):
 
 img_src = ""
 if found_path and os.path.exists(found_path):
-    print(f"[✓] Successfully located asset: {found_path}")
+    print(f"[✓] Located asset: {found_path}")
     with open(found_path, "rb") as f:
         b64 = base64.b64encode(f.read()).decode("utf-8")
         ext = os.path.splitext(found_path)[1].lower().replace(".", "")
@@ -37,7 +38,7 @@ if found_path and os.path.exists(found_path):
             ext = "jpeg"
         img_src = f"data:image/{ext};base64,{b64}"
 else:
-    print(f"[!] Target graphic not found. Available files: {os.listdir('.')}")
+    print(f"[!] Target graphic not found. Checked: {os.listdir('.')}")
 
 with open("template.html", "r", encoding="utf-8") as f:
     html_content = f.read()
@@ -47,7 +48,7 @@ temp_html = os.path.abspath("temp_rendered.html")
 with open(temp_html, "w", encoding="utf-8") as f:
     f.write(rendered_html)
 
-print("[*] Recording dynamic 18-second reel...")
+print("[*] Recording video with Playwright...")
 with sync_playwright() as p:
     browser = p.chromium.launch(
         args=[
@@ -64,7 +65,7 @@ with sync_playwright() as p:
     page = context.new_page()
     page.goto(f"file://{temp_html}", wait_until="networkidle")
 
-    # 18-second total timeline
+    # 18s duration
     page.wait_for_timeout(18000)
 
     context.close()
@@ -78,16 +79,45 @@ if not recorded_files:
     raise RuntimeError("No recording produced.")
 
 raw_video = recorded_files[0]
-print("[*] Transcoding final MP4...")
+print("[*] Generating UI sound effects and multiplexing audio...")
+
+# Generate procedural typing clicks (3s-5.4s) + system chimes via FFmpeg
+audio_cmd = (
+    "ffmpeg -y "
+    "-f lavfi -i anullsrc=r=44100:cl=stereo:d=18 "
+    # Clicks during typing
+    "-f lavfi -i \"anoisesrc=d=2.4:c=white:r=44100,volume=0.3,atempo=2.0,bandpass=f=2500:w=1200,volume=12\" "
+    # Chime when executed (5.5s)
+    "-f lavfi -i \"sine=f=880:d=0.25,volume=0.4\" "
+    # Reveal sound for Option A (6.2s)
+    "-f lavfi -i \"sine=f=520:d=0.18,volume=0.3\" "
+    # Reveal sound for Option B (7.5s)
+    "-f lavfi -i \"sine=f=660:d=0.18,volume=0.3\" "
+    "-filter_complex \""
+    "[1]adelay=3000|3000[typing];"
+    "[2]adelay=5400|5400[exec_chime];"
+    "[3]adelay=6200|6200[swoosh_a];"
+    "[4]adelay=7500|7500[swoosh_b];"
+    "[0][typing][exec_chime][swoosh_a][swoosh_b]amix=inputs=5:duration=first[aout]\" "
+    "-map \"[aout]\" -c:a aac -b:a 192k sfx_track.aac"
+)
+subprocess.check_call(audio_cmd, shell=True)
+
+print("[*] Muxing video with SFX track...")
 subprocess.check_call([
     "ffmpeg", "-y",
     "-i", raw_video,
+    "-i", "sfx_track.aac",
     "-c:v", "libx264",
     "-preset", "fast",
     "-crf", "18",
     "-pix_fmt", "yuv420p",
-    "-an",
+    "-c:a", "copy",
+    "-shortest",
     "friday_triage_100226.mp4"
 ])
 
-print("[✓] Video successfully compiled: friday_triage_100226.mp4")
+if os.path.exists("sfx_track.aac"):
+    os.remove("sfx_track.aac")
+
+print("[✓] Reel with SFX successfully rendered: friday_triage_100226.mp4")
