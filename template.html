@@ -3,34 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Fira+Code:wght@400;500;600;700&display=swap');
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       width: 1080px;
       height: 1920px;
-      background: radial-gradient(circle at 50% 15%, #0B132B 0%, #030712 60%, #000000 100%);
+      background: radial-gradient(circle at 50% 12%, #08152B 0%, #030712 55%, #010204 100%);
       font-family: 'Plus Jakarta Sans', sans-serif;
       color: #F8FAFC;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 90px 70px;
+      padding: 80px 60px 90px 60px;
       overflow: hidden;
       position: relative;
     }
 
-    /* Ambient Neural Lighting & Grid */
+    /* Ambient Neural Lighting */
     .circuit-glow {
       position: absolute;
-      top: 35%;
+      top: 40%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 900px;
-      height: 900px;
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(37, 99, 235, 0.06) 50%, transparent 75%);
-      filter: blur(90px);
+      width: 950px;
+      height: 950px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(37, 99, 235, 0.08) 45%, transparent 75%);
+      filter: blur(100px);
       pointer-events: none;
     }
 
@@ -38,242 +38,232 @@
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       background-image: 
-        linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+        linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
       background-size: 70px 70px;
       pointer-events: none;
     }
 
-    /* Top Identity & Primary Save Pill */
-    .top-nav {
+    /* Top Sticky Action Bar */
+    .top-bar {
       position: relative;
-      z-index: 20;
+      z-index: 30;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .brand-pill {
+    .brand-tag {
       display: flex;
       align-items: center;
-      gap: 14px;
-      background: rgba(15, 23, 42, 0.75);
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.85);
       border: 1px solid rgba(56, 189, 248, 0.35);
-      padding: 14px 28px;
+      padding: 12px 24px;
       border-radius: 999px;
-      backdrop-filter: blur(12px);
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 1px;
     }
-    .brand-icon {
-      width: 14px; height: 14px;
+    .brand-dot {
+      width: 12px; height: 12px;
       background: #38BDF8;
       border-radius: 50%;
-      box-shadow: 0 0 12px #38BDF8;
+      box-shadow: 0 0 10px #38BDF8;
     }
-    .brand-name {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: #F8FAFC;
-    }
-    .save-target-pill {
+    .save-banner {
       display: flex;
       align-items: center;
       gap: 10px;
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.5);
+      background: rgba(56, 189, 248, 0.16);
+      border: 1.5px solid #38BDF8;
       padding: 12px 24px;
       border-radius: 999px;
-      font-size: 18px;
       font-weight: 800;
+      font-size: 19px;
       color: #38BDF8;
-      letter-spacing: 1px;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.3);
+      animation: bannerPulse 2s infinite alternate ease-in-out;
+    }
+    @keyframes bannerPulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.04); box-shadow: 0 0 35px rgba(56, 189, 248, 0.5); }
     }
 
-    /* Scene Transitions: 20s Full Cycle */
-    .scene-wrapper {
+    /* Main Content Stage */
+    .content-stage {
       position: relative;
       z-index: 20;
       flex-grow: 1;
       margin: 40px 0;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       justify-content: center;
     }
 
-    .scene {
+    /* Act 1: The Urgent 4:45 PM Hook (0s - 3.5s) */
+    #act-hook {
+      position: absolute;
+      width: 100%;
+      animation: act1Sequence 3.5s forwards ease-in-out;
+    }
+    @keyframes act1Sequence {
+      0% { opacity: 0; transform: scale(0.92); }
+      8% { opacity: 1; transform: scale(1); }
+      88% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.05); filter: blur(8px); }
+    }
+
+    .urgent-banner {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(15, 23, 42, 0.9));
+      border: 2px solid #EF4444;
+      border-radius: 28px;
+      padding: 44px;
+      box-shadow: 0 0 50px rgba(239, 68, 68, 0.25);
+    }
+    .urgent-title {
+      font-size: 58px;
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+    }
+    .slack-card {
+      background: rgba(30, 41, 59, 0.7);
+      border-left: 6px solid #EF4444;
+      border-radius: 16px;
+      padding: 24px;
+      margin: 16px 0;
+      font-size: 26px;
+      color: #E2E8F0;
+    }
+    .callout-save {
+      margin-top: 36px;
+      background: #38BDF8;
+      color: #030712;
+      font-weight: 900;
+      font-size: 26px;
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    /* Act 2: The Tactical Copy-Paste Prompt (3.5s - 12s) */
+    #act-prompt {
       position: absolute;
       width: 100%;
       opacity: 0;
-      pointer-events: none;
+      animation: act2Sequence 8.5s 3.5s forwards ease-in-out;
+    }
+    @keyframes act2Sequence {
+      0% { opacity: 0; transform: translateY(25px); }
+      6% { opacity: 1; transform: translateY(0); }
+      92% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-25px); }
     }
 
-    #scene-1 { animation: showScene 3.5s 0.0s forwards; }
-    #scene-2 { animation: showScene 4.2s 3.5s forwards; }
-    #scene-3 { animation: showScene 4.1s 7.7s forwards; }
-    #scene-4 { animation: showScene 3.7s 11.8s forwards; }
-    #scene-5 { animation: showScene 4.5s 15.5s forwards; }
-
-    @keyframes showScene {
-      0% { opacity: 0; transform: translateY(18px) scale(0.98); }
-      7% { opacity: 1; transform: translateY(0) scale(1); }
-      93% { opacity: 1; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-18px) scale(0.98); }
-    }
-
-    /* Glassmorphic Cards */
-    .glass-card {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(56, 189, 248, 0.3);
+    .terminal-box {
+      background: #030712;
+      border: 1.5px solid rgba(56, 189, 248, 0.4);
       border-radius: 28px;
-      padding: 44px;
-      backdrop-filter: blur(18px);
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 35px rgba(56, 189, 248, 0.08);
-    }
-
-    .card-header {
-      font-size: 22px;
-      color: #38BDF8;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 26px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    /* Scene 1: Incoming Slack Pressure */
-    .chat-bubble {
-      background: rgba(30, 41, 59, 0.6);
-      border-left: 4px solid #EF4444;
-      border-radius: 14px;
-      padding: 22px 26px;
-      margin-bottom: 18px;
-      font-size: 24px;
-      color: #CBD5E1;
-    }
-    .chat-bubble strong { color: #F8FAFC; }
-    .status-alert {
-      text-align: center;
-      margin-top: 32px;
-      padding: 18px;
-      border-radius: 14px;
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #FCA5A5;
-      font-weight: 800;
-      font-size: 21px;
-      letter-spacing: 1.5px;
-    }
-
-    /* Scene 2: Terminal Prompt Box */
-    .terminal-window {
-      background: #050811;
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      border-radius: 24px;
       overflow: hidden;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.15);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(56, 189, 248, 0.15);
     }
-    .terminal-bar {
+    .terminal-header {
       background: rgba(15, 23, 42, 0.95);
-      padding: 18px 26px;
       border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 20px 30px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
     }
-    .dots { display: flex; gap: 10px; }
-    .term-dot { width: 13px; height: 13px; border-radius: 50%; }
-    .term-code {
+    .terminal-title {
       font-family: 'Fira Code', monospace;
-      padding: 34px;
-      font-size: 22px;
-      line-height: 1.65;
-      color: #E2E8F0;
-    }
-    .code-accent { color: #38BDF8; font-weight: 600; }
-    .code-green { color: #34D399; font-weight: 600; }
-
-    /* Scene 3: Tradeoff Matrix */
-    .matrix-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0 14px;
-    }
-    .matrix-table th {
-      text-align: left;
-      color: #94A3B8;
-      font-size: 18px;
-      padding: 12px 20px;
-      text-transform: uppercase;
+      color: #38BDF8;
+      font-weight: 700;
+      font-size: 20px;
       letter-spacing: 1px;
     }
-    .matrix-table td {
-      background: rgba(30, 41, 59, 0.55);
-      padding: 24px 20px;
+    .terminal-body {
+      font-family: 'Fira Code', monospace;
+      padding: 40px 36px;
       font-size: 22px;
-      border-top: 1px solid rgba(56, 189, 248, 0.15);
-      border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+      line-height: 1.6;
+      color: #F1F5F9;
     }
-    .matrix-table tr td:first-child {
-      border-left: 1px solid rgba(56, 189, 248, 0.15);
-      border-radius: 14px 0 0 14px;
-      font-weight: 800;
+    .hl-cyan { color: #38BDF8; font-weight: 700; }
+    .hl-green { color: #34D399; font-weight: 700; }
+    .hl-yellow { color: #FBBF24; font-weight: 700; }
+
+    /* Act 3: 3D Product Zoom + Bio Funnel (12s - 18s) */
+    #act-payoff {
+      position: absolute;
+      width: 100%;
+      opacity: 0;
+      animation: act3Sequence 6s 12s forwards ease-in-out;
     }
-    .matrix-table tr td:last-child {
-      border-right: 1px solid rgba(56, 189, 248, 0.15);
-      border-radius: 0 14px 14px 0;
+    @keyframes act3Sequence {
+      0% { opacity: 0; transform: scale(0.9); }
+      10% { opacity: 1; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
-    /* Scene 4: Friction Contrast */
-    .contrast-box {
-      border-radius: 16px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    /* Scene 5: Save & Conversion Finale */
-    .finale-container {
+    .payoff-box {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1.5px solid rgba(56, 189, 248, 0.4);
+      border-radius: 32px;
+      padding: 48px 40px;
+      text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
-      gap: 20px;
+      gap: 24px;
+      box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);
     }
-    .product-img {
-      max-height: 470px;
-      filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 45px rgba(56, 189, 248, 0.35));
-      animation: floatHero 4s ease-in-out infinite alternate;
+    .payoff-heading {
+      font-size: 44px;
+      font-weight: 900;
+      line-height: 1.2;
     }
-    @keyframes floatHero {
-      from { transform: translateY(0px) rotate(-1deg); }
-      to { transform: translateY(-14px) rotate(1deg); }
+    .hero-img {
+      max-height: 520px;
+      max-width: 90%;
+      object-fit: contain;
+      filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 40px rgba(56, 189, 248, 0.35));
+      animation: floatProduct 4s ease-in-out infinite alternate;
+    }
+    @keyframes floatProduct {
+      0% { transform: translateY(0px) rotate(-1deg); }
+      100% { transform: translateY(-16px) rotate(1deg); }
+    }
+    .bio-button {
+      background: #38BDF8;
+      color: #030712;
+      font-size: 26px;
+      font-weight: 900;
+      padding: 20px 42px;
+      border-radius: 16px;
+      box-shadow: 0 0 35px rgba(56, 189, 248, 0.5);
+      letter-spacing: 0.5px;
     }
 
-    /* Bottom Save Bar */
+    /* Bottom Identity Strip */
     .bottom-bar {
       position: relative;
-      z-index: 20;
+      z-index: 30;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 10px;
       color: #94A3B8;
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 700;
     }
-    .bookmark-cta {
+    .bottom-save-pill {
       color: #38BDF8;
       display: flex;
       align-items: center;
-      gap: 12px;
-      animation: pulseBookmark 2.5s ease-in-out infinite alternate;
-    }
-    @keyframes pulseBookmark {
-      from { transform: scale(1); }
-      to { transform: scale(1.05); }
+      gap: 10px;
     }
   </style>
 </head>
@@ -282,125 +272,73 @@
   <div class="grid-mesh"></div>
   <div class="circuit-glow"></div>
 
-  <!-- Top Navigation with Save Incentive -->
-  <div class="top-nav">
-    <div class="brand-pill">
-      <div class="brand-icon"></div>
-      <span class="brand-name">@workflowsuperai</span>
+  <!-- Top Action Bar -->
+  <div class="top-bar">
+    <div class="brand-tag">
+      <div class="brand-dot"></div>
+      <span>@workflowsuperai</span>
     </div>
-    <div class="save-target-pill">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="#38BDF8"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-      SAVE TO PRESERVE SPRINT
+    <div class="save-banner">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#38BDF8"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      SAVE BEFORE 5:00 PM
     </div>
   </div>
 
-  <!-- Tactical Multi-Scene Flow -->
-  <div class="scene-wrapper">
+  <!-- Main Multi-Act Content Stage -->
+  <div class="content-stage">
 
-    <!-- Scene 1: Friday Inbound Pressure -->
-    <div class="scene" id="scene-1">
-      <div class="glass-card">
-        <div class="card-header">
-          <span>Incoming Pressure</span>
-          <span style="color: #EF4444;">4:45 PM Slack</span>
+    <!-- Act 1: The Urgent Hook (0-3.5s) -->
+    <div id="act-hook">
+      <div class="urgent-banner">
+        <div style="color: #EF4444; font-size: 22px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px;">
+          CRITICAL PROTOCOL
         </div>
-        <div class="chat-bubble"><strong>VP Product:</strong> "Need updated enterprise decks tonight."</div>
-        <div class="chat-bubble"><strong>Lead Client:</strong> "Can we squeeze in SSO before morning?"</div>
-        <div class="chat-bubble"><strong>Executive:</strong> "Just work late and push it through."</div>
-        <div class="status-alert">DEFAULT RESPONSE: REACTIVE SUBMISSION</div>
+        <h1 class="urgent-title">STOP WORKING LATE FRIDAY.</h1>
+        <div class="slack-card"><strong>VP Product:</strong> "Can we drop everything and ship this tonight?"</div>
+        <div class="slack-card"><strong>Lead Client:</strong> "Needs to go live before tomorrow morning."</div>
+        <div class="callout-save">🔖 BOOKMARK THIS NOW: NEVER PANIC AGAIN</div>
       </div>
     </div>
 
-    <!-- Scene 2: The Tactical System Prompt -->
-    <div class="scene" id="scene-2">
-      <div class="terminal-window">
-        <div class="terminal-bar">
-          <div class="dots">
-            <div class="term-dot" style="background:#EF4444;"></div>
-            <div class="term-dot" style="background:#F59E0B;"></div>
-            <div class="term-dot" style="background:#10B981;"></div>
+    <!-- Act 2: Copy-Paste Tactical Prompt (3.5-12s) -->
+    <div id="act-prompt">
+      <div class="terminal-box">
+        <div class="terminal-header">
+          <div style="display: flex; gap: 8px;">
+            <div style="width: 14px; height: 14px; border-radius: 50%; background: #EF4444;"></div>
+            <div style="width: 14px; height: 14px; border-radius: 50%; background: #F59E0B;"></div>
+            <div style="width: 14px; height: 14px; border-radius: 50%; background: #10B981;"></div>
           </div>
-          <span style="color: #38BDF8; font-family: 'Fira Code', monospace; font-size: 18px; font-weight: 600;">BOOKMARK & COPY PROMPT</span>
+          <span class="terminal-title">DE_ESCALATION_PROMPT.MD</span>
+          <span style="color: #34D399; font-size: 15px; font-weight: 800;">[COPY READY]</span>
         </div>
-        <div class="term-code">
-          <span class="code-accent">ACT AS:</span> Executive Negotiation Strategist<br>
-          <span class="code-accent">GOAL:</span> De-escalate reactive scope creep without emotion.<br><br>
-          <span class="code-accent">OPERATIONAL DIRECTIVE:</span><br>
-          1. Validate business intent without accepting guilt.<br>
-          2. Surface sprint opportunity cost.<br>
-          3. Output a 3-option Strategic Tradeoff Grid.<br><br>
-          <span class="code-green">&gt; STATUS: SAVED TO WORKSPACE</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Scene 3: The 3-Tier Tradeoff Matrix -->
-    <div class="scene" id="scene-3">
-      <div class="glass-card">
-        <div class="card-header">
-          <span>Strategic Tradeoff Matrix</span>
-          <span style="color: #38BDF8;">Step 2: Choices</span>
-        </div>
-        <table class="matrix-table">
-          <thead>
-            <tr><th>Option</th><th>Proposed Action</th><th>Strategic Tradeoff</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="color:#EF4444;">A: Urgent</td>
-              <td>Ship file by 9 PM</td>
-              <td>Delays Q4 AWS sprint 48h</td>
-            </tr>
-            <tr>
-              <td style="color:#38BDF8;">B: Protect</td>
-              <td>Deliver at 9 AM</td>
-              <td>Zero impact to active sprint</td>
-            </tr>
-            <tr>
-              <td style="color:#34D399;">C: Route</td>
-              <td>Route to on-call</td>
-              <td>Requires overtime sign-off</td>
-            </tr>
-          </tbody>
-        </table>
-        <div style="margin-top: 26px; color: #94A3B8; font-size: 20px; text-align: center;">
-          <strong style="color: #F8FAFC;">Leverage:</strong> Sender chooses the sacrifice, not you.
+        <div class="terminal-body">
+          <span class="hl-cyan">ACT AS:</span> Executive Negotiation Strategist.<br><br>
+          <span class="hl-yellow">OPERATIONAL DIRECTIVE:</span><br>
+          De-escalate reactive requests without apology.<br>
+          1. Validate business intent in 1 sentence.<br>
+          2. Surface sprint opportunity costs.<br>
+          3. Generate a 3-Option Strategic Tradeoff Grid:<br>
+          &nbsp;&nbsp;&bull; <span style="color:#EF4444;">Option A:</span> Ship tonight (Sprint delayed 48h)<br>
+          &nbsp;&nbsp;&bull; <span style="color:#38BDF8;">Option B:</span> Ship Monday 9 AM (Zero impact)<br>
+          &nbsp;&nbsp;&bull; <span style="color:#34D399;">Option C:</span> Escalate to on-call (Overtime)<br><br>
+          <span class="hl-green">&gt; OUTPUT: Requester chooses the sacrifice, not you.</span>
         </div>
       </div>
     </div>
 
-    <!-- Scene 4: Emotional Spiral vs Calm Control -->
-    <div class="scene" id="scene-4">
-      <div class="glass-card">
-        <div class="card-header">
-          <span>Emotional Spiral &rarr; Calm Control</span>
-          <span style="color: #34D399;">8 Seconds</span>
+    <!-- Act 3: Save + Free Bio Funnel (12-18s) -->
+    <div id="act-payoff">
+      <div class="payoff-box">
+        <div style="color: #38BDF8; font-size: 20px; font-weight: 800; letter-spacing: 2px;">
+          SAVED TO SYSTEM WORKSPACE
         </div>
-        <div style="display: flex; flex-direction: column; gap: 20px;">
-          <div class="contrast-box" style="background: rgba(239,68,68,0.12); border-left: 5px solid #EF4444;">
-            <div style="color: #EF4444; font-weight: 800; font-size: 22px;">DEFAULT: REACTIVE ANXIETY (40 MINS)</div>
-            <div style="color: #CBD5E1; font-size: 20px;">Typing and deleting drafts &bull; Ruining your weekend plans &bull; Resetting team boundaries to zero.</div>
-          </div>
-          <div class="contrast-box" style="background: rgba(56,189,248,0.12); border-left: 5px solid #38BDF8;">
-            <div style="color: #38BDF8; font-weight: 800; font-size: 22px;">SYSTEM: STRATEGIC DE-ESCALATION</div>
-            <div style="color: #CBD5E1; font-size: 20px;">Puts decision back on requester &bull; Protects sprint focus &bull; Projects executive authority.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Scene 5: Save Reel + Free Library Bio Funnel -->
-    <div class="scene" id="scene-5">
-      <div class="glass-card finale-container">
-        <div style="font-size: 20px; color: #38BDF8; font-weight: 800; letter-spacing: 2px;">
-          SAVE THIS REEL TO PRESERVE YOUR SPRINT
-        </div>
-        <h2 style="font-size: 42px; font-weight: 800; line-height: 1.2;">
-          Get The De-Escalation Prompt + Free 7-Prompt AI Library
+        <h2 class="payoff-heading">
+          Get the Full 7-Prompt<br>Executive Library Free
         </h2>
-        <img src="__PRODUCT_IMAGE_SRC__" class="product-img" alt="The Executive AI Operating System" />
-        <div style="background: #38BDF8; color: #030712; font-weight: 800; font-size: 23px; padding: 18px 38px; border-radius: 14px; box-shadow: 0 0 35px rgba(56, 189, 248, 0.45); letter-spacing: 1px;">
-          FREE ACCESS: BEACONS.AI/WORKFLOWSUPERAI
+        <img src="__HERO_ASSET__" class="hero-img" alt="Executive Prompt Library" />
+        <div class="bio-button">
+          LINK IN BIO &bull; BEACONS.AI/WORKFLOWSUPERAI
         </div>
       </div>
     </div>
@@ -409,11 +347,11 @@
 
   <!-- Bottom Identity Bar -->
   <div class="bottom-bar">
-    <div class="bookmark-cta">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="#38BDF8"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-      SAVE THIS REEL
+    <div class="bottom-save-pill">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="#38BDF8"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      SAVE TO PRESERVE YOUR SPRINT
     </div>
-    <span>AI EXECUTIVE PIPELINE</span>
+    <span>AI EXECUTIVE ARCHITECTURE</span>
   </div>
 
 </body>
