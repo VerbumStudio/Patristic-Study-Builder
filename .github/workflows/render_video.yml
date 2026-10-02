@@ -1,32 +1,7 @@
-name: Generate Campaign Video
-
-on:
-  workflow_dispatch:
-
-jobs:
-  render-video:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Build and Render Reel
+- name: Commit Output Reel to Repo
         run: |
-          sudo apt-get update && sudo apt-get install -y ffmpeg imagemagick
-          sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml || true
-          pip install --upgrade pip
-          pip install "moviepy<2.0.0" imageio-ffmpeg
-          python render.py
-
-      - name: Upload Video Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: morning_triage_video
-          path: output_reel.mp4
-
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add output_reel.mp4
+          git commit -m "chore: automated reel render artifact" || exit 0
+          git push
