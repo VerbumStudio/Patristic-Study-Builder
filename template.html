@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Fira+Code:wght@500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap');
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -38,8 +38,8 @@
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
       background-image: 
-        linear-gradient(rgba(56, 189, 248, 0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(56, 189, 248, 0.06) 1px, transparent 1px);
+        linear-gradient(rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
       background-size: 60px 60px;
       pointer-events: none;
     }
@@ -56,13 +56,14 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(56, 189, 248, 0.4);
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.35);
       padding: 14px 26px;
       border-radius: 999px;
       font-weight: 800;
       font-size: 22px;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
     .brand-dot {
       width: 14px; height: 14px;
@@ -74,22 +75,22 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      background: rgba(56, 189, 248, 0.2);
-      border: 2px solid #38BDF8;
+      background: rgba(56, 189, 248, 0.18);
+      border: 1.5px solid #38BDF8;
       padding: 14px 28px;
       border-radius: 999px;
-      font-weight: 900;
+      font-weight: 800;
       font-size: 21px;
       color: #38BDF8;
-      box-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.35);
       animation: pulseAlert 1.5s infinite alternate ease-in-out;
     }
     @keyframes pulseAlert {
       from { transform: scale(1); box-shadow: 0 0 20px rgba(56, 189, 248, 0.3); }
-      to { transform: scale(1.05); box-shadow: 0 0 40px rgba(56, 189, 248, 0.7); }
+      to { transform: scale(1.04); box-shadow: 0 0 35px rgba(56, 189, 248, 0.6); }
     }
 
-    /* Stage */
+    /* Main Stage */
     .stage {
       position: relative;
       z-index: 30;
@@ -108,11 +109,12 @@
 
     /* ACT 1: Immediate Hook (0.0s - 2.8s) */
     .hero-alert {
-      background: linear-gradient(180deg, rgba(239, 68, 68, 0.25) 0%, rgba(15, 23, 42, 0.95) 100%);
-      border: 2px solid #EF4444;
-      border-radius: 32px;
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.2) 0%, rgba(15, 23, 42, 0.85) 100%);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(239, 68, 68, 0.7);
+      border-radius: 36px;
       padding: 50px 40px;
-      box-shadow: 0 0 60px rgba(239, 68, 68, 0.35);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 60px rgba(239, 68, 68, 0.25);
     }
     .hero-title {
       font-size: 64px;
@@ -122,8 +124,8 @@
       letter-spacing: -1.5px;
     }
     .chat-bubble {
-      background: rgba(30, 41, 59, 0.85);
-      border-left: 6px solid #EF4444;
+      background: rgba(30, 41, 59, 0.6);
+      border-left: 5px solid #EF4444;
       border-radius: 18px;
       padding: 24px 28px;
       margin: 16px 0;
@@ -139,69 +141,110 @@
       padding: 24px;
       border-radius: 18px;
       text-align: center;
-      box-shadow: 0 0 40px rgba(56, 189, 248, 0.6);
+      box-shadow: 0 0 35px rgba(56, 189, 248, 0.5);
     }
 
-    /* ACTS 2 & 3: Kinetic System Execution (2.8s - 10.5s) */
-    .live-stream-container {
+    /* ACTS 2 & 3: Modern Executive Workspace (2.8s - 10.5s) */
+    .modern-workspace-container {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 18px;
     }
 
-    .waveform-bar-container {
+    /* Waveform with modern pill styling */
+    .waveform-pill-bar {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      height: 44px;
+      justify-content: space-between;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 12px 24px;
+      border-radius: 999px;
+    }
+    .waveform-visualizer {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      height: 32px;
     }
     .wave-line {
-      width: 6px;
+      width: 5px;
       background: #38BDF8;
       border-radius: 999px;
       animation: waveOscillate 0.8s infinite alternate ease-in-out;
     }
     @keyframes waveOscillate {
-      0% { height: 8px; opacity: 0.3; }
-      100% { height: 42px; opacity: 1; box-shadow: 0 0 15px #38BDF8; }
+      0% { height: 6px; opacity: 0.3; }
+      100% { height: 28px; opacity: 1; box-shadow: 0 0 10px #38BDF8; }
     }
 
-    .incoming-strip {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1.5px solid #EF4444;
+    /* Incoming message card */
+    .incoming-msg-card {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.4);
       border-radius: 20px;
       padding: 20px 26px;
-      font-size: 25px;
-      color: #FCA5A5;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .status-badge-red {
+      background: #EF4444;
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .incoming-msg-text {
+      font-size: 24px;
       font-weight: 700;
+      color: #F8FAFC;
     }
 
-    .terminal-execution-card {
-      background: #030712;
-      border: 2px solid rgba(56, 189, 248, 0.45);
-      border-radius: 28px;
-      padding: 30px 28px;
+    /* The Main SaaS Workspace Panel */
+    .saas-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(28px);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 32px;
+      padding: 34px 32px;
       min-height: 740px;
-      box-shadow: 0 0 50px rgba(56, 189, 248, 0.25);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 45px rgba(56, 189, 248, 0.15);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    .prompt-blueprint {
-      font-family: 'Fira Code', monospace;
-      font-size: 21px;
-      line-height: 1.55;
-      background: rgba(15, 23, 42, 0.8);
-      border-radius: 16px;
-      padding: 22px;
-      border-left: 4px solid #38BDF8;
+    /* Modern metadata header pills */
+    .system-pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .yaml-key { color: #38BDF8; font-weight: 700; }
-    .yaml-val { color: #F8FAFC; }
-    .yaml-constraint { color: #FBBF24; }
+    .meta-pill {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 17px;
+      font-weight: 700;
+      color: #94A3B8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .meta-pill strong {
+      color: #F8FAFC;
+    }
 
+    /* Staggered Dynamic Cards */
     .stagger-item {
       opacity: 0;
       transform: translateY(12px);
@@ -212,45 +255,74 @@
       transform: translateY(0);
     }
 
-    .trade-row-large {
+    .option-card {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(30, 41, 59, 0.7);
-      border-left: 6px solid #38BDF8;
-      border-radius: 14px;
-      padding: 18px 24px;
-      margin: 10px 0;
-      font-size: 25px;
-    }
-
-    .copy-response-box {
-      background: rgba(15, 23, 42, 0.95);
-      border: 2px solid #34D399;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 18px;
-      padding: 24px 26px;
-      margin-top: 10px;
-      font-size: 26px;
+      padding: 20px 24px;
+      margin: 10px 0;
+    }
+    .option-tag {
+      font-size: 20px;
       font-weight: 800;
-      line-height: 1.45;
-      color: #F8FAFC;
-      box-shadow: 0 0 35px rgba(52, 211, 153, 0.25);
+      padding: 6px 14px;
+      border-radius: 8px;
+    }
+    .option-detail {
+      font-size: 25px;
+      font-weight: 700;
+      color: #E2E8F0;
     }
 
-    .footer-directive {
-      margin-top: 14px;
-      text-align: center;
+    /* Outgoing Copied Reply Box */
+    .response-card {
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border: 1.5px solid #10B981;
+      border-radius: 22px;
+      padding: 26px 28px;
+      margin-top: 10px;
+      box-shadow: 0 0 35px rgba(16, 185, 129, 0.2);
+    }
+    .response-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 800;
       color: #34D399;
-      font-family: 'Fira Code', monospace;
-      font-size: 20px;
-      font-weight: 700;
       letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .response-body {
+      font-size: 27px;
+      font-weight: 800;
+      line-height: 1.4;
+      color: #FFFFFF;
+    }
+
+    .bottom-directive-pill {
+      margin-top: 14px;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 19px;
+      font-weight: 800;
+      color: #38BDF8;
+      letter-spacing: 0.5px;
     }
 
     /* ACT 4: Product Payoff (10.5s - 15.0s) */
     .payoff-card {
-      background: rgba(15, 23, 42, 0.95);
-      border: 2px solid rgba(56, 189, 248, 0.45);
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(28px);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 36px;
       padding: 44px 36px;
       text-align: center;
@@ -258,7 +330,7 @@
       flex-direction: column;
       align-items: center;
       gap: 22px;
-      box-shadow: 0 0 60px rgba(56, 189, 248, 0.3);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 50px rgba(56, 189, 248, 0.25);
     }
     .product-stage {
       width: 100%;
@@ -271,13 +343,13 @@
       max-height: 480px;
       max-width: 85%;
       border-radius: 24px;
-      border: 1px solid rgba(56, 189, 248, 0.5);
+      border: 1px solid rgba(56, 189, 248, 0.4);
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 45px rgba(56, 189, 248, 0.3);
       animation: floatProduct 3s ease-in-out infinite alternate;
     }
     @keyframes floatProduct {
       from { transform: translateY(0px) rotate(-1deg); }
-      to { transform: translateY(-12px) rotate(1deg); }
+      to { transform: translateY(-10px) rotate(1deg); }
     }
 
     .cta-button {
@@ -287,7 +359,7 @@
       font-weight: 900;
       padding: 22px 42px;
       border-radius: 18px;
-      box-shadow: 0 0 40px rgba(56, 189, 248, 0.6);
+      box-shadow: 0 0 35px rgba(56, 189, 248, 0.5);
       letter-spacing: 0.5px;
     }
 
@@ -326,7 +398,7 @@
     <!-- ACT 1: Immediate Hook (0.0s - 2.8s) -->
     <div class="scene-panel" id="scene-hook" style="display: block;">
       <div class="hero-alert">
-        <div style="color: #EF4444; font-size: 24px; font-weight: 900; letter-spacing: 2px; margin-bottom: 12px;">CRITICAL PROTOCOL</div>
+        <div style="color: #EF4444; font-size: 22px; font-weight: 900; letter-spacing: 2px; margin-bottom: 12px;">CRITICAL PROTOCOL</div>
         <h1 class="hero-title">STOP WORKING LATE ON FRIDAY.</h1>
         <div class="chat-bubble"><strong>VP Product:</strong> "Can we drop everything and ship tonight?"</div>
         <div class="chat-bubble"><strong>Lead Client:</strong> "Must be live before tomorrow morning."</div>
@@ -336,53 +408,71 @@
       </div>
     </div>
 
-    <!-- ACTS 2 & 3: Kinetic System Execution (2.8s - 10.5s) -->
+    <!-- ACTS 2 & 3: Modern Executive Workspace (2.8s - 10.5s) -->
     <div class="scene-panel" id="scene-kinetic">
-      <div class="live-stream-container">
+      <div class="modern-workspace-container">
         
-        <div class="waveform-bar-container">
-          <div class="wave-line" style="animation-delay: 0.1s;"></div>
-          <div class="wave-line" style="animation-delay: 0.3s;"></div>
-          <div class="wave-line" style="animation-delay: 0.5s;"></div>
-          <div class="wave-line" style="animation-delay: 0.2s;"></div>
-          <div class="wave-line" style="animation-delay: 0.4s;"></div>
-          <div class="wave-line" style="animation-delay: 0.6s;"></div>
-          <div class="wave-line" style="animation-delay: 0.1s;"></div>
-          <div class="wave-line" style="animation-delay: 0.3s;"></div>
-          <span style="font-family:'Fira Code'; font-size:18px; color:#38BDF8; font-weight:700; margin-left:14px;" id="status-tag">INGESTING REASONING BLUEPRINT...</span>
+        <!-- Modernized Waveform Pill -->
+        <div class="waveform-pill-bar">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 10px; height: 10px; background: #38BDF8; border-radius: 50%; box-shadow: 0 0 8px #38BDF8;"></div>
+            <span style="font-size: 19px; font-weight: 800; color: #F8FAFC;" id="status-tag">Executive Protocol Initializing...</span>
+          </div>
+          <div class="waveform-visualizer">
+            <div class="wave-line" style="animation-delay: 0.1s;"></div>
+            <div class="wave-line" style="animation-delay: 0.3s;"></div>
+            <div class="wave-line" style="animation-delay: 0.5s;"></div>
+            <div class="wave-line" style="animation-delay: 0.2s;"></div>
+            <div class="wave-line" style="animation-delay: 0.4s;"></div>
+            <div class="wave-line" style="animation-delay: 0.6s;"></div>
+          </div>
         </div>
 
-        <div class="incoming-strip">
-          &gt; INCOMING 4:48 PM: "Ship file tonight or sprint fails."
+        <!-- Modern Incoming Slack Pill Card -->
+        <div class="incoming-msg-card">
+          <div class="status-badge-red">Urgent 4:48 PM</div>
+          <div class="incoming-msg-text">"Ship file tonight or sprint fails."</div>
         </div>
 
-        <div class="terminal-execution-card">
-          <!-- Structured Enterprise Prompt Header -->
-          <div class="prompt-blueprint">
-            <span class="yaml-key">PROTOCOL:</span> <span class="yaml-val">Executive Boundary Defense v3.2</span><br>
-            <span class="yaml-key">CONSTRAINTS:</span> <span class="yaml-constraint">Zero Apologies &bull; Surface Sprint Costs &bull; Force Choice</span><br>
-            <span class="yaml-key">INPUT:</span> <span class="yaml-val">"Ship tonight before tomorrow morning."</span>
+        <!-- Glassmorphism SaaS Card -->
+        <div class="saas-card">
+          
+          <!-- Metadata Chips Row -->
+          <div class="system-pills-row">
+            <div class="meta-pill">Engine: <strong>Boundary Defense v3.2</strong></div>
+            <div class="meta-pill">Rules: <strong>Zero Apologies &bull; Force Choice</strong></div>
           </div>
 
-          <!-- Staggered Dynamic Elements -->
-          <div id="item-opt-a" class="stagger-item trade-row-large" style="border-left-color: #EF4444;">
-            <strong style="color:#EF4444;">Option A: Urgent</strong>
-            <span>Ship Tonight &bull; Delays Sprint 48h</span>
+          <!-- Staggered Executive Options -->
+          <div id="item-opt-a" class="stagger-item option-card">
+            <div class="option-tag" style="background: rgba(239, 68, 68, 0.2); color: #F87171; border: 1px solid rgba(239, 68, 68, 0.4);">
+              Option A: Urgent
+            </div>
+            <div class="option-detail">Ship Tonight &bull; Delays Sprint 48h</div>
           </div>
 
-          <div id="item-opt-b" class="stagger-item trade-row-large" style="border-left-color: #38BDF8;">
-            <strong style="color:#38BDF8;">Option B: Protect</strong>
-            <span>Ship Mon 9 AM &bull; Zero Impact</span>
+          <div id="item-opt-b" class="stagger-item option-card">
+            <div class="option-tag" style="background: rgba(56, 189, 248, 0.2); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.4);">
+              Option B: Protect
+            </div>
+            <div class="option-detail">Ship Mon 9 AM &bull; Zero Impact</div>
           </div>
 
-          <div id="item-reply" class="stagger-item copy-response-box">
-            <div style="font-size: 19px; color: #34D399; margin-bottom: 6px; text-transform: uppercase;">COPY & SEND THIS REPLY:</div>
-            "Happy to deliver tonight (which delays Monday's sprint) OR Monday 9 AM with zero project delay. Which tradeoff do you prefer?"
+          <!-- Exact Output Response Card -->
+          <div id="item-reply" class="stagger-item response-card">
+            <div class="response-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#34D399"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              Copy & Send This Reply:
+            </div>
+            <div class="response-body">
+              "Happy to deliver tonight (which delays Monday's sprint) OR Monday 9 AM with zero project delay. Which tradeoff do you prefer?"
+            </div>
           </div>
 
-          <div id="item-directive" class="stagger-item footer-directive">
+          <div id="item-directive" class="stagger-item bottom-directive-pill">
             &gt; SENDER CHOOSES THE SACRIFICE, NOT YOU.
           </div>
+
         </div>
 
       </div>
@@ -437,20 +527,20 @@
         sceneKinetic.style.display = 'none';
         scenePayoff.style.display = 'none';
       }
-      // 2.8s - 10.5s: Structured Tactical Flow
+      // 2.8s - 10.5s: Modern SaaS Workspace Flow
       else if (elapsed >= 2.8 && elapsed < 10.5) {
         sceneHook.style.display = 'none';
         sceneKinetic.style.display = 'block';
         scenePayoff.style.display = 'none';
 
         if (elapsed < 4.5) {
-          statusTagEl.innerText = "RUNNING REASONING MATRIX...";
+          statusTagEl.innerText = "Analyzing incoming request...";
           statusTagEl.style.color = "#38BDF8";
         } else if (elapsed >= 4.5 && elapsed < 5.6) {
-          statusTagEl.innerText = "COMPILING TRADEOFF CHOICES...";
+          statusTagEl.innerText = "Generating Tradeoff Architecture...";
           statusTagEl.style.color = "#FBBF24";
         } else {
-          statusTagEl.innerText = "EXECUTIVE PROTOCOL ACTIVE";
+          statusTagEl.innerText = "Executive Response Active";
           statusTagEl.style.color = "#34D399";
         }
 
