@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Fira+Code:wght@500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Fira+Code:wght@600;700&display=swap');
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -96,12 +96,14 @@
       justify-content: center;
     }
 
-    /* ACT 1: Immediate Hook (0s - 3s) */
-    #act-hook {
+    /* Scene Panels */
+    .scene-panel {
       position: absolute;
       width: 100%;
-      animation: snapExit 0.2s 3s forwards;
+      display: none;
     }
+
+    /* Scene 1: Emergency Hook (0-3s) */
     .hero-alert {
       background: linear-gradient(180deg, rgba(239, 68, 68, 0.25) 0%, rgba(15, 23, 42, 0.95) 100%);
       border: 2px solid #EF4444;
@@ -137,119 +139,86 @@
       box-shadow: 0 0 40px rgba(56, 189, 248, 0.6);
     }
 
-    /* FAST-CYCLING 3-PHASE SEQUENCER (3s - 12s) */
-    .middle-box {
-      position: absolute;
-      width: 100%;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    #box-a { animation: stageA 3s 3s forwards; }
-    @keyframes stageA {
-      0% { opacity: 0; transform: scale(1.04); }
-      8% { opacity: 1; transform: scale(1); pointer-events: auto; }
-      92% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(0.96); pointer-events: none; }
-    }
-
-    #box-b { animation: stageB 3s 6s forwards; }
-    @keyframes stageB {
-      0% { opacity: 0; transform: scale(1.04); }
-      8% { opacity: 1; transform: scale(1); pointer-events: auto; }
-      92% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(0.96); pointer-events: none; }
-    }
-
-    #box-c { animation: stageC 3s 9s forwards; }
-    @keyframes stageC {
-      0% { opacity: 0; transform: scale(1.04); }
-      8% { opacity: 1; transform: scale(1); pointer-events: auto; }
-      92% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(0.96); pointer-events: none; }
-    }
-
-    /* ACT 3: Conversion Payoff (12s - 18s) */
-    #act-payoff {
-      position: absolute;
-      width: 100%;
-      opacity: 0;
-      animation: snapEnter 0.25s 12s forwards;
-    }
-
-    @keyframes snapExit { to { opacity: 0; transform: scale(0.92); pointer-events: none; } }
-    @keyframes snapEnter { to { opacity: 1; transform: scale(1); pointer-events: auto; } }
-
-    /* Tall Cyber Panels */
-    .terminal-container {
-      background: #030712;
-      border: 2px solid rgba(56, 189, 248, 0.45);
-      border-radius: 32px;
-      overflow: hidden;
-      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), 0 0 50px rgba(56, 189, 248, 0.2);
-    }
-    .terminal-topbar {
-      background: rgba(15, 23, 42, 0.98);
-      border-bottom: 1px solid rgba(56, 189, 248, 0.25);
-      padding: 22px 32px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .window-dots { display: flex; gap: 10px; }
-    .window-dot { width: 15px; height: 15px; border-radius: 50%; }
-
-    .terminal-content {
-      font-family: 'Fira Code', monospace;
-      padding: 40px 36px;
-      font-size: 24px;
-      line-height: 1.6;
-      color: #F8FAFC;
-      min-height: 820px;
+    /* Scene 2: Live Kinetic Deconstruction (3s-12s) */
+    .live-stream-container {
       display: flex;
       flex-direction: column;
-      justify-content: space-around;
+      gap: 24px;
     }
 
-    /* Streaming Line Animations */
-    .stream-line {
-      opacity: 0;
-      transform: translateY(8px);
-      animation: lineIn 0.35s forwards ease-out;
+    /* Live Waveform Audio/Activity Visualizer */
+    .waveform-bar-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 48px;
+      margin-bottom: 10px;
     }
-    @keyframes lineIn {
-      to { opacity: 1; transform: translateY(0); }
+    .wave-line {
+      width: 6px;
+      background: #38BDF8;
+      border-radius: 999px;
+      animation: waveOscillate 0.8s infinite alternate ease-in-out;
+    }
+    @keyframes waveOscillate {
+      0% { height: 8px; opacity: 0.3; }
+      100% { height: 46px; opacity: 1; box-shadow: 0 0 15px #38BDF8; }
     }
 
-    /* The Exact Output Card */
-    .script-box {
-      background: rgba(15, 23, 42, 0.95);
-      border: 2px solid #38BDF8;
+    .incoming-strip {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1.5px solid #EF4444;
       border-radius: 20px;
-      padding: 30px 28px;
-      margin: 18px 0;
-      font-size: 27px;
-      line-height: 1.5;
-      color: #F8FAFC;
-      box-shadow: 0 0 40px rgba(56, 189, 248, 0.3);
-    }
-    .script-highlight {
-      color: #38BDF8;
+      padding: 24px 28px;
+      font-size: 25px;
+      color: #FCA5A5;
       font-weight: 700;
     }
 
-    .trade-row {
+    .typewriter-card {
+      background: #030712;
+      border: 2px solid #38BDF8;
+      border-radius: 28px;
+      padding: 40px 36px;
+      min-height: 480px;
+      box-shadow: 0 0 50px rgba(56, 189, 248, 0.35);
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(30, 41, 59, 0.6);
-      border: 1px solid rgba(56, 189, 248, 0.2);
-      border-radius: 16px;
-      padding: 22px 24px;
-      margin: 12px 0;
-      font-size: 23px;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .typewriter-text {
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.45;
+      color: #FFFFFF;
+      min-height: 240px;
+    }
+    .typewriter-cursor {
+      display: inline-block;
+      width: 14px;
+      height: 36px;
+      background: #38BDF8;
+      margin-left: 6px;
+      vertical-align: middle;
+      box-shadow: 0 0 15px #38BDF8;
+      animation: blinkCursor 0.5s infinite alternate;
+    }
+    @keyframes blinkCursor { from { opacity: 1; } to { opacity: 0; } }
+
+    .sub-directive {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(56, 189, 248, 0.3);
+      color: #34D399;
+      font-family: 'Fira Code', monospace;
+      font-size: 21px;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 1px;
     }
 
+    /* Scene 3: Payoff Mockup (12s-18s) */
     .payoff-card {
       background: rgba(15, 23, 42, 0.95);
       border: 2px solid rgba(56, 189, 248, 0.45);
@@ -325,107 +294,53 @@
 
   <div class="stage">
 
-    <!-- ACT 1: Hook (0s - 3s) -->
-    <div id="act-hook">
+    <!-- SCENE 1: Hook (0s - 3s) -->
+    <div class="scene-panel" id="scene-hook" style="display: block;">
       <div class="hero-alert">
         <div style="color: #EF4444; font-size: 24px; font-weight: 900; letter-spacing: 2px; margin-bottom: 12px;">CRITICAL PROTOCOL</div>
         <h1 class="hero-title">STOP WORKING LATE ON FRIDAY.</h1>
         <div class="chat-bubble"><strong>VP Product:</strong> "Can we drop everything and ship tonight?"</div>
         <div class="chat-bubble"><strong>Lead Client:</strong> "Must be live before tomorrow morning."</div>
         <div class="hook-save-trigger">
-          🔖 SAVE THIS: 3-TIER DE-ESCALATION PROMPT
+          🔖 SAVE THIS: LIVE DE-ESCALATION PROMPT
         </div>
       </div>
     </div>
 
-    <!-- BOX 1 (3s - 6s): Live Ingestion & Processing -->
-    <div class="middle-box" id="box-a">
-      <div class="terminal-container">
-        <div class="terminal-topbar">
-          <div class="window-dots">
-            <div class="window-dot" style="background:#EF4444;"></div>
-            <div class="window-dot" style="background:#F59E0B;"></div>
-            <div class="window-dot" style="background:#10B981;"></div>
-          </div>
-          <span style="color:#38BDF8; font-family:'Fira Code'; font-size:20px; font-weight:700;">TRIAGE_ENGINE.PY</span>
-          <span style="color:#34D399; font-weight:700; font-size:16px;">&bull; PROCESSING (8 SEC)</span>
+    <!-- SCENE 2: Real Animated Kinetic Stream (3s - 12s) -->
+    <div class="scene-panel" id="scene-kinetic">
+      <div class="live-stream-container">
+        
+        <!-- Live Audio Waveform Animation -->
+        <div class="waveform-bar-container">
+          <div class="wave-line" style="animation-delay: 0.1s;"></div>
+          <div class="wave-line" style="animation-delay: 0.3s;"></div>
+          <div class="wave-line" style="animation-delay: 0.5s;"></div>
+          <div class="wave-line" style="animation-delay: 0.2s;"></div>
+          <div class="wave-line" style="animation-delay: 0.4s;"></div>
+          <div class="wave-line" style="animation-delay: 0.6s;"></div>
+          <div class="wave-line" style="animation-delay: 0.1s;"></div>
+          <div class="wave-line" style="animation-delay: 0.3s;"></div>
+          <span style="font-family:'Fira Code'; font-size:18px; color:#38BDF8; font-weight:700; margin-left:14px;">NEURAL TRIAGE ACTIVE</span>
         </div>
-        <div class="terminal-content">
-          <div class="stream-line" style="animation-delay: 0.1s;">
-            <span style="color:#94A3B8;">&gt; INCOMING REQUEST:</span><br>
-            <span style="color:#EF4444; font-weight:700;">"Emergency: Can you finish the deck tonight?"</span>
-          </div>
 
-          <div class="stream-line" style="animation-delay: 0.8s;">
-            <span style="color:#FBBF24; font-weight:700;">[STATUS: EVALUATING LEVERAGE MATRIX]</span><br>
-            <span style="color:#64748B;">&bull; Guilt response: DISABLED</span><br>
-            <span style="color:#64748B;">&bull; Apology count: 0</span><br>
-            <span style="color:#38BDF8; font-weight:700;">&bull; Tradeoff choices generated: 3</span>
-          </div>
-
-          <div class="stream-line" style="animation-delay: 1.6s;">
-            <span style="color:#34D399; font-weight:700;">&gt; EXECUTIVE SCRIPT COMPILED.</span>
-          </div>
+        <div class="incoming-strip">
+          &gt; INCOMING 4:48 PM: "Ship file tonight or sprint fails."
         </div>
+
+        <div class="typewriter-card">
+          <div style="color:#94A3B8; font-size:18px; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">
+            COPY-PASTE EXECUTIVE RESPONSE:
+          </div>
+          <div class="typewriter-text" id="live-text"></div>
+          <div class="sub-directive">&gt; SENDER CHOOSES THE SACRIFICE, NOT YOU.</div>
+        </div>
+
       </div>
     </div>
 
-    <!-- BOX 2 (6s - 9s): The Exact High-Value Copy-Paste Script -->
-    <div class="middle-box" id="box-b">
-      <div class="terminal-container">
-        <div class="terminal-topbar">
-          <div class="window-dots">
-            <div class="window-dot" style="background:#EF4444;"></div>
-            <div class="window-dot" style="background:#F59E0B;"></div>
-            <div class="window-dot" style="background:#10B981;"></div>
-          </div>
-          <span style="color:#38BDF8; font-family:'Fira Code'; font-size:20px; font-weight:700;">EXECUTIVE_REPLY.MD</span>
-          <span style="color:#38BDF8; font-weight:700; font-size:16px;">[COPY THIS SCRIPT]</span>
-        </div>
-        <div class="terminal-content">
-          <div style="color: #94A3B8; font-size: 19px; text-transform: uppercase; letter-spacing: 1px;">
-            PASTE THIS EXACT RESPONSE:
-          </div>
-
-          <div class="script-box">
-            "Happy to help. <span class="script-highlight">I can deliver this by 9 PM tonight</span> (which delays Monday's sprint), or deliver <span class="script-highlight">Monday at 9 AM with zero project delay</span>.<br><br>
-            Which tradeoff would you like to take?"
-          </div>
-
-          <div style="color:#34D399; font-weight:700; font-size:21px; text-align:center;">
-            &gt; SENDER CHOOSES THE SACRIFICE, NOT YOU.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- BOX 3 (9s - 12s): Friction & Outcome Comparison -->
-    <div class="middle-box" id="box-c">
-      <div class="terminal-container">
-        <div class="terminal-topbar">
-          <div class="window-dots">
-            <div class="window-dot" style="background:#EF4444;"></div>
-            <div class="window-dot" style="background:#F59E0B;"></div>
-            <div class="window-dot" style="background:#10B981;"></div>
-          </div>
-          <span style="color:#38BDF8; font-family:'Fira Code'; font-size:20px; font-weight:700;">STRATEGIC_IMPACT.LOG</span>
-          <span style="color:#FBBF24; font-weight:700; font-size:16px;">[THE SHIFT]</span>
-        </div>
-        <div class="terminal-content">
-          <div style="background:rgba(239,68,68,0.15); border-left:6px solid #EF4444; border-radius:16px; padding:24px;">
-            <div style="color:#EF4444; font-weight:800; font-size:24px; margin-bottom:8px;">WITHOUT THIS SYSTEM (40 MINS)</div>
-            <div style="font-size:22px; color:#E2E8F0;">Typing & deleting drafts &bull; Ruining weekend plans &bull; Setting zero boundaries.</div>
-          </div>
-          <div style="background:rgba(56,189,248,0.15); border-left:6px solid #38BDF8; border-radius:16px; padding:24px;">
-            <div style="color:#38BDF8; font-weight:800; font-size:24px; margin-bottom:8px;">WITH THIS SYSTEM (8 SECONDS)</div>
-            <div style="font-size:22px; color:#E2E8F0;">Automated tradeoff response &bull; Boundaries protected &bull; Authority maintained.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ACT 3: Hero Conversion Payoff (12s - 18s) -->
-    <div id="act-payoff">
+    <!-- SCENE 3: Product Payoff (12s - 18s) -->
+    <div class="scene-panel" id="scene-payoff">
       <div class="payoff-card">
         <div style="color:#38BDF8; font-size:22px; font-weight:800; letter-spacing:3px;">SAVED TO YOUR WORKSPACE</div>
         <h2 style="font-size:44px; font-weight:900; line-height:1.2;">Get The Complete 7-Prompt Executive AI Operating System</h2>
@@ -450,6 +365,52 @@
     </div>
     <span>AI EXECUTIVE ARCHITECTURE</span>
   </div>
+
+  <!-- JS Video Orchestrator: Guarantees True Frame-by-Frame Kinetic Motion -->
+  <script>
+    const sceneHook = document.getElementById('scene-hook');
+    const sceneKinetic = document.getElementById('scene-kinetic');
+    const scenePayoff = document.getElementById('scene-payoff');
+    const liveTextEl = document.getElementById('live-text');
+
+    const fullScript = `"I can deliver this by 9 PM tonight (which delays Monday's sprint), OR deliver Monday at 9 AM with zero sprint delay. Which tradeoff do you prefer?"`;
+
+    const startTime = performance.now();
+
+    function loop(now) {
+      const elapsed = (now - startTime) / 1000;
+
+      // 0s to 3s: Emergency Hook
+      if (elapsed < 3.0) {
+        sceneHook.style.display = 'block';
+        sceneKinetic.style.display = 'none';
+        scenePayoff.style.display = 'none';
+      }
+      // 3s to 12s: True Dynamic Typewriter Streaming
+      else if (elapsed >= 3.0 && elapsed < 12.0) {
+        sceneHook.style.display = 'none';
+        sceneKinetic.style.display = 'block';
+        scenePayoff.style.display = 'none';
+
+        // Typewriter runs over 5.5 seconds (from 3.2s to 8.7s)
+        const typeProgress = Math.min(1, Math.max(0, (elapsed - 3.2) / 5.5));
+        const charsToShow = Math.floor(typeProgress * fullScript.length);
+        const currentTyped = fullScript.slice(0, charsToShow);
+        
+        liveTextEl.innerHTML = currentTyped + '<span class="typewriter-cursor"></span>';
+      }
+      // 12s to End: Product Payoff
+      else {
+        sceneHook.style.display = 'none';
+        sceneKinetic.style.display = 'none';
+        scenePayoff.style.display = 'block';
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+  </script>
 
 </body>
 </html>
