@@ -4,7 +4,7 @@ import os
 import shutil
 import base64
 
-print("[*] Checking rendering dependencies...")
+print("[*] Installing rendering dependencies...")
 subprocess.check_call([sys.executable, "-m", "pip", "install", "playwright"])
 subprocess.check_call([sys.executable, "-m", "playwright", "install", "--with-deps", "chromium"])
 
@@ -15,26 +15,29 @@ if os.path.exists(output_dir):
     shutil.rmtree(output_dir)
 os.makedirs(output_dir, exist_ok=True)
 
-# Encode product hero image for high-fidelity rendering
-img_path = os.path.join("assets", "executive_ai_os.png")
-if os.path.exists(img_path):
-    with open(img_path, "rb") as f:
+# Prefer prompt library asset if present, fallback to executive os
+asset_path = os.path.join("assets", "ai_prompt_library.png")
+if not os.path.exists(asset_path):
+    asset_path = os.path.join("assets", "executive_ai_os.png")
+
+if os.path.exists(asset_path):
+    with open(asset_path, "rb") as f:
         img_b64 = base64.b64encode(f.read()).decode("utf-8")
         img_src = f"data:image/png;base64,{img_b64}"
-    print("[*] Successfully loaded product hero image.")
+    print(f"[*] Successfully encoded {asset_path}")
 else:
-    print(f"[!] Note: {img_path} not detected. Falling back to default.")
+    print("[!] Warning: No asset found in assets/. Render will proceed without image.")
     img_src = ""
 
 with open("template.html", "r", encoding="utf-8") as f:
     html_content = f.read()
 
-rendered_html = html_content.replace("__PRODUCT_IMAGE_SRC__", img_src)
+rendered_html = html_content.replace("__HERO_ASSET__", img_src)
 temp_html = os.path.abspath("temp_rendered.html")
 with open(temp_html, "w", encoding="utf-8") as f:
     f.write(rendered_html)
 
-print("[*] Recording tactical 20-second dynamic reel...")
+print("[*] Recording high-velocity command hook reel...")
 with sync_playwright() as p:
     browser = p.chromium.launch(args=["--no-sandbox", "--disable-setuid-sandbox"])
     context = browser.new_context(
@@ -45,8 +48,8 @@ with sync_playwright() as p:
     page = context.new_page()
     page.goto(f"file://{temp_html}", wait_until="networkidle")
 
-    # Full 20-second retention cycle
-    page.wait_for_timeout(20000)
+    # 18 seconds total duration
+    page.wait_for_timeout(18000)
 
     context.close()
     browser.close()
@@ -56,10 +59,10 @@ if os.path.exists(temp_html):
 
 recorded_files = [os.path.join(output_dir, f) for f in os.listdir(output_dir) if f.endswith(".webm")]
 if not recorded_files:
-    raise RuntimeError("Rendering error: No recording produced.")
+    raise RuntimeError("No recording produced.")
 
 raw_video = recorded_files[0]
-print("[*] Transcoding to production MP4 via FFmpeg...")
+print("[*] Encoding final MP4...")
 subprocess.check_call([
     "ffmpeg", "-y",
     "-i", raw_video,
@@ -71,4 +74,4 @@ subprocess.check_call([
     "friday_triage_100226.mp4"
 ])
 
-print("[✓] Video successfully compiled: friday_triage_100226.mp4")
+print("[✓] Reel successfully rendered: friday_triage_100226.mp4")
