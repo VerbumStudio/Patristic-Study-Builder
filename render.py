@@ -15,9 +15,10 @@ if os.path.exists(output_dir):
     shutil.rmtree(output_dir)
 os.makedirs(output_dir, exist_ok=True)
 
-# Robust recursive asset search across the entire repository
-target_names = ["executive_ai_os.png", "ai_prompt_library.png"]
+# Scan repository root and subfolders for the product image
+print("[*] Scanning repository for image assets...")
 found_path = None
+target_names = ["executive_ai_os.png", "ai_prompt_library.png"]
 
 for root, _, files in os.walk("."):
     for file in files:
@@ -29,12 +30,15 @@ for root, _, files in os.walk("."):
 
 img_src = ""
 if found_path and os.path.exists(found_path):
-    print(f"[*] Successfully located asset: {found_path}")
+    print(f"[✓] Successfully located asset: {found_path}")
     with open(found_path, "rb") as f:
         b64 = base64.b64encode(f.read()).decode("utf-8")
-        img_src = f"data:image/png;base64,{b64}"
+        ext = os.path.splitext(found_path)[1].lower().replace(".", "")
+        if ext == "jpg": 
+            ext = "jpeg"
+        img_src = f"data:image/{ext};base64,{b64}"
 else:
-    print(f"[!] Target image not found in repository. Root directory contents: {os.listdir('.')}")
+    print(f"[!] Target graphic not found. Available files: {os.listdir('.')}")
 
 with open("template.html", "r", encoding="utf-8") as f:
     html_content = f.read()
@@ -44,7 +48,7 @@ temp_html = os.path.abspath("temp_rendered.html")
 with open(temp_html, "w", encoding="utf-8") as f:
     f.write(rendered_html)
 
-print("[*] Recording fast-paced dynamic reel...")
+print("[*] Recording dynamic 18-second reel...")
 with sync_playwright() as p:
     browser = p.chromium.launch(args=["--no-sandbox", "--disable-setuid-sandbox"])
     context = browser.new_context(
@@ -55,8 +59,8 @@ with sync_playwright() as p:
     page = context.new_page()
     page.goto(f"file://{temp_html}", wait_until="networkidle")
 
-    # 17 seconds dynamic run
-    page.wait_for_timeout(17000)
+    # Full 18-second sequence
+    page.wait_for_timeout(18000)
 
     context.close()
     browser.close()
@@ -69,7 +73,7 @@ if not recorded_files:
     raise RuntimeError("No recording produced.")
 
 raw_video = recorded_files[0]
-print("[*] Encoding final MP4...")
+print("[*] Transcoding final MP4...")
 subprocess.check_call([
     "ffmpeg", "-y",
     "-i", raw_video,
