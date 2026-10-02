@@ -15,15 +15,18 @@ if os.path.exists(output_dir):
     shutil.rmtree(output_dir)
 os.makedirs(output_dir, exist_ok=True)
 
-# Scan repository for target images
+# Scan repository for target images (prioritizing executive_ai_os.png)
 print("[*] Scanning repository for image assets...")
 found_path = None
-target_names = ["ai_prompt_library.png", "executive_ai_os.png"]
+target_names = ["executive_ai_os.png", "ai_prompt_library.png"]
 
-for root, _, files in os.walk("."):
-    for file in files:
-        if file.lower() in [t.lower() for t in target_names]:
-            found_path = os.path.join(root, file)
+for target in target_names:
+    for root, _, files in os.walk("."):
+        for file in files:
+            if file.lower() == target.lower():
+                found_path = os.path.join(root, file)
+                break
+        if found_path:
             break
     if found_path:
         break
@@ -48,7 +51,7 @@ temp_html = os.path.abspath("temp_rendered.html")
 with open(temp_html, "w", encoding="utf-8") as f:
     f.write(rendered_html)
 
-print("[*] Recording video with Playwright...")
+print("[*] Recording fast-paced 15-second marketing reel...")
 with sync_playwright() as p:
     browser = p.chromium.launch(
         args=[
@@ -65,8 +68,8 @@ with sync_playwright() as p:
     page = context.new_page()
     page.goto(f"file://{temp_html}", wait_until="networkidle")
 
-    # 18s duration
-    page.wait_for_timeout(18000)
+    # Tight 15-second total timeline
+    page.wait_for_timeout(15000)
 
     context.close()
     browser.close()
@@ -79,31 +82,34 @@ if not recorded_files:
     raise RuntimeError("No recording produced.")
 
 raw_video = recorded_files[0]
-print("[*] Generating UI sound effects and multiplexing audio...")
+print("[*] Synthesizing elevated UI SFX and mastering audio...")
 
-# Generate procedural typing clicks (3s-5.4s) + system chimes via FFmpeg
+# High-volume procedural sound effects (Clicks, alerts, bass impact, whooshes)
 audio_cmd = (
     "ffmpeg -y "
-    "-f lavfi -i anullsrc=r=44100:cl=stereo:d=18 "
-    # Clicks during typing
-    "-f lavfi -i \"anoisesrc=d=2.4:c=white:r=44100,volume=0.3,atempo=2.0,bandpass=f=2500:w=1200,volume=12\" "
-    # Chime when executed (5.5s)
-    "-f lavfi -i \"sine=f=880:d=0.25,volume=0.4\" "
-    # Reveal sound for Option A (6.2s)
-    "-f lavfi -i \"sine=f=520:d=0.18,volume=0.3\" "
-    # Reveal sound for Option B (7.5s)
-    "-f lavfi -i \"sine=f=660:d=0.18,volume=0.3\" "
+    "-f lavfi -i anullsrc=r=44100:cl=stereo:d=15 "
+    # Louder, snappier mechanical clicks (2.8s-5.2s)
+    "-f lavfi -i \"anoisesrc=d=2.4:c=white:r=44100,volume=2.2,bandpass=f=2800:w=1400\" "
+    # Distinct tech alert chime (5.4s)
+    "-f lavfi -i \"sine=f=1046:d=0.35,volume=1.8\" "
+    # Punchy tech hit for Option A (5.8s)
+    "-f lavfi -i \"sine=f=440:d=0.25,volume=1.6\" "
+    # Sharp tech hit for Option B (7.0s)
+    "-f lavfi -i \"sine=f=587:d=0.25,volume=1.6\" "
+    # Deep bass drop for Final Payoff (10.5s)
+    "-f lavfi -i \"sine=f=130:d=0.8,volume=2.4\" "
     "-filter_complex \""
-    "[1]adelay=3000|3000[typing];"
-    "[2]adelay=5400|5400[exec_chime];"
-    "[3]adelay=6200|6200[swoosh_a];"
-    "[4]adelay=7500|7500[swoosh_b];"
-    "[0][typing][exec_chime][swoosh_a][swoosh_b]amix=inputs=5:duration=first[aout]\" "
+    "[1]adelay=2800|2800[clicks];"
+    "[2]adelay=5400|5400[alert];"
+    "[3]adelay=5800|5800[hit_a];"
+    "[4]adelay=7000|7000[hit_b];"
+    "[5]adelay=10500|10500[bass_drop];"
+    "[0][clicks][alert][hit_a][hit_b][bass_drop]amix=inputs=6:duration=first:dropout_transition=0[aout]\" "
     "-map \"[aout]\" -c:a aac -b:a 192k sfx_track.aac"
 )
 subprocess.check_call(audio_cmd, shell=True)
 
-print("[*] Muxing video with SFX track...")
+print("[*] Multiplexing audio and rendering final MP4...")
 subprocess.check_call([
     "ffmpeg", "-y",
     "-i", raw_video,
@@ -120,4 +126,4 @@ subprocess.check_call([
 if os.path.exists("sfx_track.aac"):
     os.remove("sfx_track.aac")
 
-print("[✓] Reel with SFX successfully rendered: friday_triage_100226.mp4")
+print("[✓] Reel successfully compiled: friday_triage_100226.mp4")
