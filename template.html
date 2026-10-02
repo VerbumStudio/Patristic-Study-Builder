@@ -3,43 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       width: 1080px;
       height: 1920px;
-      background: radial-gradient(circle at 50% 15%, #0B132B 0%, #030712 65%, #000000 100%);
+      background: radial-gradient(circle at 50% 15%, #0B132B 0%, #030712 60%, #000000 100%);
       font-family: 'Plus Jakarta Sans', sans-serif;
       color: #F8FAFC;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 100px 70px 110px 70px;
+      padding: 90px 70px;
       overflow: hidden;
       position: relative;
     }
 
-    /* Ambient Neural Lighting */
+    /* Ambient Neural Lighting & Grid */
     .circuit-glow {
       position: absolute;
-      top: 30%;
+      top: 35%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 750px;
-      height: 750px;
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(37, 99, 235, 0.08) 50%, transparent 75%);
-      filter: blur(80px);
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(37, 99, 235, 0.06) 50%, transparent 75%);
+      filter: blur(90px);
       pointer-events: none;
-      animation: pulseGlow 4s ease-in-out infinite alternate;
-    }
-    @keyframes pulseGlow {
-      from { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
-      to { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
     }
 
-    /* Grid Overlay */
     .grid-mesh {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -50,10 +44,10 @@
       pointer-events: none;
     }
 
-    /* Top Identity Pill */
+    /* Top Identity & Primary Save Pill */
     .top-nav {
       position: relative;
-      z-index: 10;
+      z-index: 20;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -67,7 +61,6 @@
       padding: 14px 28px;
       border-radius: 999px;
       backdrop-filter: blur(12px);
-      box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
     }
     .brand-icon {
       width: 14px; height: 14px;
@@ -76,138 +69,211 @@
       box-shadow: 0 0 12px #38BDF8;
     }
     .brand-name {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       letter-spacing: 1px;
       color: #F8FAFC;
     }
-    .badge-executive {
+    .save-target-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      padding: 12px 24px;
+      border-radius: 999px;
       font-size: 18px;
-      font-weight: 700;
+      font-weight: 800;
       color: #38BDF8;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      padding: 8px 16px;
-      border-radius: 8px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1px;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
     }
 
-    /* Hook Section */
-    .hook-section {
+    /* Scene Transitions: 20s Full Cycle */
+    .scene-wrapper {
       position: relative;
-      z-index: 10;
-      margin-top: 30px;
+      z-index: 20;
+      flex-grow: 1;
+      margin: 40px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .hook-category {
+
+    .scene {
+      position: absolute;
+      width: 100%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #scene-1 { animation: showScene 3.5s 0.0s forwards; }
+    #scene-2 { animation: showScene 4.2s 3.5s forwards; }
+    #scene-3 { animation: showScene 4.1s 7.7s forwards; }
+    #scene-4 { animation: showScene 3.7s 11.8s forwards; }
+    #scene-5 { animation: showScene 4.5s 15.5s forwards; }
+
+    @keyframes showScene {
+      0% { opacity: 0; transform: translateY(18px) scale(0.98); }
+      7% { opacity: 1; transform: translateY(0) scale(1); }
+      93% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-18px) scale(0.98); }
+    }
+
+    /* Glassmorphic Cards */
+    .glass-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 28px;
+      padding: 44px;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 35px rgba(56, 189, 248, 0.08);
+    }
+
+    .card-header {
       font-size: 22px;
       color: #38BDF8;
-      font-weight: 700;
+      font-weight: 800;
+      text-transform: uppercase;
       letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-    .hook-title {
-      font-size: 60px;
-      line-height: 1.18;
-      font-weight: 800;
-      letter-spacing: -1px;
-    }
-    .highlight-cyan {
-      color: #38BDF8;
-      text-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
-    }
-
-    /* 3D Product Showcase Window */
-    .showcase-stage {
-      position: relative;
-      z-index: 10;
-      height: 780px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      perspective: 1000px;
-    }
-    .product-asset {
-      max-width: 85%;
-      max-height: 680px;
-      object-fit: contain;
-      filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 45px rgba(56, 189, 248, 0.25));
-      animation: floatDrift 5s ease-in-out infinite alternate;
-    }
-    @keyframes floatDrift {
-      from { transform: translateY(0px) rotate(-1deg); }
-      to { transform: translateY(-16px) rotate(1deg); }
-    }
-
-    /* Live Metric Overlays */
-    .metric-card {
-      position: absolute;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      border-radius: 18px;
-      padding: 20px 28px;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      animation: cardPop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    .metric-1 {
-      top: 60px;
-      left: 10px;
-    }
-    .metric-2 {
-      bottom: 80px;
-      right: 10px;
-    }
-    .metric-label {
-      font-size: 16px;
-      color: #94A3B8;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .metric-value {
-      font-size: 32px;
-      font-weight: 800;
-      color: #F8FAFC;
-    }
-    .metric-accent { color: #38BDF8; }
-
-    /* Bottom High-Converting CTA */
-    .cta-card {
-      position: relative;
-      z-index: 10;
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      border-radius: 24px;
-      padding: 34px 44px;
-      box-shadow: 0 0 35px rgba(56, 189, 248, 0.15);
+      margin-bottom: 26px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .cta-text h3 {
-      font-size: 28px;
-      font-weight: 800;
-      color: #FFFFFF;
-      margin-bottom: 4px;
-    }
-    .cta-text p {
-      font-size: 20px;
-      color: #94A3B8;
-    }
-    .cta-action {
-      background: #38BDF8;
-      color: #030712;
-      font-weight: 800;
-      font-size: 24px;
-      padding: 16px 28px;
+
+    /* Scene 1: Incoming Slack Pressure */
+    .chat-bubble {
+      background: rgba(30, 41, 59, 0.6);
+      border-left: 4px solid #EF4444;
       border-radius: 14px;
-      box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
-      letter-spacing: 0.5px;
+      padding: 22px 26px;
+      margin-bottom: 18px;
+      font-size: 24px;
+      color: #CBD5E1;
+    }
+    .chat-bubble strong { color: #F8FAFC; }
+    .status-alert {
+      text-align: center;
+      margin-top: 32px;
+      padding: 18px;
+      border-radius: 14px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #FCA5A5;
+      font-weight: 800;
+      font-size: 21px;
+      letter-spacing: 1.5px;
+    }
+
+    /* Scene 2: Terminal Prompt Box */
+    .terminal-window {
+      background: #050811;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.15);
+    }
+    .terminal-bar {
+      background: rgba(15, 23, 42, 0.95);
+      padding: 18px 26px;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dots { display: flex; gap: 10px; }
+    .term-dot { width: 13px; height: 13px; border-radius: 50%; }
+    .term-code {
+      font-family: 'Fira Code', monospace;
+      padding: 34px;
+      font-size: 22px;
+      line-height: 1.65;
+      color: #E2E8F0;
+    }
+    .code-accent { color: #38BDF8; font-weight: 600; }
+    .code-green { color: #34D399; font-weight: 600; }
+
+    /* Scene 3: Tradeoff Matrix */
+    .matrix-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 14px;
+    }
+    .matrix-table th {
+      text-align: left;
+      color: #94A3B8;
+      font-size: 18px;
+      padding: 12px 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .matrix-table td {
+      background: rgba(30, 41, 59, 0.55);
+      padding: 24px 20px;
+      font-size: 22px;
+      border-top: 1px solid rgba(56, 189, 248, 0.15);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+    }
+    .matrix-table tr td:first-child {
+      border-left: 1px solid rgba(56, 189, 248, 0.15);
+      border-radius: 14px 0 0 14px;
+      font-weight: 800;
+    }
+    .matrix-table tr td:last-child {
+      border-right: 1px solid rgba(56, 189, 248, 0.15);
+      border-radius: 0 14px 14px 0;
+    }
+
+    /* Scene 4: Friction Contrast */
+    .contrast-box {
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Scene 5: Save & Conversion Finale */
+    .finale-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+    }
+    .product-img {
+      max-height: 470px;
+      filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 45px rgba(56, 189, 248, 0.35));
+      animation: floatHero 4s ease-in-out infinite alternate;
+    }
+    @keyframes floatHero {
+      from { transform: translateY(0px) rotate(-1deg); }
+      to { transform: translateY(-14px) rotate(1deg); }
+    }
+
+    /* Bottom Save Bar */
+    .bottom-bar {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10px;
+      color: #94A3B8;
+      font-size: 21px;
+      font-weight: 700;
+    }
+    .bookmark-cta {
+      color: #38BDF8;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: pulseBookmark 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes pulseBookmark {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
     }
   </style>
 </head>
@@ -216,43 +282,138 @@
   <div class="grid-mesh"></div>
   <div class="circuit-glow"></div>
 
-  <!-- Header -->
+  <!-- Top Navigation with Save Incentive -->
   <div class="top-nav">
     <div class="brand-pill">
       <div class="brand-icon"></div>
-      <span class="brand-name">WORKFLOW SUPER AI</span>
+      <span class="brand-name">@workflowsuperai</span>
     </div>
-    <div class="badge-executive">EXECUTIVE OS</div>
-  </div>
-
-  <!-- Hook -->
-  <div class="hook-section">
-    <div class="hook-category">System Architecture</div>
-    <h1 class="hook-title">Automate 10+ Hours of <br>Work Every Week With <br><span class="highlight-cyan">Neural AI Systems</span></h1>
-  </div>
-
-  <!-- 3D Showcase Stage -->
-  <div class="showcase-stage">
-    <img src="assets/executive_ai_os.png" class="product-asset" alt="The Executive AI Operating System" />
-
-    <div class="metric-card metric-1">
-      <span class="metric-label">Triage Efficiency</span>
-      <span class="metric-value metric-accent">+84% <span style="font-size: 20px; color: #94A3B8;">SPEED</span></span>
-    </div>
-
-    <div class="metric-card metric-2">
-      <span class="metric-label">Executive Time Saved</span>
-      <span class="metric-value">12.5 <span style="font-size: 20px; color: #38BDF8;">HRS/WK</span></span>
+    <div class="save-target-pill">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#38BDF8"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      SAVE TO PRESERVE SPRINT
     </div>
   </div>
 
-  <!-- CTA -->
-  <div class="cta-card">
-    <div class="cta-text">
-      <h3>Steal the Complete Engine</h3>
-      <p>Free Prompt Library & Guidebook</p>
+  <!-- Tactical Multi-Scene Flow -->
+  <div class="scene-wrapper">
+
+    <!-- Scene 1: Friday Inbound Pressure -->
+    <div class="scene" id="scene-1">
+      <div class="glass-card">
+        <div class="card-header">
+          <span>Incoming Pressure</span>
+          <span style="color: #EF4444;">4:45 PM Slack</span>
+        </div>
+        <div class="chat-bubble"><strong>VP Product:</strong> "Need updated enterprise decks tonight."</div>
+        <div class="chat-bubble"><strong>Lead Client:</strong> "Can we squeeze in SSO before morning?"</div>
+        <div class="chat-bubble"><strong>Executive:</strong> "Just work late and push it through."</div>
+        <div class="status-alert">DEFAULT RESPONSE: REACTIVE SUBMISSION</div>
+      </div>
     </div>
-    <div class="cta-action">COMMENT "SYSTEM"</div>
+
+    <!-- Scene 2: The Tactical System Prompt -->
+    <div class="scene" id="scene-2">
+      <div class="terminal-window">
+        <div class="terminal-bar">
+          <div class="dots">
+            <div class="term-dot" style="background:#EF4444;"></div>
+            <div class="term-dot" style="background:#F59E0B;"></div>
+            <div class="term-dot" style="background:#10B981;"></div>
+          </div>
+          <span style="color: #38BDF8; font-family: 'Fira Code', monospace; font-size: 18px; font-weight: 600;">BOOKMARK & COPY PROMPT</span>
+        </div>
+        <div class="term-code">
+          <span class="code-accent">ACT AS:</span> Executive Negotiation Strategist<br>
+          <span class="code-accent">GOAL:</span> De-escalate reactive scope creep without emotion.<br><br>
+          <span class="code-accent">OPERATIONAL DIRECTIVE:</span><br>
+          1. Validate business intent without accepting guilt.<br>
+          2. Surface sprint opportunity cost.<br>
+          3. Output a 3-option Strategic Tradeoff Grid.<br><br>
+          <span class="code-green">&gt; STATUS: SAVED TO WORKSPACE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 3: The 3-Tier Tradeoff Matrix -->
+    <div class="scene" id="scene-3">
+      <div class="glass-card">
+        <div class="card-header">
+          <span>Strategic Tradeoff Matrix</span>
+          <span style="color: #38BDF8;">Step 2: Choices</span>
+        </div>
+        <table class="matrix-table">
+          <thead>
+            <tr><th>Option</th><th>Proposed Action</th><th>Strategic Tradeoff</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:#EF4444;">A: Urgent</td>
+              <td>Ship file by 9 PM</td>
+              <td>Delays Q4 AWS sprint 48h</td>
+            </tr>
+            <tr>
+              <td style="color:#38BDF8;">B: Protect</td>
+              <td>Deliver at 9 AM</td>
+              <td>Zero impact to active sprint</td>
+            </tr>
+            <tr>
+              <td style="color:#34D399;">C: Route</td>
+              <td>Route to on-call</td>
+              <td>Requires overtime sign-off</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top: 26px; color: #94A3B8; font-size: 20px; text-align: center;">
+          <strong style="color: #F8FAFC;">Leverage:</strong> Sender chooses the sacrifice, not you.
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 4: Emotional Spiral vs Calm Control -->
+    <div class="scene" id="scene-4">
+      <div class="glass-card">
+        <div class="card-header">
+          <span>Emotional Spiral &rarr; Calm Control</span>
+          <span style="color: #34D399;">8 Seconds</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div class="contrast-box" style="background: rgba(239,68,68,0.12); border-left: 5px solid #EF4444;">
+            <div style="color: #EF4444; font-weight: 800; font-size: 22px;">DEFAULT: REACTIVE ANXIETY (40 MINS)</div>
+            <div style="color: #CBD5E1; font-size: 20px;">Typing and deleting drafts &bull; Ruining your weekend plans &bull; Resetting team boundaries to zero.</div>
+          </div>
+          <div class="contrast-box" style="background: rgba(56,189,248,0.12); border-left: 5px solid #38BDF8;">
+            <div style="color: #38BDF8; font-weight: 800; font-size: 22px;">SYSTEM: STRATEGIC DE-ESCALATION</div>
+            <div style="color: #CBD5E1; font-size: 20px;">Puts decision back on requester &bull; Protects sprint focus &bull; Projects executive authority.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 5: Save Reel + Free Library Bio Funnel -->
+    <div class="scene" id="scene-5">
+      <div class="glass-card finale-container">
+        <div style="font-size: 20px; color: #38BDF8; font-weight: 800; letter-spacing: 2px;">
+          SAVE THIS REEL TO PRESERVE YOUR SPRINT
+        </div>
+        <h2 style="font-size: 42px; font-weight: 800; line-height: 1.2;">
+          Get The De-Escalation Prompt + Free 7-Prompt AI Library
+        </h2>
+        <img src="__PRODUCT_IMAGE_SRC__" class="product-img" alt="The Executive AI Operating System" />
+        <div style="background: #38BDF8; color: #030712; font-weight: 800; font-size: 23px; padding: 18px 38px; border-radius: 14px; box-shadow: 0 0 35px rgba(56, 189, 248, 0.45); letter-spacing: 1px;">
+          FREE ACCESS: BEACONS.AI/WORKFLOWSUPERAI
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Identity Bar -->
+  <div class="bottom-bar">
+    <div class="bookmark-cta">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="#38BDF8"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      SAVE THIS REEL
+    </div>
+    <span>AI EXECUTIVE PIPELINE</span>
   </div>
 
 </body>
