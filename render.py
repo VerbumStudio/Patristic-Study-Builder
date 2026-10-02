@@ -15,10 +15,9 @@ if os.path.exists(output_dir):
     shutil.rmtree(output_dir)
 os.makedirs(output_dir, exist_ok=True)
 
-# Scan repository root and subfolders for the product image
 print("[*] Scanning repository for image assets...")
 found_path = None
-target_names = ["executive_ai_os.png", "ai_prompt_library.png"]
+target_names = ["ai_prompt_library.png", "executive_ai_os.png"]
 
 for root, _, files in os.walk("."):
     for file in files:
@@ -50,7 +49,13 @@ with open(temp_html, "w", encoding="utf-8") as f:
 
 print("[*] Recording dynamic 18-second reel...")
 with sync_playwright() as p:
-    browser = p.chromium.launch(args=["--no-sandbox", "--disable-setuid-sandbox"])
+    browser = p.chromium.launch(
+        args=[
+            "--no-sandbox", 
+            "--disable-setuid-sandbox",
+            "--background-color=#000000"
+        ]
+    )
     context = browser.new_context(
         viewport={"width": 1080, "height": 1920},
         record_video_dir=output_dir,
@@ -59,7 +64,7 @@ with sync_playwright() as p:
     page = context.new_page()
     page.goto(f"file://{temp_html}", wait_until="networkidle")
 
-    # Full 18-second sequence
+    # 18-second total timeline
     page.wait_for_timeout(18000)
 
     context.close()
