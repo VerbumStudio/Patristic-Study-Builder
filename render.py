@@ -15,7 +15,7 @@ if os.path.exists(output_dir):
     shutil.rmtree(output_dir)
 os.makedirs(output_dir, exist_ok=True)
 
-# Scan for hero visual assets
+# Scan repository for target images
 print("[*] Scanning repository for image assets...")
 found_path = None
 target_names = ["executive_ai_os.png", "ai_prompt_library.png"]
@@ -51,7 +51,7 @@ temp_html = os.path.abspath("temp_rendered.html")
 with open(temp_html, "w", encoding="utf-8") as f:
     f.write(rendered_html)
 
-print("[*] Recording high-velocity 15-second visual reel...")
+print("[*] Recording fast-paced 15-second reel...")
 with sync_playwright() as p:
     browser = p.chromium.launch(
         args=[
@@ -82,13 +82,14 @@ if not recorded_files:
     raise RuntimeError("No recording produced.")
 
 raw_video = recorded_files[0]
-print("[*] Synthesizing high-impact psychological SFX audio track...")
+print("[*] Generating high-impact psychological SFX audio track...")
 
-# Procedural psychological sound design:
-# 1. Opening notification chime (Alert trigger at 0.1s)
-# 2. Fast mechanical typing clicks (Active execution at 2.8s)
-# 3. Confirmation UI beep (System lock at 5.5s)
-# 4. Deep resonant sub-bass drops for high-value reveals (5.8s, 7.0s, 10.5s)
+# Procedural SFX:
+# 1. Opening urgent chime (0.1s)
+# 2. Snappy mechanical keyboard clicks (2.8s - 5.2s)
+# 3. Confirmation lock chime (5.5s)
+# 4. Heavy sub-bass hits for Option A & Option B (5.8s, 7.0s)
+# 5. Low-end bass drop for Payoff (10.5s)
 sfx_command = [
     "ffmpeg", "-y",
     "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo:d=15",
@@ -130,4 +131,4 @@ subprocess.check_call([
 if os.path.exists("master_sfx.aac"):
     os.remove("master_sfx.aac")
 
-print("[✓] Video with psychological audio compiled: friday_triage_100226.mp4")
+print("[✓] Video successfully compiled: friday_triage_100226.mp4")
