@@ -15,16 +15,26 @@ if os.path.exists(output_dir):
     shutil.rmtree(output_dir)
 os.makedirs(output_dir, exist_ok=True)
 
-# Check for local assets
-img_src = ""
-for fname in ["ai_prompt_library.png", "executive_ai_os.png"]:
-    p = os.path.join("assets", fname)
-    if os.path.exists(p):
-        with open(p, "rb") as f:
-            b64 = base64.b64encode(f.read()).decode("utf-8")
-            img_src = f"data:image/png;base64,{b64}"
-            print(f"[*] Successfully encoded asset: {fname}")
+# Robust recursive asset search across the entire repository
+target_names = ["executive_ai_os.png", "ai_prompt_library.png"]
+found_path = None
+
+for root, _, files in os.walk("."):
+    for file in files:
+        if file.lower() in [t.lower() for t in target_names]:
+            found_path = os.path.join(root, file)
             break
+    if found_path:
+        break
+
+img_src = ""
+if found_path and os.path.exists(found_path):
+    print(f"[*] Successfully located asset: {found_path}")
+    with open(found_path, "rb") as f:
+        b64 = base64.b64encode(f.read()).decode("utf-8")
+        img_src = f"data:image/png;base64,{b64}"
+else:
+    print(f"[!] Target image not found in repository. Root directory contents: {os.listdir('.')}")
 
 with open("template.html", "r", encoding="utf-8") as f:
     html_content = f.read()
