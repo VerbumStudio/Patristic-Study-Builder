@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background-color: #000000;">
 <head>
   <meta charset="UTF-8">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Fira+Code:wght@600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Fira+Code:wght@500;600;700&display=swap');
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background-color: #000000;
+    }
 
     body {
       width: 1080px;
@@ -96,7 +100,6 @@
       justify-content: center;
     }
 
-    /* Scene Panels */
     .scene-panel {
       position: absolute;
       width: 100%;
@@ -139,11 +142,11 @@
       box-shadow: 0 0 40px rgba(56, 189, 248, 0.6);
     }
 
-    /* Scene 2: Live Kinetic Deconstruction (3s-12s) */
+    /* Scene 2: The Interactive Script Execution (3s-12s) */
     .live-stream-container {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 20px;
     }
 
     /* Live Waveform Audio/Activity Visualizer */
@@ -153,7 +156,6 @@
       justify-content: center;
       gap: 6px;
       height: 48px;
-      margin-bottom: 10px;
     }
     .wave-line {
       width: 6px;
@@ -170,55 +172,94 @@
       background: rgba(239, 68, 68, 0.15);
       border: 1.5px solid #EF4444;
       border-radius: 20px;
-      padding: 24px 28px;
+      padding: 22px 28px;
       font-size: 25px;
       color: #FCA5A5;
       font-weight: 700;
     }
 
-    .typewriter-card {
+    .terminal-execution-card {
       background: #030712;
-      border: 2px solid #38BDF8;
+      border: 2px solid rgba(56, 189, 248, 0.45);
       border-radius: 28px;
-      padding: 40px 36px;
-      min-height: 480px;
-      box-shadow: 0 0 50px rgba(56, 189, 248, 0.35);
+      padding: 34px 32px;
+      min-height: 640px;
+      box-shadow: 0 0 50px rgba(56, 189, 248, 0.25);
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
     }
-    .typewriter-text {
-      font-size: 34px;
-      font-weight: 800;
-      line-height: 1.45;
-      color: #FFFFFF;
-      min-height: 240px;
+
+    .prompt-input-line {
+      font-family: 'Fira Code', monospace;
+      font-size: 23px;
+      line-height: 1.5;
+      color: #E2E8F0;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.25);
     }
+
     .typewriter-cursor {
       display: inline-block;
-      width: 14px;
-      height: 36px;
+      width: 12px;
+      height: 26px;
       background: #38BDF8;
       margin-left: 6px;
       vertical-align: middle;
-      box-shadow: 0 0 15px #38BDF8;
-      animation: blinkCursor 0.5s infinite alternate;
+      animation: blink 0.5s infinite alternate;
     }
-    @keyframes blinkCursor { from { opacity: 1; } to { opacity: 0; } }
+    @keyframes blink { from { opacity: 1; } to { opacity: 0; } }
 
-    .sub-directive {
-      margin-top: 24px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(56, 189, 248, 0.3);
+    /* Populating Results Stage */
+    .execution-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid #38BDF8;
+      color: #38BDF8;
+      font-family: 'Fira Code', monospace;
+      font-size: 17px;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 8px;
+      margin: 18px 0;
+    }
+
+    .trade-row-mini {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(30, 41, 59, 0.7);
+      border-left: 4px solid #38BDF8;
+      border-radius: 12px;
+      padding: 14px 20px;
+      margin: 10px 0;
+      font-size: 21px;
+    }
+
+    .copy-response-box {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1.5px solid #34D399;
+      border-radius: 16px;
+      padding: 22px 24px;
+      margin-top: 14px;
+      font-size: 23px;
+      line-height: 1.45;
+      color: #F8FAFC;
+    }
+
+    .footer-directive {
+      margin-top: 16px;
+      text-align: center;
       color: #34D399;
       font-family: 'Fira Code', monospace;
-      font-size: 21px;
+      font-size: 19px;
       font-weight: 700;
-      text-align: center;
       letter-spacing: 1px;
     }
 
-    /* Scene 3: Payoff Mockup (12s-18s) */
+    /* Scene 3: Product Payoff (12s-18s) */
     .payoff-card {
       background: rgba(15, 23, 42, 0.95);
       border: 2px solid rgba(56, 189, 248, 0.45);
@@ -294,7 +335,7 @@
 
   <div class="stage">
 
-    <!-- SCENE 1: Hook (0s - 3s) -->
+    <!-- SCENE 1: Emergency Hook (0s - 3s) -->
     <div class="scene-panel" id="scene-hook" style="display: block;">
       <div class="hero-alert">
         <div style="color: #EF4444; font-size: 24px; font-weight: 900; letter-spacing: 2px; margin-bottom: 12px;">CRITICAL PROTOCOL</div>
@@ -307,7 +348,7 @@
       </div>
     </div>
 
-    <!-- SCENE 2: Real Animated Kinetic Stream (3s - 12s) -->
+    <!-- SCENE 2: The Interactive Script Execution (3s - 12s) -->
     <div class="scene-panel" id="scene-kinetic">
       <div class="live-stream-container">
         
@@ -321,19 +362,43 @@
           <div class="wave-line" style="animation-delay: 0.6s;"></div>
           <div class="wave-line" style="animation-delay: 0.1s;"></div>
           <div class="wave-line" style="animation-delay: 0.3s;"></div>
-          <span style="font-family:'Fira Code'; font-size:18px; color:#38BDF8; font-weight:700; margin-left:14px;">NEURAL TRIAGE ACTIVE</span>
+          <span style="font-family:'Fira Code'; font-size:18px; color:#38BDF8; font-weight:700; margin-left:14px;" id="status-tag">PROMPT INGESTION</span>
         </div>
 
         <div class="incoming-strip">
           &gt; INCOMING 4:48 PM: "Ship file tonight or sprint fails."
         </div>
 
-        <div class="typewriter-card">
-          <div style="color:#94A3B8; font-size:18px; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">
-            COPY-PASTE EXECUTIVE RESPONSE:
+        <div class="terminal-execution-card">
+          <!-- Prompt Typing Area -->
+          <div class="prompt-input-line">
+            <span style="color:#38BDF8; font-weight:700;">USER &gt;</span> 
+            <span id="typed-prompt"></span>
           </div>
-          <div class="typewriter-text" id="live-text"></div>
-          <div class="sub-directive">&gt; SENDER CHOOSES THE SACRIFICE, NOT YOU.</div>
+
+          <!-- Executed Output Area -->
+          <div id="output-area" style="opacity: 0; transition: opacity 0.3s ease;">
+            <div class="execution-status-pill">
+              <span>&#10003; 3-TIER MATRIX COMPILED</span>
+            </div>
+
+            <div class="trade-row-mini">
+              <strong style="color:#EF4444;">Option A: Urgent</strong>
+              <span>Ship by 9 PM &bull; Delays Sprint 48h</span>
+            </div>
+
+            <div class="trade-row-mini">
+              <strong style="color:#38BDF8;">Option B: Protect</strong>
+              <span>Ship Mon 9 AM &bull; Zero Project Delay</span>
+            </div>
+
+            <div class="copy-response-box">
+              <span style="color:#34D399; font-weight:700;">EXECUTIVE REPLY:</span><br>
+              "Happy to deliver tonight (which delays Monday's sprint) OR Monday 9 AM with zero delay. Which tradeoff do you prefer?"
+            </div>
+
+            <div class="footer-directive">&gt; SENDER CHOOSES THE SACRIFICE, NOT YOU.</div>
+          </div>
         </div>
 
       </div>
@@ -366,40 +431,58 @@
     <span>AI EXECUTIVE ARCHITECTURE</span>
   </div>
 
-  <!-- JS Video Orchestrator: Guarantees True Frame-by-Frame Kinetic Motion -->
+  <!-- Real Kinetic Engine: Fast typing -> Hit Enter -> Structured Result stream -->
   <script>
     const sceneHook = document.getElementById('scene-hook');
     const sceneKinetic = document.getElementById('scene-kinetic');
     const scenePayoff = document.getElementById('scene-payoff');
-    const liveTextEl = document.getElementById('live-text');
+    const typedPromptEl = document.getElementById('typed-prompt');
+    const outputAreaEl = document.getElementById('output-area');
+    const statusTagEl = document.getElementById('status-tag');
 
-    const fullScript = `"I can deliver this by 9 PM tonight (which delays Monday's sprint), OR deliver Monday at 9 AM with zero sprint delay. Which tradeoff do you prefer?"`;
+    const promptText = "Act as Executive Strategist: de-escalate 4:48 PM Slack pressure without apology. Generate 3-tier tradeoff matrix.";
 
     const startTime = performance.now();
 
     function loop(now) {
       const elapsed = (now - startTime) / 1000;
 
-      // 0s to 3s: Emergency Hook
+      // 0.0s - 3.0s: Emergency Hook
       if (elapsed < 3.0) {
         sceneHook.style.display = 'block';
         sceneKinetic.style.display = 'none';
         scenePayoff.style.display = 'none';
       }
-      // 3s to 12s: True Dynamic Typewriter Streaming
+      // 3.0s - 12.0s: Play out the real script
       else if (elapsed >= 3.0 && elapsed < 12.0) {
         sceneHook.style.display = 'none';
         sceneKinetic.style.display = 'block';
         scenePayoff.style.display = 'none';
 
-        // Typewriter runs over 5.5 seconds (from 3.2s to 8.7s)
-        const typeProgress = Math.min(1, Math.max(0, (elapsed - 3.2) / 5.5));
-        const charsToShow = Math.floor(typeProgress * fullScript.length);
-        const currentTyped = fullScript.slice(0, charsToShow);
-        
-        liveTextEl.innerHTML = currentTyped + '<span class="typewriter-cursor"></span>';
+        // Phase A: Rapid Typing (3.1s to 5.4s)
+        if (elapsed < 5.4) {
+          const typeProgress = Math.min(1, Math.max(0, (elapsed - 3.1) / 2.3));
+          const chars = Math.floor(typeProgress * promptText.length);
+          typedPromptEl.innerHTML = promptText.slice(0, chars) + '<span class="typewriter-cursor"></span>';
+          outputAreaEl.style.opacity = '0';
+          statusTagEl.innerText = "TYPING PROMPT...";
+        } 
+        // Phase B: Hit Enter / Processing (5.4s to 6.1s)
+        else if (elapsed >= 5.4 && elapsed < 6.1) {
+          typedPromptEl.innerHTML = promptText + ' <span style="color:#FBBF24; font-weight:700;">[ENTER]</span>';
+          statusTagEl.innerText = "EXECUTING SCRIPT...";
+          statusTagEl.style.color = "#FBBF24";
+          outputAreaEl.style.opacity = '0';
+        } 
+        // Phase C: Instant Results Population (6.1s to 12.0s)
+        else {
+          typedPromptEl.innerHTML = promptText + ' <span style="color:#34D399; font-weight:700;">[DONE]</span>';
+          statusTagEl.innerText = "EXECUTIVE RESULT READY";
+          statusTagEl.style.color = "#34D399";
+          outputAreaEl.style.opacity = '1';
+        }
       }
-      // 12s to End: Product Payoff
+      // 12.0s - 18.0s: Product Payoff
       else {
         sceneHook.style.display = 'none';
         sceneKinetic.style.display = 'none';
