@@ -15,19 +15,16 @@ if os.path.exists(output_dir):
     shutil.rmtree(output_dir)
 os.makedirs(output_dir, exist_ok=True)
 
-# Prefer prompt library asset if present, fallback to executive os
-asset_path = os.path.join("assets", "ai_prompt_library.png")
-if not os.path.exists(asset_path):
-    asset_path = os.path.join("assets", "executive_ai_os.png")
-
-if os.path.exists(asset_path):
-    with open(asset_path, "rb") as f:
-        img_b64 = base64.b64encode(f.read()).decode("utf-8")
-        img_src = f"data:image/png;base64,{img_b64}"
-    print(f"[*] Successfully encoded {asset_path}")
-else:
-    print("[!] Warning: No asset found in assets/. Render will proceed without image.")
-    img_src = ""
+# Check for local assets
+img_src = ""
+for fname in ["ai_prompt_library.png", "executive_ai_os.png"]:
+    p = os.path.join("assets", fname)
+    if os.path.exists(p):
+        with open(p, "rb") as f:
+            b64 = base64.b64encode(f.read()).decode("utf-8")
+            img_src = f"data:image/png;base64,{b64}"
+            print(f"[*] Successfully encoded asset: {fname}")
+            break
 
 with open("template.html", "r", encoding="utf-8") as f:
     html_content = f.read()
@@ -37,7 +34,7 @@ temp_html = os.path.abspath("temp_rendered.html")
 with open(temp_html, "w", encoding="utf-8") as f:
     f.write(rendered_html)
 
-print("[*] Recording high-velocity command hook reel...")
+print("[*] Recording fast-paced dynamic reel...")
 with sync_playwright() as p:
     browser = p.chromium.launch(args=["--no-sandbox", "--disable-setuid-sandbox"])
     context = browser.new_context(
@@ -48,8 +45,8 @@ with sync_playwright() as p:
     page = context.new_page()
     page.goto(f"file://{temp_html}", wait_until="networkidle")
 
-    # 18 seconds total duration
-    page.wait_for_timeout(18000)
+    # 17 seconds dynamic run
+    page.wait_for_timeout(17000)
 
     context.close()
     browser.close()
@@ -74,4 +71,4 @@ subprocess.check_call([
     "friday_triage_100226.mp4"
 ])
 
-print("[✓] Reel successfully rendered: friday_triage_100226.mp4")
+print("[✓] Video successfully compiled: friday_triage_100226.mp4")
