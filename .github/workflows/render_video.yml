@@ -1,7 +1,26 @@
-- name: Commit Output Reel to Repo
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add output_reel.mp4
-          git commit -m "chore: automated reel render artifact" || exit 0
-          git push
+name: Generate Campaign Video
+
+on:
+  workflow_dispatch:
+
+jobs:
+  render-video:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Render Video
+        run: python3 render.py
+
+      - name: Upload Video Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: morning_triage_video
+          path: output_reel.mp4
