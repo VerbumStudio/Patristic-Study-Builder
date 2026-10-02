@@ -22,5 +22,5 @@ jobs:
       - name: Upload Video Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: morning_triage_video
-          path: output_reel.mp4
+          name: friday_triage_100226
+          path: friday_triage_100226.mp4
