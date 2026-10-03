@@ -1,6 +1,6 @@
 import asyncio
 import os
-import urllib.request
+import subprocess
 import PIL.Image
 
 # Pillow ANTIALIAS compatibility patch
@@ -8,11 +8,9 @@ if not hasattr(PIL.Image, "ANTIALIAS"):
     PIL.Image.ANTIALIAS = PIL.Image.Resampling.LANCZOS
 
 import edge_tts
-from moviepy.audio.fx.all import audio_loop, volumex
 from moviepy.editor import (
     AudioFileClip,
     ColorClip,
-    CompositeAudioClip,
     CompositeVideoClip,
     ImageClip,
     TextClip,
@@ -27,52 +25,32 @@ VOICE = "en-US-ChristopherNeural"
 OUTRO_IMAGE = "ai_prompt_library.png"
 BGM_FILE = "background_music.mp3"
 
-DEFAULT_BGM_URL = "https://raw.githubusercontent.com/VerbumStudio/assets/main/cyber_pulse.mp3"
-BACKUP_BGM_URL = "https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/f1XJ1B98e7Lp7E1p.mp3"
-
-def ensure_background_music():
-    """Fetches background music asset if missing."""
-    if not os.path.exists(BGM_FILE):
-        print("[*] Downloading background music track...")
-        try:
-            req = urllib.request.Request(DEFAULT_BGM_URL, headers={'User-Agent': 'Mozilla/5.0'})
-            with urllib.request.urlopen(req, timeout=15) as response, open(BGM_FILE, 'wb') as out_file:
-                out_file.write(response.read())
-            print(f"[✓] Background music successfully downloaded to {BGM_FILE}")
-        except Exception as e:
-            print(f"[!] Primary URL failed ({e}), attempting fallback...")
-            try:
-                req = urllib.request.Request(BACKUP_BGM_URL, headers={'User-Agent': 'Mozilla/5.0'})
-                with urllib.request.urlopen(req, timeout=15) as response, open(BGM_FILE, 'wb') as out_file:
-                    out_file.write(response.read())
-                print(f"[✓] Fallback background music downloaded.")
-            except Exception as e2:
-                print(f"[!] Warning: Could not download music automatically ({e2}).")
-
 async def generate_speech(text: str, output_path: str):
     communicate = edge_tts.Communicate(text, VOICE, rate="+10%", pitch="-2Hz")
     await communicate.save(output_path)
 
-def process_visual_clip(video_path: str, duration: float) -> VideoFileClip:
+def process_visual_clip(video_path: str, duration: float, scene_id: int = 1) -> VideoFileClip:
     clip = VideoFileClip(video_path).without_audio()
     clip = clip.loop(duration=duration) if clip.duration < duration else clip.subclip(0, duration)
-    
-    # Scale to frame height
+
     clip = clip.resize(height=TARGET_H)
     if clip.w < TARGET_W:
         clip = clip.resize(width=TARGET_W)
-        
-    # Overscale zoom to completely exclude corner watermarks
-    clip = clip.resize(1.28)
-    
-    # Center crop width, push crop window down 80px to cut top logos
+
+    # 1.35x zoom to push out watermarks
+    clip = clip.resize(1.35)
+
     x_center = (clip.w - TARGET_W) / 2
-    y_center = min((clip.h - TARGET_H) / 2 + 80, clip.h - TARGET_H)
-    
+    y_center = min((clip.h - TARGET_H) / 2 + 120, clip.h - TARGET_H)
+
+    # Scene 3: Frame the expansive city view, crop out head
+    if scene_id == 3:
+        x_center = min(x_center + 240, clip.w - TARGET_W)
+        y_center = clip.h - TARGET_H
+
     return clip.crop(x1=x_center, y1=y_center, width=TARGET_W, height=TARGET_H)
 
 def create_bordered_box(box_w, box_h, border_thick, duration, pos_y):
-    """Creates a 4-sided neon cyan border enclosing the dark container."""
     cyan_bg = ColorClip(size=(box_w, box_h), color=(0, 240, 255)).set_duration(duration).set_position(("center", pos_y))
     inner_w = box_w - (border_thick * 2)
     inner_h = box_h - (border_thick * 2)
@@ -82,13 +60,13 @@ def create_bordered_box(box_w, box_h, border_thick, duration, pos_y):
 def build_scene(scene_data):
     tts_path = f"temp_vo_{scene_data['id']}.mp3"
     asyncio.run(generate_speech(scene_data["text"], tts_path))
-    
+
     audio = AudioFileClip(tts_path)
-    scene_duration = audio.duration + 0.35
+    scene_duration = audio.duration + 0.50
     elements = []
 
     if scene_data.get("is_outro", False):
-        bg_video = process_visual_clip("scene4.mp4", scene_duration)
+        bg_video = process_visual_clip("scene4.mp4", scene_duration, scene_id=5)
         dark_wash = ColorClip(size=(TARGET_W, TARGET_H), color=(5, 10, 25)).set_opacity(0.80).set_duration(scene_duration)
         elements.extend([bg_video, dark_wash])
 
@@ -101,22 +79,9 @@ def build_scene(scene_data):
             img = img.set_position(("center", 180))
             elements.append(img)
     else:
-        base = process_visual_clip(scene_data["file"], scene_duration)
-        dark_overlay = ColorClip(size=(TARGET_W, TARGET_H), color=(0, 0, 0)).set_opacity(0.22).set_duration(scene_duration)
+        base = process_visual_clip(scene_data["file"], scene_duration, scene_id=scene_data["id"])
+        dark_overlay = ColorClip(size=(TARGET_W, TARGET_H), color=(0, 0, 0)).set_opacity(0.20).set_duration(scene_duration)
         elements.extend([base, dark_overlay])
-
-        # Scene 2 Screen Population Fix
-        if scene_data["id"] == 2:
-            screen_glow = ColorClip(size=(540, 360), color=(10, 35, 55)).set_opacity(0.55).set_duration(scene_duration).set_position((180, 480))
-            screen_text = TextClip(
-                "Draft: RE: Quick Question\n-------------------------\nHi Mark, sorry for the delay,\njust saw this now. I can jump on...",
-                fontsize=20,
-                color="#64D2FF",
-                font="DejaVu-Sans-Mono",
-                method="caption",
-                size=(500, None)
-            ).set_opacity(0.48).set_duration(scene_duration).set_position((200, 520))
-            elements.extend([screen_glow, screen_text])
 
     BOX_W, BOX_H = 960, 260
     POS_Y = 1320
@@ -145,12 +110,10 @@ def build_scene(scene_data):
 
     elements.extend([headline, body])
 
-    composite = CompositeVideoClip(elements, size=(TARGET_W, TARGET_H))
-    return composite.set_duration(scene_duration), audio
+    composite = CompositeVideoClip(elements, size=(TARGET_W, TARGET_H)).set_duration(scene_duration)
+    return composite, audio
 
 def main():
-    ensure_background_music()
-
     scenes = [
         {
             "id": 1,
@@ -196,31 +159,57 @@ def main():
 
     video_clips, audio_clips = [], []
     for s in scenes:
-        print(f"[*] Assembling Scene {s['id']}...")
+        print(f"[*] Building Scene {s['id']}...")
         v, a = build_scene(s)
         video_clips.append(v)
         audio_clips.append(a)
 
     print("[*] Concatenating timeline...")
-    final_video = concatenate_videoclips(video_clips, method="compose")
+    final_video = concatenate_videoclips(video_clips, method="compose", padding=-0.35)
     vocal_track = concatenate_audioclips(audio_clips)
 
-    if os.path.exists(BGM_FILE):
-        print(f"[*] Mixing {BGM_FILE} underneath voiceover...")
-        try:
-            bg_audio = AudioFileClip(BGM_FILE)
-            bg_audio = audio_loop(bg_audio, duration=final_video.duration)
-            bg_audio = volumex(bg_audio, 0.11)
-            mixed_audio = CompositeAudioClip([vocal_track, bg_audio])
-            final_video = final_video.set_audio(mixed_audio)
-        except Exception as e:
-            print(f"[!] Warning: Audio mix fallback triggered ({e}).")
-            final_video = final_video.set_audio(vocal_track)
-    else:
-        final_video = final_video.set_audio(vocal_track)
+    # 1. Render initial video with clear voice track to a staging file
+    temp_stage_video = "temp_stage_video.mp4"
+    final_video = final_video.set_audio(vocal_track)
+    final_video.write_videofile(
+        temp_stage_video,
+        fps=FPS,
+        codec="libx264",
+        audio_codec="aac",
+        preset="ultrafast",
+        threads=4
+    )
 
+    # 2. Hard mix the background music using native FFmpeg
     output = "guilt_driven_yes_master.mp4"
-    final_video.write_videofile(output, fps=FPS, codec="libx264", audio_codec="aac", preset="ultrafast", threads=4)
+    if os.path.exists(BGM_FILE) and os.path.getsize(BGM_FILE) > 1000:
+        print(f"[*] Blending {BGM_FILE} via FFmpeg amix filter...")
+        # Loops BGM continuously, sets BGM volume to 0.15 (-16.5dB), keeps voice at 1.0, truncates to video length
+        ffmpeg_cmd = [
+            "ffmpeg", "-y",
+            "-i", temp_stage_video,
+            "-stream_loop", "-1", "-i", BGM_FILE,
+            "-filter_complex", "[1:a]volume=0.15[bgm];[0:a][bgm]amix=inputs=2:duration=first:dropout_transition=2[aout]",
+            "-map", "0:v",
+            "-map", "[aout]",
+            "-c:v", "copy",
+            "-c:a", "aac",
+            "-b:a", "192k",
+            "-shortest",
+            output
+        ]
+        result = subprocess.run(ffmpeg_cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"[!] FFmpeg mix error:\n{result.stderr}")
+            os.rename(temp_stage_video, output)
+        else:
+            print("[✓] Audio mixed successfully with background track!")
+            if os.path.exists(temp_stage_video):
+                os.remove(temp_stage_video)
+    else:
+        print("[!] No valid BGM file found; keeping pure voiceover.")
+        os.rename(temp_stage_video, output)
+
     print(f"[✓] Render finished: {output}")
 
 if __name__ == "__main__":
