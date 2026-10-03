@@ -1,0 +1,61 @@
+{
+  "project": "guilt_driven_yes_reel",
+  "resolution": [1080, 1920],
+  "fps": 30,
+  "theme": {
+    "background_color": "#0B132B",
+    "accent_cyan": "#00F0FF",
+    "text_primary": "#FFFFFF",
+    "font": "DejaVu-Sans-Bold"
+  },
+  "scenes": [
+    {
+      "id": 1,
+      "source_type": "local_file",
+      "file_path": "scene1.mp4",
+      "duration": 5.0,
+      "overlay_title": "8:45 PM. \"QUICK QUESTION.\"",
+      "voiceover_text": "It’s 8:45 on a Friday night, and your phone buzzes."
+    },
+    {
+      "id": 2,
+      "source_type": "local_file",
+      "file_path": "scene2.mp4",
+      "duration": 6.0,
+      "overlay_title": "THE GUILT-DRIVEN \"YES\"",
+      "voiceover_text": "You spend ten minutes drafting and deleting an apology just for having off-hours."
+    },
+    {
+      "id": 3,
+      "source_type": "local_file",
+      "file_path": "scene3.mp4",
+      "duration": 7.0,
+      "overlay_title": "ANXIETY VS. BOUNDARIES",
+      "voiceover_text": "You’re terrified of looking unprofessional, so you cave. And sacrifice your entire weekend."
+    },
+    {
+      "id": 4,
+      "source_type": "local_file",
+      "file_path": "scene4.mp4",
+      "duration": 8.0,
+      "overlay_title": "OPERATORS DON'T APOLOGIZE",
+      "voiceover_text": "High-level operators never apologize for boundaries. They frame them as commercial trade-offs."
+    },
+    {
+      "id": 5,
+      "source_type": "local_file",
+      "file_path": "scene5.mp4",
+      "duration": 8.0,
+      "overlay_title": "SYSTEM 1: BOUNDARY DEFENSE",
+      "voiceover_text": "Option A: Monday at 8:30 AM. Option B: Emergency sprint at 1.5x. Zero guilt. Total authority."
+    },
+    {
+      "id": 6,
+      "source_type": "generated_card",
+      "duration": 4.0,
+      "overlay_title": "WORKFLOW SUPER AI",
+      "overlay_subtitle": "LINK IN BIO // TIER 1 VAULT",
+      "voiceover_text": "Stop trading your peace for approval. Deploy the Operating System in the bio."
+    }
+  ]
+}
