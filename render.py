@@ -37,13 +37,13 @@ def process_visual_clip(video_path: str, duration: float, scene_id: int = 1) -> 
     if clip.w < TARGET_W:
         clip = clip.resize(width=TARGET_W)
 
-    # 1.35x overscale to eliminate all corner watermarks
+    # 1.35x overscale zoom to eliminate all edge/corner watermarks
     clip = clip.resize(1.35)
 
     x_center = (clip.w - TARGET_W) / 2
     y_center = min((clip.h - TARGET_H) / 2 + 120, clip.h - TARGET_H)
 
-    # Scene 3: Frame the city skyline and crop out head
+    # Scene 3: Frame the city view and crop out head
     if scene_id == 3:
         x_center = min(x_center + 240, clip.w - TARGET_W)
         y_center = clip.h - TARGET_H
@@ -181,12 +181,12 @@ def main():
 
     output = "guilt_driven_yes_master.mp4"
     if os.path.exists(BGM_FILE) and os.path.getsize(BGM_FILE) > 500:
-        print(f"[*] Mixing synthesized BGM stem ({BGM_FILE}) via FFmpeg...")
+        print(f"[*] Blending {BGM_FILE} via FFmpeg at elevated broadcast volume...")
         ffmpeg_cmd = [
             "ffmpeg", "-y",
             "-i", temp_stage_video,
             "-stream_loop", "-1", "-i", BGM_FILE,
-            "-filter_complex", "[1:a]volume=0.30[bgm];[0:a][bgm]amix=inputs=2:duration=first:dropout_transition=2[aout]",
+            "-filter_complex", "[1:a]volume=0.32,lowpass=f=4500[bgm];[0:a][bgm]amix=inputs=2:duration=first:dropout_transition=2[aout]",
             "-map", "0:v",
             "-map", "[aout]",
             "-c:v", "copy",
@@ -200,11 +200,11 @@ def main():
             print(f"[!] FFmpeg mix error:\n{result.stderr}")
             os.rename(temp_stage_video, output)
         else:
-            print("[✓] Dark tech synth track mixed successfully into final reel!")
+            print("[✓] Audio mixed cleanly at punchy production level!")
             if os.path.exists(temp_stage_video):
                 os.remove(temp_stage_video)
     else:
-        print("[!] No BGM file generated, retaining voiceover.")
+        print("[!] No BGM file detected; retaining pure voiceover.")
         os.rename(temp_stage_video, output)
 
     print(f"[✓] Render finished: {output}")
