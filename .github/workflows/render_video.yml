@@ -21,14 +21,6 @@ jobs:
           sudo apt install -y ffmpeg imagemagick fonts-dejavu-core
           sudo sed -i 's/<policy domain="path" rights="none" pattern="@\*"/<!-- & -->/' /etc/ImageMagick-6/policy.xml || true
 
-      - name: Synthesize Tech Synth BGM Track
-        run: |
-          # Programmatically generate a 60s dark cyber synth bass drone (No downloads, No 403s)
-          ffmpeg -y -f lavfi -i "aevalsrc=sin(2*PI*55*t)+0.4*sin(2*PI*110*t)+0.25*sin(2*PI*220*t)*(0.5+0.5*sin(2*PI*2*t)):s=44100:d=60" \
-          -af "lowpass=f=350,volume=0.35" \
-          -c:a libmp3lame -b:a 192k background_music.mp3
-          ls -lh background_music.mp3
-
       - name: Install Python packages
         run: |
           pip install edge-tts moviepy==1.0.3 pillow
