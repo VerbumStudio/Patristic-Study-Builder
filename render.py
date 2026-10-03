@@ -27,21 +27,31 @@ VOICE = "en-US-ChristopherNeural"
 OUTRO_IMAGE = "ai_prompt_library.png"
 BGM_FILE = "background_music.mp3"
 
-# Direct URL to a royalty-free, low-profile dark synth/ambient electronic track
-DEFAULT_BGM_URL = "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=cyber-war-126419.mp3"
+# Direct raw MP3 link for dark executive tech pulse
+DEFAULT_BGM_URL = "https://raw.githubusercontent.com/VerbumStudio/assets/main/cyber_pulse.mp3"
+BACKUP_BGM_URL = "https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/f1XJ1B98e7Lp7E1p.mp3"
 
 def ensure_background_music():
-    """Automatically fetches the background music file if not already present."""
+    """Fetches background music asset if missing."""
     if not os.path.exists(BGM_FILE):
-        print(f"[*] Downloading background music track from CDN...")
+        print("[*] Downloading background music track...")
         try:
-            headers = {"User-Agent": "Mozilla/5.0"}
-            req = urllib.request.Request(DEFAULT_BGM_URL, headers=headers)
-            with urllib.request.urlopen(req) as response, open(BGM_FILE, 'wb') as out_file:
+            req = urllib.request.Request(
+                DEFAULT_BGM_URL, 
+                headers={'User-Agent': 'Mozilla/5.0'}
+            )
+            with urllib.request.urlopen(req, timeout=15) as response, open(BGM_FILE, 'wb') as out_file:
                 out_file.write(response.read())
             print(f"[✓] Background music successfully downloaded to {BGM_FILE}")
         except Exception as e:
-            print(f"[!] Warning: Could not download music automatically ({e}).")
+            print(f"[!] Primary URL failed ({e}), attempting fallback...")
+            try:
+                req = urllib.request.Request(BACKUP_BGM_URL, headers={'User-Agent': 'Mozilla/5.0'})
+                with urllib.request.urlopen(req, timeout=15) as response, open(BGM_FILE, 'wb') as out_file:
+                    out_file.write(response.read())
+                print(f"[✓] Fallback background music downloaded.")
+            except Exception as e2:
+                print(f"[!] Warning: Could not download music automatically ({e2}).")
 
 async def generate_speech(text: str, output_path: str):
     communicate = edge_tts.Communicate(text, VOICE, rate="+10%", pitch="-2Hz")
@@ -50,11 +60,19 @@ async def generate_speech(text: str, output_path: str):
 def process_visual_clip(video_path: str, duration: float) -> VideoFileClip:
     clip = VideoFileClip(video_path).without_audio()
     clip = clip.loop(duration=duration) if clip.duration < duration else clip.subclip(0, duration)
+    
+    # 1. Scale height to fill vertical canvas
     clip = clip.resize(height=TARGET_H)
     if clip.w < TARGET_W:
         clip = clip.resize(width=TARGET_W)
+        
+    # 2. 1.28x overscale zoom to completely push edge watermarks out of frame
+    clip = clip.resize(1.28)
+    
+    # 3. Center crop width, bias top down by 80px to push top Luma logo out
     x_center = (clip.w - TARGET_W) / 2
-    y_center = (clip.h - TARGET_H) / 2
+    y_center = min((clip.h - TARGET_H) / 2 + 80, clip.h - TARGET_H)
+    
     return clip.crop(x1=x_center, y1=y_center, width=TARGET_W, height=TARGET_H)
 
 def create_bordered_box(box_w, box_h, border_thick, duration, pos_y):
@@ -74,12 +92,10 @@ def build_scene(scene_data):
     elements = []
 
     if scene_data.get("is_outro", False):
-        # Eliminate dead space: use a darkened motion loop from scene4 behind the book
         bg_video = process_visual_clip("scene4.mp4", scene_duration)
         dark_wash = ColorClip(size=(TARGET_W, TARGET_H), color=(5, 10, 25)).set_opacity(0.80).set_duration(scene_duration)
         elements.extend([bg_video, dark_wash])
 
-        # Large Hero Mockup Placement
         if os.path.exists(OUTRO_IMAGE):
             img = ImageClip(OUTRO_IMAGE).set_duration(scene_duration)
             if img.w > 1000:
@@ -93,7 +109,6 @@ def build_scene(scene_data):
         dark_overlay = ColorClip(size=(TARGET_W, TARGET_H), color=(0, 0, 0)).set_opacity(0.22).set_duration(scene_duration)
         elements.extend([base, dark_overlay])
 
-    # Text box dimensions and positioning
     BOX_W, BOX_H = 960, 260
     POS_Y = 1320
     BORDER_T = 4
@@ -125,7 +140,6 @@ def build_scene(scene_data):
     return composite.set_duration(scene_duration), audio
 
 def main():
-    # 1. Ensure audio asset exists
     ensure_background_music()
 
     scenes = [
@@ -182,13 +196,12 @@ def main():
     final_video = concatenate_videoclips(video_clips, method="compose")
     vocal_track = concatenate_audioclips(audio_clips)
 
-    # 2. Blend BGM with Voiceover
     if os.path.exists(BGM_FILE):
         print(f"[*] Mixing {BGM_FILE} underneath voiceover...")
         try:
             bg_audio = AudioFileClip(BGM_FILE)
             bg_audio = audio_loop(bg_audio, duration=final_video.duration)
-            bg_audio = volumex(bg_audio, 0.10)  # Subtle -20dB background pulse
+            bg_audio = volumex(bg_audio, 0.11)  # -19dB ducking
             mixed_audio = CompositeAudioClip([vocal_track, bg_audio])
             final_video = final_video.set_audio(mixed_audio)
         except Exception as e:
