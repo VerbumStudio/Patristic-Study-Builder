@@ -1,12 +1,15 @@
+import asyncio
+import base64
 import json
 import os
 import subprocess
 import sys
 
-print("[*] Installing rendering dependencies...")
-subprocess.check_call([sys.executable, "-m", "pip", "install", "edge-tts", "moviepy==1.0.3"])
+# 1. Pillow ANTIALIAS compatibility patch for MoviePy
+import PIL.Image
+if not hasattr(PIL.Image, "ANTIALIAS"):
+    PIL.Image.ANTIALIAS = PIL.Image.Resampling.LANCZOS
 
-import asyncio
 import edge_tts
 from moviepy.editor import (
     AudioFileClip,
@@ -19,7 +22,7 @@ from moviepy.editor import (
     concatenate_videoclips,
 )
 
-# 1. Load Configuration
+# 2. Load Configuration
 CONFIG_PATH = "config.json"
 with open(CONFIG_PATH, "r", encoding="utf-8") as f:
     config = json.load(f)
@@ -29,7 +32,7 @@ TARGET_W, TARGET_H = config["resolution"]
 FPS = config["fps"]
 VOICE = "en-US-ChristopherNeural"  # Authoritative executive cadence
 
-# 2. Asynchronous TTS Generation
+# 3. Asynchronous TTS Generation
 async def generate_speech(text: str, output_path: str):
     communicate = edge_tts.Communicate(text, VOICE, rate="+0%", pitch="-2Hz")
     await communicate.save(output_path)
@@ -66,7 +69,7 @@ def build_audio(scenes):
         
     return concatenate_audioclips(audio_clips)
 
-# 3. Visual Scene Assembly
+# 4. Visual Scene Assembly
 def build_video_clip(scene):
     duration = scene.get("actual_duration", scene["duration"])
     
@@ -123,7 +126,7 @@ def build_video_clip(scene):
 
     return CompositeVideoClip(elements, size=(TARGET_W, TARGET_H)).set_duration(duration)
 
-# 4. Pipeline Execution
+# 5. Pipeline Execution
 def main():
     scenes = config["scenes"]
     
