@@ -18,13 +18,15 @@ jobs:
       - name: Install system tools
         run: |
           sudo apt update
-          sudo apt install -y ffmpeg imagemagick fonts-dejavu-core curl
+          sudo apt install -y ffmpeg imagemagick fonts-dejavu-core
           sudo sed -i 's/<policy domain="path" rights="none" pattern="@\*"/<!-- & -->/' /etc/ImageMagick-6/policy.xml || true
 
-      - name: Download Tech Synth Audio Track
+      - name: Synthesize Tech Synth BGM Track
         run: |
-          curl -L -f -o background_music.mp3 "https://cdn.uppbeat.io/audio-files/19bdfb1322cfd8212e3e8f96e42b2923/6eb4a2d3989c4240a5a3a2ebf9f70b21/6803730be780f2d84db1304561b65eec/STREAMING-dark-synthwave-cyberpunk-techno-alec-szymanski-1-02-17.mp3" || \
-          curl -L -f -o background_music.mp3 "https://ia801503.us.archive.org/15/items/free-cyber-synth-pulse/cyber_pulse.mp3"
+          # Programmatically generate a 60s dark cyber synth bass drone (No downloads, No 403s)
+          ffmpeg -y -f lavfi -i "aevalsrc=sin(2*PI*55*t)+0.4*sin(2*PI*110*t)+0.25*sin(2*PI*220*t)*(0.5+0.5*sin(2*PI*2*t)):s=44100:d=60" \
+          -af "lowpass=f=350,volume=0.35" \
+          -c:a libmp3lame -b:a 192k background_music.mp3
           ls -lh background_music.mp3
 
       - name: Install Python packages
