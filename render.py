@@ -1,134 +1,151 @@
+import json
+import os
 import subprocess
 import sys
-import os
-import shutil
-import base64
 
 print("[*] Installing rendering dependencies...")
-subprocess.check_call([sys.executable, "-m", "pip", "install", "playwright"])
-subprocess.check_call([sys.executable, "-m", "playwright", "install", "--with-deps", "chromium"])
+subprocess.check_call([sys.executable, "-m", "pip", "install", "edge-tts", "moviepy==1.0.3"])
 
-from playwright.sync_api import sync_playwright
+import asyncio
+import edge_tts
+from moviepy.editor import (
+    AudioFileClip,
+    ColorClip,
+    CompositeAudioClip,
+    CompositeVideoClip,
+    TextClip,
+    VideoFileClip,
+    concatenate_audioclips,
+    concatenate_videoclips,
+)
 
-output_dir = "recordings"
-if os.path.exists(output_dir):
-    shutil.rmtree(output_dir)
-os.makedirs(output_dir, exist_ok=True)
+# 1. Load Configuration
+CONFIG_PATH = "config.json"
+with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+    config = json.load(f)
 
-# Scan repository for target images
-print("[*] Scanning repository for image assets...")
-found_path = None
-target_names = ["executive_ai_os.png", "ai_prompt_library.png"]
+THEME = config["theme"]
+TARGET_W, TARGET_H = config["resolution"]
+FPS = config["fps"]
+VOICE = "en-US-ChristopherNeural"  # Authoritative executive cadence
 
-for target in target_names:
-    for root, _, files in os.walk("."):
-        for file in files:
-            if file.lower() == target.lower():
-                found_path = os.path.join(root, file)
-                break
-        if found_path:
-            break
-    if found_path:
-        break
+# 2. Asynchronous TTS Generation
+async def generate_speech(text: str, output_path: str):
+    communicate = edge_tts.Communicate(text, VOICE, rate="+0%", pitch="-2Hz")
+    await communicate.save(output_path)
 
-img_src = ""
-if found_path and os.path.exists(found_path):
-    print(f"[✓] Located asset: {found_path}")
-    with open(found_path, "rb") as f:
-        b64 = base64.b64encode(f.read()).decode("utf-8")
-        ext = os.path.splitext(found_path)[1].lower().replace(".", "")
-        if ext == "jpg":
-            ext = "jpeg"
-        img_src = f"data:image/{ext};base64,{b64}"
-else:
-    print(f"[!] Target graphic not found. Checked: {os.listdir('.')}")
+def build_audio(scenes):
+    print("[*] Synthesizing executive voiceover audio...")
+    audio_clips = []
+    os.makedirs("temp_audio", exist_ok=True)
+    
+    for scene in scenes:
+        tts_path = f"temp_audio/vo_{scene['id']}.mp3"
+        asyncio.run(generate_speech(scene["voiceover_text"], tts_path))
+        
+        voice_clip = AudioFileClip(tts_path)
+        # Pad audio to match scene duration if speech is shorter
+        duration = max(scene["duration"], voice_clip.duration + 0.3)
+        scene["actual_duration"] = duration
+        
+        # Build silence padding clip if needed
+        silence_duration = duration - voice_clip.duration
+        if silence_duration > 0:
+            silence_path = f"temp_audio/silence_{scene['id']}.mp3"
+            subprocess.check_call([
+                "ffmpeg", "-y", "-f", "lavfi", "-i",
+                f"anullsrc=r=44100:cl=stereo:d={silence_duration}",
+                silence_path
+            ])
+            silence_clip = AudioFileClip(silence_path)
+            composite_scene_audio = concatenate_audioclips([voice_clip, silence_clip])
+        else:
+            composite_scene_audio = voice_clip
+            
+        audio_clips.append(composite_scene_audio)
+        
+    return concatenate_audioclips(audio_clips)
 
-with open("template.html", "r", encoding="utf-8") as f:
-    html_content = f.read()
+# 3. Visual Scene Assembly
+def build_video_clip(scene):
+    duration = scene.get("actual_duration", scene["duration"])
+    
+    if scene["source_type"] == "local_file":
+        clip = VideoFileClip(scene["file_path"]).without_audio()
+        if clip.duration < duration:
+            clip = clip.loop(duration=duration)
+        else:
+            clip = clip.subclip(0, duration)
+            
+        # Center-crop & resize to 1080x1920 (9:16)
+        clip = clip.resize(height=TARGET_H)
+        if clip.w < TARGET_W:
+            clip = clip.resize(width=TARGET_W)
+        x_center = (clip.w - TARGET_W) / 2
+        y_center = (clip.h - TARGET_H) / 2
+        clip = clip.crop(x1=x_center, y1=y_center, width=TARGET_W, height=TARGET_H)
+        
+    else:  # Generated outro card
+        clip = ColorClip(size=(TARGET_W, TARGET_H), color=(11, 19, 43)).set_duration(duration)
 
-rendered_html = html_content.replace("__HERO_ASSET__", img_src)
-temp_html = os.path.abspath("temp_rendered.html")
-with open(temp_html, "w", encoding="utf-8") as f:
-    f.write(rendered_html)
+    # Dark atmospheric contrast overlay
+    dark_overlay = ColorClip(size=(TARGET_W, TARGET_H), color=(0, 0, 0)).set_opacity(0.42).set_duration(duration)
 
-print("[*] Recording fast-paced 15-second reel...")
-with sync_playwright() as p:
-    browser = p.chromium.launch(
-        args=[
-            "--no-sandbox",
-            "--disable-setuid-sandbox",
-            "--background-color=#000000"
-        ]
+    # Accent Card Box
+    box_w, box_h = 920, 240
+    box_bg = ColorClip(size=(box_w, box_h), color=(11, 19, 43)).set_opacity(0.85).set_duration(duration)
+    box_bg = box_bg.set_position(("center", 1320))
+
+    # Cyan Accent Border Bar
+    cyan_bar = ColorClip(size=(920, 8), color=(0, 240, 255)).set_duration(duration)
+    cyan_bar = cyan_bar.set_position(("center", 1320))
+
+    # Text Overlay
+    txt_main = TextClip(
+        scene["overlay_title"],
+        fontsize=44,
+        color="white",
+        font="DejaVu-Sans-Bold",
+        method="caption",
+        size=(860, None)
+    ).set_duration(duration).set_position(("center", 1360))
+
+    elements = [clip, dark_overlay, box_bg, cyan_bar, txt_main]
+
+    if "overlay_subtitle" in scene:
+        txt_sub = TextClip(
+            scene["overlay_subtitle"],
+            fontsize=32,
+            color="#00F0FF",
+            font="DejaVu-Sans-Bold"
+        ).set_duration(duration).set_position(("center", 1460))
+        elements.append(txt_sub)
+
+    return CompositeVideoClip(elements, size=(TARGET_W, TARGET_H)).set_duration(duration)
+
+# 4. Pipeline Execution
+def main():
+    scenes = config["scenes"]
+    
+    # Generate Voiceover Audio Track
+    full_audio = build_audio(scenes)
+    
+    print("[*] Processing scenes and geometric overlays...")
+    video_clips = [build_video_clip(s) for s in scenes]
+    master_video = concatenate_videoclips(video_clips, method="compose")
+    master_video = master_video.set_audio(full_audio)
+    
+    output_filename = "guilt_driven_yes_master.mp4"
+    print(f"[*] Rendering final reel to {output_filename}...")
+    master_video.write_videofile(
+        output_filename,
+        fps=FPS,
+        codec="libx264",
+        audio_codec="aac",
+        preset="ultrafast",
+        threads=4
     )
-    context = browser.new_context(
-        viewport={"width": 1080, "height": 1920},
-        record_video_dir=output_dir,
-        record_video_size={"width": 1080, "height": 1920}
-    )
-    page = context.new_page()
-    page.goto(f"file://{temp_html}", wait_until="networkidle")
+    print(f"[✓] Render complete: {output_filename}")
 
-    # 15.0-second timeline
-    page.wait_for_timeout(15000)
-
-    context.close()
-    browser.close()
-
-if os.path.exists(temp_html):
-    os.remove(temp_html)
-
-recorded_files = [os.path.join(output_dir, f) for f in os.listdir(output_dir) if f.endswith(".webm")]
-if not recorded_files:
-    raise RuntimeError("No recording produced.")
-
-raw_video = recorded_files[0]
-print("[*] Generating high-impact psychological SFX audio track...")
-
-# Procedural SFX:
-# 1. Opening urgent chime (0.1s)
-# 2. Snappy mechanical keyboard clicks (2.8s - 5.2s)
-# 3. Confirmation lock chime (5.5s)
-# 4. Heavy sub-bass hits for Option A & Option B (5.8s, 7.0s)
-# 5. Low-end bass drop for Payoff (10.5s)
-sfx_command = [
-    "ffmpeg", "-y",
-    "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo:d=15",
-    "-f", "lavfi", "-i", "sine=f=1174:d=0.22,volume=3.5",               # Alert chime
-    "-f", "lavfi", "-i", "anoisesrc=d=2.4:c=white:r=44100,volume=3.2,bandpass=f=3200:w=1200", # Mechanical keys
-    "-f", "lavfi", "-i", "sine=f=880:d=0.18,volume=3.0",                # Lock chime
-    "-f", "lavfi", "-i", "sine=f=75:d=0.55,volume=4.5",                 # Sub-bass hit 1
-    "-f", "lavfi", "-i", "sine=f=85:d=0.55,volume=4.5",                 # Sub-bass hit 2
-    "-f", "lavfi", "-i", "sine=f=60:d=0.9,volume=5.5",                  # Heavy payoff sub-drop
-    "-filter_complex",
-    "[1]adelay=100|100[s0];"
-    "[2]adelay=2800|2800[s1];"
-    "[3]adelay=5500|5500[s2];"
-    "[4]adelay=5800|5800[s3];"
-    "[5]adelay=7000|7000[s4];"
-    "[6]adelay=10500|10500[s5];"
-    "[0][s0][s1][s2][s3][s4][s5]amix=inputs=7:duration=first:dropout_transition=0[aout]",
-    "-map", "[aout]",
-    "-c:a", "aac",
-    "-b:a", "256k",
-    "master_sfx.aac"
-]
-subprocess.check_call(sfx_command)
-
-print("[*] Multiplexing video and audio tracks...")
-subprocess.check_call([
-    "ffmpeg", "-y",
-    "-i", raw_video,
-    "-i", "master_sfx.aac",
-    "-c:v", "libx264",
-    "-preset", "fast",
-    "-crf", "18",
-    "-pix_fmt", "yuv420p",
-    "-c:a", "copy",
-    "-shortest",
-    "friday_triage_100226.mp4"
-])
-
-if os.path.exists("master_sfx.aac"):
-    os.remove("master_sfx.aac")
-
-print("[✓] Video successfully compiled: friday_triage_100226.mp4")
+if __name__ == "__main__":
+    main()
