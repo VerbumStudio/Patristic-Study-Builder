@@ -27,7 +27,6 @@ VOICE = "en-US-ChristopherNeural"
 OUTRO_IMAGE = "ai_prompt_library.png"
 BGM_FILE = "background_music.mp3"
 
-# Direct raw MP3 link for dark executive tech pulse
 DEFAULT_BGM_URL = "https://raw.githubusercontent.com/VerbumStudio/assets/main/cyber_pulse.mp3"
 BACKUP_BGM_URL = "https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/f1XJ1B98e7Lp7E1p.mp3"
 
@@ -36,10 +35,7 @@ def ensure_background_music():
     if not os.path.exists(BGM_FILE):
         print("[*] Downloading background music track...")
         try:
-            req = urllib.request.Request(
-                DEFAULT_BGM_URL, 
-                headers={'User-Agent': 'Mozilla/5.0'}
-            )
+            req = urllib.request.Request(DEFAULT_BGM_URL, headers={'User-Agent': 'Mozilla/5.0'})
             with urllib.request.urlopen(req, timeout=15) as response, open(BGM_FILE, 'wb') as out_file:
                 out_file.write(response.read())
             print(f"[✓] Background music successfully downloaded to {BGM_FILE}")
@@ -61,15 +57,15 @@ def process_visual_clip(video_path: str, duration: float) -> VideoFileClip:
     clip = VideoFileClip(video_path).without_audio()
     clip = clip.loop(duration=duration) if clip.duration < duration else clip.subclip(0, duration)
     
-    # 1. Scale height to fill vertical canvas
+    # Scale to frame height
     clip = clip.resize(height=TARGET_H)
     if clip.w < TARGET_W:
         clip = clip.resize(width=TARGET_W)
         
-    # 2. 1.28x overscale zoom to completely push edge watermarks out of frame
+    # Overscale zoom to completely exclude corner watermarks
     clip = clip.resize(1.28)
     
-    # 3. Center crop width, bias top down by 80px to push top Luma logo out
+    # Center crop width, push crop window down 80px to cut top logos
     x_center = (clip.w - TARGET_W) / 2
     y_center = min((clip.h - TARGET_H) / 2 + 80, clip.h - TARGET_H)
     
@@ -108,6 +104,19 @@ def build_scene(scene_data):
         base = process_visual_clip(scene_data["file"], scene_duration)
         dark_overlay = ColorClip(size=(TARGET_W, TARGET_H), color=(0, 0, 0)).set_opacity(0.22).set_duration(scene_duration)
         elements.extend([base, dark_overlay])
+
+        # Scene 2 Screen Population Fix
+        if scene_data["id"] == 2:
+            screen_glow = ColorClip(size=(540, 360), color=(10, 35, 55)).set_opacity(0.55).set_duration(scene_duration).set_position((180, 480))
+            screen_text = TextClip(
+                "Draft: RE: Quick Question\n-------------------------\nHi Mark, sorry for the delay,\njust saw this now. I can jump on...",
+                fontsize=20,
+                color="#64D2FF",
+                font="DejaVu-Sans-Mono",
+                method="caption",
+                size=(500, None)
+            ).set_opacity(0.48).set_duration(scene_duration).set_position((200, 520))
+            elements.extend([screen_glow, screen_text])
 
     BOX_W, BOX_H = 960, 260
     POS_Y = 1320
@@ -201,7 +210,7 @@ def main():
         try:
             bg_audio = AudioFileClip(BGM_FILE)
             bg_audio = audio_loop(bg_audio, duration=final_video.duration)
-            bg_audio = volumex(bg_audio, 0.11)  # -19dB ducking
+            bg_audio = volumex(bg_audio, 0.11)
             mixed_audio = CompositeAudioClip([vocal_track, bg_audio])
             final_video = final_video.set_audio(mixed_audio)
         except Exception as e:
