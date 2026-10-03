@@ -1,43 +1,35 @@
-name: generate campaign videos
+name: Render Reel
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
-  render_video:
+  render:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
-      - name: Install System Dependencies
+      - name: Install system tools
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg imagemagick fonts-dejavu-core
+          sudo apt update
+          sudo apt install -y ffmpeg imagemagick fonts-dejavu-core
           sudo sed -i 's/<policy domain="path" rights="none" pattern="@\*"/<!-- & -->/' /etc/ImageMagick-6/policy.xml || true
-          sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml || true
 
-      - name: Install Python Dependencies
+      - name: Install Python packages
         run: |
-          python -m pip install --upgrade pip
-          pip install "Pillow==9.5.0" "moviepy==1.0.3" edge-tts
+          pip install edge-tts moviepy==1.0.3 pillow
 
-      - name: Run Video Render Script
-        run: |
-          python render.py
+      - name: Run render
+        run: python render.py
 
       - name: Upload Video Artifact
         uses: actions/upload-artifact@v4
         with:
           name: guilt-driven-yes-reel
           path: guilt_driven_yes_master.mp4
-          if-no-files-found: error
