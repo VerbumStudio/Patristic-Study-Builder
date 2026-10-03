@@ -1,10 +1,8 @@
 import asyncio
-import json
 import os
-import subprocess
 import PIL.Image
 
-# Pillow ANTIALIAS fix for MoviePy
+# Pillow ANTIALIAS compatibility patch
 if not hasattr(PIL.Image, "ANTIALIAS"):
     PIL.Image.ANTIALIAS = PIL.Image.Resampling.LANCZOS
 
@@ -13,6 +11,7 @@ from moviepy.editor import (
     AudioFileClip,
     ColorClip,
     CompositeVideoClip,
+    ImageClip,
     TextClip,
     VideoFileClip,
     concatenate_audioclips,
@@ -22,8 +21,8 @@ from moviepy.editor import (
 TARGET_W, TARGET_H = 1080, 1920
 FPS = 30
 VOICE = "en-US-ChristopherNeural"
+OUTRO_IMAGE = "ai_prompt_library.png"
 
-# 1. Synthesize Audio
 async def generate_speech(text: str, output_path: str):
     communicate = edge_tts.Communicate(text, VOICE, rate="+10%", pitch="-2Hz")
     await communicate.save(output_path)
@@ -45,25 +44,45 @@ def build_scene(scene_data):
     audio = AudioFileClip(tts_path)
     scene_duration = audio.duration + 0.35
 
+    elements = []
+
     if scene_data.get("is_outro", False):
+        # Slate navy background
         base = ColorClip(size=(TARGET_W, TARGET_H), color=(11, 19, 43)).set_duration(scene_duration)
+        elements.append(base)
+
+        # Load and position the product mockup image
+        if os.path.exists(OUTRO_IMAGE):
+            img = ImageClip(OUTRO_IMAGE).set_duration(scene_duration)
+            # Scale proportionally to fit within 900x950 space
+            if img.w > 900:
+                img = img.resize(width=900)
+            if img.h > 950:
+                img = img.resize(height=950)
+            img = img.set_position(("center", 260))
+            elements.append(img)
     else:
         base = process_visual_clip(scene_data["file"], scene_duration)
+        # Reduced overlay opacity so dark clips do not become muddy
+        dark_overlay = ColorClip(size=(TARGET_W, TARGET_H), color=(0, 0, 0)).set_opacity(0.22).set_duration(scene_duration)
+        elements.extend([base, dark_overlay])
 
-    dark_overlay = ColorClip(size=(TARGET_W, TARGET_H), color=(0, 0, 0)).set_opacity(0.40).set_duration(scene_duration)
-    box = ColorClip(size=(940, 220), color=(11, 19, 43)).set_opacity(0.88).set_duration(scene_duration).set_position(("center", 1340))
+    # Text box overlay positioned in the lower third
+    box = ColorClip(size=(940, 220), color=(11, 19, 43)).set_opacity(0.92).set_duration(scene_duration).set_position(("center", 1340))
     bar = ColorClip(size=(940, 6), color=(0, 240, 255)).set_duration(scene_duration).set_position(("center", 1340))
 
     text = TextClip(
         scene_data["title"],
-        fontsize=42,
+        fontsize=40,
         color="white",
         font="DejaVu-Sans-Bold",
         method="caption",
         size=(880, None)
     ).set_duration(scene_duration).set_position(("center", 1380))
 
-    composite = CompositeVideoClip([base, dark_overlay, box, bar, text], size=(TARGET_W, TARGET_H))
+    elements.extend([box, bar, text])
+
+    composite = CompositeVideoClip(elements, size=(TARGET_W, TARGET_H))
     return composite.set_duration(scene_duration), audio
 
 def main():
