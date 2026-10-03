@@ -1,12 +1,10 @@
 import asyncio
-import base64
 import json
 import os
 import subprocess
-import sys
-
-# 1. Pillow ANTIALIAS compatibility patch for MoviePy
 import PIL.Image
+
+# Pillow ANTIALIAS fix for MoviePy
 if not hasattr(PIL.Image, "ANTIALIAS"):
     PIL.Image.ANTIALIAS = PIL.Image.Resampling.LANCZOS
 
@@ -14,7 +12,6 @@ import edge_tts
 from moviepy.editor import (
     AudioFileClip,
     ColorClip,
-    CompositeAudioClip,
     CompositeVideoClip,
     TextClip,
     VideoFileClip,
@@ -22,133 +19,77 @@ from moviepy.editor import (
     concatenate_videoclips,
 )
 
-# 2. Load Configuration
-CONFIG_PATH = "config.json"
-with open(CONFIG_PATH, "r", encoding="utf-8") as f:
-    config = json.load(f)
+TARGET_W, TARGET_H = 1080, 1920
+FPS = 30
+VOICE = "en-US-ChristopherNeural"
 
-THEME = config["theme"]
-TARGET_W, TARGET_H = config["resolution"]
-FPS = config["fps"]
-VOICE = "en-US-ChristopherNeural"  # Authoritative executive cadence
-
-# 3. Asynchronous TTS Generation
+# 1. Synthesize Audio
 async def generate_speech(text: str, output_path: str):
-    communicate = edge_tts.Communicate(text, VOICE, rate="+0%", pitch="-2Hz")
+    communicate = edge_tts.Communicate(text, VOICE, rate="+10%", pitch="-2Hz")
     await communicate.save(output_path)
 
-def build_audio(scenes):
-    print("[*] Synthesizing executive voiceover audio...")
-    audio_clips = []
-    os.makedirs("temp_audio", exist_ok=True)
+def process_visual_clip(video_path: str, duration: float) -> VideoFileClip:
+    clip = VideoFileClip(video_path).without_audio()
+    clip = clip.loop(duration=duration) if clip.duration < duration else clip.subclip(0, duration)
+    clip = clip.resize(height=TARGET_H)
+    if clip.w < TARGET_W:
+        clip = clip.resize(width=TARGET_W)
+    x_center = (clip.w - TARGET_W) / 2
+    y_center = (clip.h - TARGET_H) / 2
+    return clip.crop(x1=x_center, y1=y_center, width=TARGET_W, height=TARGET_H)
+
+def build_scene(scene_data):
+    tts_path = f"temp_vo_{scene_data['id']}.mp3"
+    asyncio.run(generate_speech(scene_data["text"], tts_path))
     
-    for scene in scenes:
-        tts_path = f"temp_audio/vo_{scene['id']}.mp3"
-        asyncio.run(generate_speech(scene["voiceover_text"], tts_path))
-        
-        voice_clip = AudioFileClip(tts_path)
-        # Pad audio to match scene duration if speech is shorter
-        duration = max(scene["duration"], voice_clip.duration + 0.3)
-        scene["actual_duration"] = duration
-        
-        # Build silence padding clip if needed
-        silence_duration = duration - voice_clip.duration
-        if silence_duration > 0:
-            silence_path = f"temp_audio/silence_{scene['id']}.mp3"
-            subprocess.check_call([
-                "ffmpeg", "-y", "-f", "lavfi", "-i",
-                f"anullsrc=r=44100:cl=stereo:d={silence_duration}",
-                silence_path
-            ])
-            silence_clip = AudioFileClip(silence_path)
-            composite_scene_audio = concatenate_audioclips([voice_clip, silence_clip])
-        else:
-            composite_scene_audio = voice_clip
-            
-        audio_clips.append(composite_scene_audio)
-        
-    return concatenate_audioclips(audio_clips)
+    audio = AudioFileClip(tts_path)
+    scene_duration = audio.duration + 0.35
 
-# 4. Visual Scene Assembly
-def build_video_clip(scene):
-    duration = scene.get("actual_duration", scene["duration"])
-    
-    if scene["source_type"] == "local_file":
-        clip = VideoFileClip(scene["file_path"]).without_audio()
-        if clip.duration < duration:
-            clip = clip.loop(duration=duration)
-        else:
-            clip = clip.subclip(0, duration)
-            
-        # Center-crop & resize to 1080x1920 (9:16)
-        clip = clip.resize(height=TARGET_H)
-        if clip.w < TARGET_W:
-            clip = clip.resize(width=TARGET_W)
-        x_center = (clip.w - TARGET_W) / 2
-        y_center = (clip.h - TARGET_H) / 2
-        clip = clip.crop(x1=x_center, y1=y_center, width=TARGET_W, height=TARGET_H)
-        
-    else:  # Generated outro card
-        clip = ColorClip(size=(TARGET_W, TARGET_H), color=(11, 19, 43)).set_duration(duration)
+    if scene_data.get("is_outro", False):
+        base = ColorClip(size=(TARGET_W, TARGET_H), color=(11, 19, 43)).set_duration(scene_duration)
+    else:
+        base = process_visual_clip(scene_data["file"], scene_duration)
 
-    # Dark atmospheric contrast overlay
-    dark_overlay = ColorClip(size=(TARGET_W, TARGET_H), color=(0, 0, 0)).set_opacity(0.42).set_duration(duration)
+    dark_overlay = ColorClip(size=(TARGET_W, TARGET_H), color=(0, 0, 0)).set_opacity(0.40).set_duration(scene_duration)
+    box = ColorClip(size=(940, 220), color=(11, 19, 43)).set_opacity(0.88).set_duration(scene_duration).set_position(("center", 1340))
+    bar = ColorClip(size=(940, 6), color=(0, 240, 255)).set_duration(scene_duration).set_position(("center", 1340))
 
-    # Accent Card Box
-    box_w, box_h = 920, 240
-    box_bg = ColorClip(size=(box_w, box_h), color=(11, 19, 43)).set_opacity(0.85).set_duration(duration)
-    box_bg = box_bg.set_position(("center", 1320))
-
-    # Cyan Accent Border Bar
-    cyan_bar = ColorClip(size=(920, 8), color=(0, 240, 255)).set_duration(duration)
-    cyan_bar = cyan_bar.set_position(("center", 1320))
-
-    # Text Overlay
-    txt_main = TextClip(
-        scene["overlay_title"],
-        fontsize=44,
+    text = TextClip(
+        scene_data["title"],
+        fontsize=42,
         color="white",
         font="DejaVu-Sans-Bold",
         method="caption",
-        size=(860, None)
-    ).set_duration(duration).set_position(("center", 1360))
+        size=(880, None)
+    ).set_duration(scene_duration).set_position(("center", 1380))
 
-    elements = [clip, dark_overlay, box_bg, cyan_bar, txt_main]
+    composite = CompositeVideoClip([base, dark_overlay, box, bar, text], size=(TARGET_W, TARGET_H))
+    return composite.set_duration(scene_duration), audio
 
-    if "overlay_subtitle" in scene:
-        txt_sub = TextClip(
-            scene["overlay_subtitle"],
-            fontsize=32,
-            color="#00F0FF",
-            font="DejaVu-Sans-Bold"
-        ).set_duration(duration).set_position(("center", 1460))
-        elements.append(txt_sub)
-
-    return CompositeVideoClip(elements, size=(TARGET_W, TARGET_H)).set_duration(duration)
-
-# 5. Pipeline Execution
 def main():
-    scenes = config["scenes"]
-    
-    # Generate Voiceover Audio Track
-    full_audio = build_audio(scenes)
-    
-    print("[*] Processing scenes and geometric overlays...")
-    video_clips = [build_video_clip(s) for s in scenes]
-    master_video = concatenate_videoclips(video_clips, method="compose")
-    master_video = master_video.set_audio(full_audio)
-    
-    output_filename = "guilt_driven_yes_master.mp4"
-    print(f"[*] Rendering final reel to {output_filename}...")
-    master_video.write_videofile(
-        output_filename,
-        fps=FPS,
-        codec="libx264",
-        audio_codec="aac",
-        preset="ultrafast",
-        threads=4
-    )
-    print(f"[✓] Render complete: {output_filename}")
+    scenes = [
+        {"id": 1, "file": "scene1.mp4", "title": "8:45 PM. \"QUICK QUESTION.\"", "text": "It’s 8:45 on a Friday. A late client ping hits your phone.", "is_outro": False},
+        {"id": 2, "file": "scene2.mp4", "title": "THE GUILT-DRIVEN \"YES\"", "text": "You spend ten minutes drafting an apology just for being off the clock.", "is_outro": False},
+        {"id": 3, "file": "scene3.mp4", "title": "BOUNDARY DEFENSE PROTOCOL", "text": "Stop trading peace for approval. High-level operators don't apologize for boundaries—they frame them as commercial trade-offs.", "is_outro": False},
+        {"id": 4, "file": "scene4.mp4", "title": "OPTION A VS. OPTION B", "text": "Option A: Standard delivery Monday morning. Option B: Emergency sprint at 1.5x. Zero guilt. Total authority.", "is_outro": False},
+        {"id": 5, "file": None, "title": "WORKFLOW SUPER AI\nTIER 1 VAULT IN BIO", "text": "Deploy the boundary protocol. Grab the prompt vault in the bio.", "is_outro": True},
+    ]
+
+    video_clips, audio_clips = [], []
+    for s in scenes:
+        print(f"[*] Assembling Scene {s['id']}...")
+        v, a = build_scene(s)
+        video_clips.append(v)
+        audio_clips.append(a)
+
+    print("[*] Concatenating final reel...")
+    final_video = concatenate_videoclips(video_clips, method="compose")
+    final_audio = concatenate_audioclips(audio_clips)
+    final_video = final_video.set_audio(final_audio)
+
+    output = "guilt_driven_yes_master.mp4"
+    final_video.write_videofile(output, fps=FPS, codec="libx264", audio_codec="aac", preset="ultrafast", threads=4)
+    print(f"[✓] Render finished: {output}")
 
 if __name__ == "__main__":
     main()
